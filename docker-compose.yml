@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: campus-flow-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: user_db2
+    ports:
+      - "3308:3306"
+    volumes:
+      - campus_flow_mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ppass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: campus-flow:deployment
+    container_name: campus-flow-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_db2?useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: pass
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-Ov23lijramFcogVguZyA}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-github-client-secret}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-975602303747-e2h4hnifubtk0avss9cnmm0irpc67qt7.apps.googleusercontent.com}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-google-client-secret}
+      REST_COUNTRIES_API_KEY: ${REST_COUNTRIES_API_KEY:-}
+    ports:
+      - "8080:8080"
+
+volumes:
+  campus_flow_mysql_data:

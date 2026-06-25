@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: Campus Flow API
+  version: 1.0.0
+  description: API documentation for Campus Flow, a student daily-life dashboard with profile management and external API integration.
+servers:
+  - url: http://localhost:8080
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /api/authenticate:
+    post:
+      summary: Login and receive a token
+      description: Checks the username and plain text password from the user database, then returns a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: student
+                password:
+                  type: string
+                  example: pass
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Unknown user or wrong password
+  /api/verify:
+    get:
+      summary: Verify token
+      description: Reads the Bearer token and returns the username and user type.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token is valid
+        '401':
+          description: Missing or invalid token
+  /api/student-area:
+    get:
+      summary: Student area
+      description: Accessible by STUDENT, TEACHER, and ADMIN users.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Access allowed
+        '401':
+          description: Missing or invalid token
+        '403':
+          description: User type is not allowed
+  /api/teacher-area:
+    get:
+      summary: Teacher area
+      description: Accessible by TEACHER and ADMIN users.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Access allowed
+        '401':
+          description: Missing or invalid token
+        '403':
+          description: User type is not allowed
+  /api/admin-area:
+    get:
+      summary: Admin area
+      description: Accessible by ADMIN users only.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Access allowed
+        '401':
+          description: Missing or invalid token
+        '403':
+          description: User type is not allowed
+  /api/register:
+    post:
+      summary: Register a user
+      description: Optional endpoint to add a new user with username, password, and user type.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: newstudent
+                password:
+                  type: string
+                  example: pass
+                userType:
+                  type: string
+                  example: STUDENT
+      responses:
+        '200':
+          description: User registered
+        '400':
+          description: Invalid user type
+        '409':
+          description: Username already exists
+  /api/home:
+    get:
+      summary: Get homepage weather and country information
+      description: Returns country information and weather tips. If country and city are not provided, the service uses the saved profile settings.
+      parameters:
+        - name: country
+          in: query
+          required: false
+          schema:
+            type: string
+            example: Japan
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+            example: Kyoto
+      responses:
+        '200':
+          description: Homepage data returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  country:
+                    type: object
+                  city:
+                    type: object
+                  weather:
+                    type: object
+                  tips:
+                    type: object
+  /api/profile:
+    get:
+      summary: Get saved profile
+      description: Reads the profile and resume information from MySQL.
+      responses:
+        '200':
+          description: Profile data returned successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  studentId:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                  country:
+                    type: string
+                  city:
+                    type: string
+                  summary:
+                    type: string
+    post:
+      summary: Update saved profile
+      description: Updates the profile information. The saved country and city are also used by the homepage weather service.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: シュフシン
+                studentId:
+                  type: string
+                  example: M25W7195
+                email:
+                  type: string
+                  example: st232527@kcg.edu
+                phone:
+                  type: string
+                  example: 123-4567-8901
+                location:
+                  type: string
+                  example: Kyoto, Japan
+                country:
+                  type: string
+                  example: Japan
+                city:
+                  type: string
+                  example: Kyoto
+                title:
+                  type: string
+                  example: Student / M25W7195
+                summary:
+                  type: string
+                  example: I am currently studying information technology.
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  profile:
+                    type: object

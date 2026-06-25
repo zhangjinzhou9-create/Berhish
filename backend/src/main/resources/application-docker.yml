@@ -1,0 +1,25 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/user_db2?useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:pass}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  sql:
+    init:
+      mode: never
+
+app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
+
+restcountries:
+  api:
+    key: ${REST_COUNTRIES_API_KEY:}

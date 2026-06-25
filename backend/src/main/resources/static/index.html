@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Flow</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="vendor/gsap.min.js"></script>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark">CF</div>
+            <div>
+                <h1>Campus Flow</h1>
+                <p>Study · Life · Profile</p>
+            </div>
+        </div>
+
+        <nav class="menu">
+            <button class="menu-item active" data-page="home" data-i18n="menuHome">Home</button>
+            <button class="menu-item" data-page="nav" data-i18n="menuNav">Quick Access</button>
+            <button class="menu-item" data-page="me" data-i18n="menuMe">Me</button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div id="sideAvatar" class="avatar">S</div>
+            <div class="sidebar-user-main">
+                <strong id="sideName">Student</strong>
+                <p id="sideSubtitle" data-i18n="campusUser">Campus Flow User</p>
+                <div class="user-auth-row" aria-label="OAuth login status">
+                    <span id="oauthStatusDot" class="status-dot"></span>
+                    <strong id="oauthStatusTitle">OAuth not connected</strong>
+                    <span id="oauthProviderBadge" class="provider-badge">Not logged in</span>
+                </div>
+                <small id="oauthStatusDetail" class="user-auth-detail">Choose Google or GitHub to verify third-party login.</small>
+                <div class="oauth-actions-row sidebar-actions">
+                    <button type="button" id="oauthChooseBtn" class="oauth-login-btn">Login</button>
+                    <button type="button" id="oauthRefreshBtn" class="icon-btn compact-icon" title="Refresh status" aria-label="Refresh OAuth status">R</button>
+                    <a class="icon-btn compact-icon" href="/logout" title="Logout" aria-label="Logout">L</a>
+                </div>
+                <details class="oauth-tools sidebar-oauth-tools">
+                    <summary>API test</summary>
+                    <div class="oauth-verify-row">
+                        <button type="button" class="secondary-btn" data-oauth-api="/api/oauth/github/profile">GitHub Profile</button>
+                        <button type="button" class="secondary-btn" data-oauth-api="/api/oauth/github/repos">GitHub Repos</button>
+                        <button type="button" class="secondary-btn" data-oauth-api="/api/oauth/google/calendar">Google Calendar</button>
+                    </div>
+                    <pre id="oauthResult" class="oauth-result compact-result">OAuth API result will be shown here.</pre>
+                </details>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <h2 id="pageTitle">Home</h2>
+            </div>
+            <div class="topbar-actions">
+                <label class="language-switch">
+                    <span data-i18n="languageLabel">Language</span>
+                    <select id="languageSelect" aria-label="Language">
+                        <option value="en">English</option>
+                        <option value="zh">中文</option>
+                        <option value="ja">日本語</option>
+                    </select>
+                </label>
+                <div class="date-card">
+                    <span id="todayText">Today</span>
+                    <small data-i18n="dateSubtitle">Keep learning, keep growing.</small>
+                </div>
+            </div>
+        </header>
+
+        <section id="homePage" class="page active-page">
+            <div class="hero-card">
+                <div class="hero-copy">
+                    <p class="eyebrow">Location & Weather</p>
+                    <h3 data-i18n="homeHeroTitle">Enter a country and city to generate today's life tips</h3>
+                    <p id="homeLocation">Loading...</p>
+                </div>
+                <form id="homeLocationForm" class="home-location-form">
+                    <label data-i18n-label="countryLabel">Country<input id="homeCountryInput" name="country" placeholder="Japan"></label>
+                    <label data-i18n-label="cityLabel">City<input id="homeCityInput" name="city" placeholder="Kyoto"></label>
+                    <div class="home-actions">
+                        <button type="submit" class="primary-btn" data-i18n="searchBtn">Search</button>
+                        <button type="button" id="saveLocationBtn" class="ghost-btn" data-i18n="saveLocationBtn">Save to Profile</button>
+                    </div>
+                    <small id="homeStatus">The Home page can search independently.</small>
+                </form>
+            </div>
+
+            <div class="weather-grid">
+                <div class="weather-card primary-card">
+                    <div class="card-head">
+                        <span data-i18n="currentWeather">Current Weather</span>
+                        <button id="goProfileBtn" class="small-link" data-i18n="changeLocation">Change Location</button>
+                    </div>
+                    <div class="weather-main">
+                        <strong id="temperature">--°C</strong>
+                        <div>
+                            <p id="weatherCondition">Loading</p>
+                            <small id="weatherTime">--</small>
+                        </div>
+                    </div>
+                    <div class="weather-meta">
+                        <div><span data-i18n="cityLabel">City</span><strong id="weatherCity">--</strong></div>
+                        <div><span data-i18n="windSpeed">Wind Speed</span><strong id="windSpeed">--</strong></div>
+                        <div><span data-i18n="trend">Trend</span><strong id="weatherTrend">--</strong></div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <span class="pill">Daily Tip</span>
+                    <h3 id="dailyTip">Generating life tips...</h3>
+                    <div class="chips">
+                        <span id="clothingTip">Clothing: --</span>
+                        <span id="reminderTip">Reminder: --</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="country-card">
+                <h3 data-i18n="countryInfo">Country Information</h3>
+                <div class="country-list">
+                    <p><span data-i18n="countryLabel">Country</span><strong id="countryName">--</strong></p>
+                    <p><span data-i18n="capital">Capital</span><strong id="capitalName">--</strong></p>
+                    <p><span data-i18n="region">Region</span><strong id="regionName">--</strong></p>
+                    <p><span data-i18n="population">Population</span><strong id="populationText">--</strong></p>
+                    <p><span data-i18n="languages">Languages</span><strong id="languageText">--</strong></p>
+                    <p><span data-i18n="currency">Currency</span><strong id="currencyText">--</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="navPage" class="page">
+            <div class="season-banner nav-season" aria-hidden="true"></div>
+            <div class="section-title">
+                <p class="eyebrow">Quick Access</p>
+                <h3 data-i18n="quickTitle">Useful Web Shortcuts</h3>
+            </div>
+            <div id="shortcutGrid" class="shortcut-grid"></div>
+        </section>
+
+        <section id="mePage" class="page">
+            <div class="season-banner me-season" aria-hidden="true"></div>
+            <div class="profile-layout">
+                <form id="profileForm" class="profile-form">
+                    <div class="section-title compact">
+                        <p class="eyebrow">Profile</p>
+                        <h3 data-i18n="profileTitle">Resume Profile</h3>
+                    </div>
+
+                    <div class="form-grid">
+                        <label data-i18n-label="nameLabel">Name<input name="name" disabled></label>
+                        <label data-i18n-label="studentIdLabel">Student ID<input name="studentId" disabled></label>
+                        <label data-i18n-label="emailLabel">Email<input name="email" disabled></label>
+                        <label data-i18n-label="phoneLabel">Phone<input name="phone" disabled></label>
+                        <label data-i18n-label="countryLabel">Country<input name="country" disabled placeholder="Japan"></label>
+                        <label data-i18n-label="cityLabel">City<input name="city" disabled placeholder="Kyoto"></label>
+                        <label class="wide" data-i18n-label="titleLabel">Title<input name="title" disabled></label>
+                        <label class="wide" data-i18n-label="summaryLabel">Summary<textarea name="summary" disabled rows="5"></textarea></label>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" id="editBtn" class="secondary-btn" data-i18n="editBtn">Edit</button>
+                        <button type="submit" id="saveBtn" class="primary-btn" disabled data-i18n="saveBtn">Save</button>
+                        <span id="saveStatus"></span>
+                    </div>
+                </form>
+
+                <div class="resume-preview" id="resumePreview">
+                    <div class="preview-head">
+                        <div class="avatar large">S</div>
+                        <div>
+                            <h3 id="previewName">Student</h3>
+                            <p id="previewTitle">Student</p>
+                        </div>
+                    </div>
+                    <p id="previewContact" class="muted"></p>
+                    <hr>
+                    <h4>Education</h4>
+                    <div id="previewEducation"></div>
+                    <h4>Skills</h4>
+                    <p id="previewSkills"></p>
+                    <h4>Projects</h4>
+                    <div id="previewProjects"></div>
+                    <h4>Languages</h4>
+                    <p id="previewLanguages"></p>
+                    <h4>About Me</h4>
+                    <p id="previewSummary"></p>
+                    <button id="exportPdfBtn" class="pdf-btn" data-i18n="exportPdf">Export PDF</button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div id="oauthModal" class="modal-backdrop hidden" aria-hidden="true">
+    <div class="login-modal" role="dialog" aria-modal="true" aria-labelledby="oauthModalTitle">
+        <div class="modal-visual">
+            <button type="button" id="oauthModalClose" class="icon-btn modal-close" aria-label="Close">X</button>
+            <div class="modal-title-block">
+                <p class="eyebrow">Third-party Login</p>
+                <h3 id="oauthModalTitle">Choose a login provider</h3>
+            </div>
+        </div>
+        <p class="modal-copy">Login updates only the status bar. Your resume content stays unchanged.</p>
+        <div class="provider-options">
+            <button type="button" class="provider-option" data-oauth-provider="google">
+                <span class="provider-logo google-logo" aria-hidden="true">G</span>
+                <span>
+                    <strong>Google</strong>
+                    <small>Calendar API authorization</small>
+                </span>
+            </button>
+            <button type="button" class="provider-option" data-oauth-provider="github">
+                <span class="provider-logo github-logo" aria-hidden="true">Git</span>
+                <span>
+                    <strong>GitHub</strong>
+                    <small>Profile and repository authorization</small>
+                </span>
+            </button>
+        </div>
+    </div>
+</div>
+<script src="ui-effects.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

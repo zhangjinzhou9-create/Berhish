@@ -1,0 +1,11 @@
+.env
+
+backend/target/
+backend/*.log
+backend/*.err.log
+backend/*.out.log
+
+.idea/
+.vscode/
+
+*.zip

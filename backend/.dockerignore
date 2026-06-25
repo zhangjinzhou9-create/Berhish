@@ -1,0 +1,15 @@
+target/
+.mvn/
+*.log
+*.err.log
+*.out.log
+
+.git/
+.gitignore
+
+README.md
+report.md
+OAUTH_SETUP.md
+
+Dockerfile
+.dockerignore

@@ -1,0 +1,39 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID:Ov23lijramFcogVguZyA}
+            client-secret: ${GITHUB_CLIENT_SECRET:github-client-secret}
+            scope:
+              - read:user
+              - user:email
+              - public_repo
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:975602303747-e2h4hnifubtk0avss9cnmm0irpc67qt7.apps.googleusercontent.com}
+            client-secret: ${GOOGLE_CLIENT_SECRET:google-client-secret}
+            client-authentication-method: client_secret_post
+            scope:
+              - openid
+              - profile
+              - email
+              - https://www.googleapis.com/auth/calendar.readonly
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/user_db2?useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci
+    username: root
+    password: pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  sql:
+    init:
+      mode: never
