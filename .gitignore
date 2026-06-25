@@ -9,3 +9,5 @@ backend/*.out.log
 .vscode/
 
 *.zip
+
+tmp/

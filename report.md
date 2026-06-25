@@ -1,9 +1,9 @@
-# Campus Flow Web Service Report
+# Campus Flow Web Service and Deployment Report
 
-**Name:** シュフシン  
+**Name:** ZHU FUXIN / シュフシン  
 **Student ID:** M25W7195  
 **Project Title:** Campus Flow  
-**Assignment:** Web service and web-based frontend client
+**Assignment:** Web service, OAuth/TLS, Docker image, and Azure deployment
 
 ## Introduction
 
@@ -165,9 +165,9 @@ The following screenshots are added for the final TLS and OAuth version. The ori
 
 ### Figure 11: Final Home Page
 
-![Figure 11: Final Home page](database/report_screenshots/figure_11_frontend_home_seasonal.png)
+![Figure 11: Final Home page](database/report_screenshots/figure_11_frontend_home.png)
 
-Figure 11 shows the final Home page. The page can search by country and city, and it displays weather, country information, and daily tips. The page also uses a seasonal image in the main visual area. This is part of the final frontend check.
+Figure 11 shows the final Home page. The page can search by country and city, and it displays weather, country information, and daily tips. The visual style is kept light so the page still feels like a campus-life tool, but the main point is that the deployed web app can be opened and tested clearly.
 
 ### Figure 12: Final Profile Page and Login Status
 
@@ -192,6 +192,52 @@ Figure 14 shows the GitHub OAuth result. After GitHub login, the sidebar login s
 ![Figure 15: Google Calendar OAuth success](database/report_screenshots/figure_15_google_calendar_success.png)
 
 Figure 15 shows the Google Calendar API result after Google login. The application uses OAuth authorization and then calls the Google Calendar endpoint. This confirms the second OAuth API required by the assignment.
+
+### Docker and Azure Deployment
+
+For the deployment assignment, I kept the same Campus Flow project and created a Docker image for it. Because the project uses MySQL, I also prepared Docker Compose with an application container and a MySQL sidecar container. This part was useful because it made the database connection easier to explain: inside Docker Compose, the application connects to the database by using the service name `mysql`, not `localhost`.
+
+The Docker Hub repository used for this assignment is:
+
+```text
+https://hub.docker.com/r/berhish/campus-flow
+```
+
+The Azure App Service URL used for the online test is:
+
+```text
+https://campusflow-dzh5b4fteeczf7ab.japanwest-01.azurewebsites.net/index.html
+```
+
+### Figure 16: Docker Desktop Sidecar Containers
+
+![Figure 16: Docker Desktop sidecar containers](database/report_screenshots/figure_16_docker_desktop_sidecar.png)
+
+Figure 16 shows Docker Desktop running the Campus Flow deployment group. The important point is that `campus-flow-app` and `campus-flow-mysql` are both running. This confirms the local sidecar-container setup required when the project uses an external database.
+
+### Figure 17: Azure App Service Configuration
+
+![Figure 17: Azure App Service overview](database/report_screenshots/figure_17_azure_app_service_overview.png)
+
+Figure 17 shows the Azure App Service overview. The web app is named `CampusFlow`, the publish model is container, and the container image is `index.docker.io/berhish/campus-flow:latest`. This is the part that connects the Docker Hub image with Azure App Service.
+
+### Figure 18: Azure Online Frontend Test
+
+![Figure 18: Azure online Home page](database/report_screenshots/figure_18_azure_online_home.png)
+
+Figure 18 shows the deployed Campus Flow frontend opened from the Azure URL. The page loads, the location form works, and the weather/country result is displayed. This proves that the containerized web app can be opened online, not only on localhost.
+
+### Figure 19: Docker Hub Image Tags
+
+![Figure 19: Docker Hub image tags](database/report_screenshots/figure_20_docker_hub_tags.png)
+
+Figure 19 shows the Docker Hub repository `berhish/campus-flow`. The `latest` tag and the `deploy-20260623` tag are visible, and the page also shows the pull command. This screenshot is the public reference for the Docker image used by Azure.
+
+### Figure 20: Azure Online API Test
+
+![Figure 20: Azure online API profile](database/report_screenshots/figure_21_azure_api_profile.png)
+
+Figure 20 shows the online `/api/profile` endpoint opened from the Azure App Service URL. The API returned a readable JSON response with my profile information. The response also says `databaseAvailable: false`, so I understood that the deployed container could still return fallback profile data even when the cloud-side database connection was not available. For this assignment, this still proves that the deployed web app and API endpoint are reachable online.
 
 ## Experimental Result
 
@@ -218,7 +264,13 @@ The final test result is summarized below.
 | GitHub API test | Profile/repository data can be requested after login | Passed |
 | Google OAuth login | User can authorize Google Calendar readonly access | Passed |
 | Google Calendar API test | Calendar endpoint returns an OAuth-protected response | Passed |
-| Final frontend layout | Resume content, login status, and seasonal images display correctly | Passed |
+| Final frontend layout | Resume content, login status, and classroom-friendly visual style display correctly | Passed |
+| Docker image build | Spring Boot app can be packaged into a Docker image | Passed |
+| Docker Compose sidecar test | App container and MySQL sidecar container run together | Passed |
+| Docker Hub image | `berhish/campus-flow:latest` is available as the deployment image | Passed |
+| Azure App Service | Azure uses the Docker Hub image and shows the app as running | Passed |
+| Azure frontend test | Online Campus Flow page opens from the Azure URL | Passed |
+| Azure API test | Online `/api/profile` returns readable JSON; database fallback is handled | Passed |
 
 ## Reflection
 
@@ -232,53 +284,4 @@ The OAuth part was more difficult than the normal public API calls because the a
 
 ## Conclusion
 
-Campus Flow satisfies the assignment requirements. It provides a web service, a web frontend client, TLS local testing, OAuth login, integration with external APIs, OpenAPI documentation, and a report with real screenshots from the test process. The final version also supports profile persistence, independent homepage search, JWT authentication, role-based protected endpoints, GitHub API verification, and Google Calendar API verification.
-
-## 2026-06-25 Maintenance Update
-
-After reviewing the project history, I decided to keep the final version simpler.
-The project is mainly for class, so I removed the four-season theme switcher and
-the unused `/images/*-anime.png` placeholder path. The existing seasonal images
-are still used as calm background assets, but the page no longer asks the user
-to switch themes manually.
-
-I also reduced the animation strength. The GSAP code is now kept in
-`ui-effects.js`, while `script.js` focuses on page navigation, API requests,
-profile saving, OAuth status, and language switching. This makes the source code
-easier to explain during an English presentation.
-
-The resume content was not changed. The profile page still shows:
-
-- Name: シュフシン
-- Student ID: M25W7195
-- Email: st232527@kcg.edu
-- Project: Campus Flow
-
-### Maintenance Verification
-
-The following checks were completed after the cleanup:
-
-| Check | Result |
-| --- | --- |
-| Maven package build | Passed |
-| Docker Compose app image rebuild | Passed |
-| `campus-flow-app` container | Running |
-| `campus-flow-mysql` container | Healthy |
-| `/` | 200 OK |
-| `/index.html` | 200 OK |
-| `/api/profile` | 200 OK |
-| `/api/home?country=Japan&city=Kyoto` | 200 OK |
-| `/api-docs.html` | 200 OK |
-
-New screenshots were added under `screenshots/`:
-
-- `11-current-home-page.png`
-- `12-current-profile-page.png`
-- `13-current-api-profile.png`
-- `14-current-api-home.png`
-
-One practical problem remains outside the application code: this folder was not
-a Git repository, and GitHub CLI was not installed on the machine during this
-cleanup. Because of that, the project can be packaged and submitted now, but the
-GitHub push step needs GitHub CLI setup or a repository URL before it can be
-completed safely.
+Campus Flow satisfies the assignment requirements. It provides a web service, a web frontend client, TLS local testing, OAuth login, integration with external APIs, OpenAPI documentation, Docker deployment, and a report with real screenshots from the test process. The final version also supports profile persistence, independent homepage search, JWT authentication, role-based protected endpoints, GitHub API verification, Google Calendar API verification, and a Docker Compose deployment with a MySQL sidecar container. For the deployment task, the important reference URLs are the Docker Hub repository `https://hub.docker.com/r/berhish/campus-flow` and the Azure App Service URL `https://campusflow-dzh5b4fteeczf7ab.japanwest-01.azurewebsites.net/index.html`.

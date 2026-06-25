@@ -13,7 +13,7 @@ Student: `ZHU FUXIN / シュフシン / M25W7195`
 - HTTPS local profile for TLS testing
 - OAuth 2.0 login with Google Calendar API and GitHub API
 - Docker Compose setup with an app container and a MySQL sidecar container
-- Seasonal frontend images and a compact login status area in the sidebar
+- Classroom-friendly visual style and a compact login status area in the sidebar
 
 ## Project Structure
 
@@ -30,11 +30,10 @@ backend/src/main/java/com/example/resumeapp/
   service/HomeService.java                Country, weather, and life-tip logic
 backend/src/main/resources/static/        Frontend HTML, CSS, JavaScript, and images
 database/init/                            MySQL initialization scripts for Docker
-database/report_screenshots/              Screenshots used in report.md
+database/report_screenshots/              Screenshots used in report.md and PDF
 docker-compose.yml                        App + MySQL sidecar container setup
 OAUTH_SETUP.md                            OAuth setup notes
 report.md                                 Project report
-DEPLOYMENT_REPORT.md                      Deployment report draft
 ```
 
 ## Requirements
@@ -234,35 +233,3 @@ java -jar target\resumeapp-0.0.1-SNAPSHOT.jar
 ```
 
 Note: on this Windows environment, `.\mvnw.cmd spring-boot:run` can fail when Maven handles the Chinese user path. The packaged jar command above is the verified local run method.
-
-## 2026-06-25 Cleanup and Verification Log
-
-This update keeps Campus Flow as a clear classroom assignment instead of making
-the frontend heavier than the project needs. I removed the four-season theme
-switcher, removed the unused `/images/*-anime.png` placeholder path, and kept
-the existing seasonal assets only as quiet background images.
-
-For readability, the lightweight GSAP helper code was moved into
-`backend/src/main/resources/static/ui-effects.js`. The main `script.js` now stays
-closer to page navigation, API calls, profile saving, OAuth status, and language
-switching. The resume content was not changed.
-
-Verification completed after the cleanup:
-
-- `mvnw.cmd -DskipTests package` passed.
-- `docker compose build app` passed.
-- `docker compose up -d app` restarted the app container.
-- `campus-flow-app` is running on `localhost:8080`.
-- `campus-flow-mysql` is healthy.
-- `/`, `/index.html`, `/api/profile`, `/api/home?country=Japan&city=Kyoto`, and `/api-docs.html` returned HTTP 200.
-
-Current screenshots are stored in `screenshots/`:
-
-- `11-current-home-page.png`
-- `12-current-profile-page.png`
-- `13-current-api-profile.png`
-- `14-current-api-home.png`
-
-Because this project folder was not a Git repository and `gh` was not installed
-on the machine, the GitHub push step still needs either GitHub CLI setup or a
-repository URL before it can be completed safely.

@@ -1079,7 +1079,7 @@ button { cursor: pointer; border: none; }
     fill: currentColor;
 }
 
-/* Classroom visual layer: a fixed seasonal atmosphere without theme switching. */
+/* Classroom visual layer: a fixed soft campus atmosphere without theme switching. */
 :root {
     --season-primary: #2f6df6;
     --season-secondary: #35b7d5;
