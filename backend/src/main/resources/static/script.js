@@ -1,212 +1,28 @@
-const pages = {
+﻿const pages = {
     home: document.getElementById('homePage'),
-    nav: document.getElementById('navPage'),
-    me: document.getElementById('mePage')
+    me: document.getElementById('mePage'),
+    account: document.getElementById('accountPage')
 };
 
-const translations = {
-    en: {
-        menuHome: 'Home',
-        menuNav: 'Quick Access',
-        menuMe: 'Me',
-        campusUser: 'Campus Flow User',
-        dateSubtitle: 'Keep learning, keep growing.',
-        languageLabel: 'Language',
-        homeHeroTitle: "Enter a country and city to generate today's life tips",
-        countryLabel: 'Country',
-        cityLabel: 'City',
-        searchBtn: 'Search',
-        saveLocationBtn: 'Save to Profile',
-        currentWeather: 'Current Weather',
-        changeLocation: 'Change Location',
-        windSpeed: 'Wind Speed',
-        trend: 'Trend',
-        countryInfo: 'Country Information',
-        capital: 'Capital',
-        region: 'Region',
-        population: 'Population',
-        languages: 'Languages',
-        currency: 'Currency',
-        quickTitle: 'Useful Web Shortcuts',
-        profileTitle: 'Resume Profile',
-        nameLabel: 'Name',
-        studentIdLabel: 'Student ID',
-        emailLabel: 'Email',
-        phoneLabel: 'Phone',
-        titleLabel: 'Title',
-        summaryLabel: 'Summary',
-        editBtn: 'Edit',
-        saveBtn: 'Save',
-        exportPdf: 'Export PDF',
-        shortcutOpen: 'Open link',
-        statusHomeIndependent: 'The Home page can search independently.',
-        statusSavingLocation: 'Saving location to profile...',
-        statusLocationSaveFailed: 'Location was not saved. Please check the database.',
-        statusLocationSaved: 'Location saved to profile. Home page refreshed.',
-        statusSaveLocationError: 'Save failed. Please confirm that the backend and database are running.',
-        statusProfileLoadFailed: 'Profile failed to load, but Home can still search independently.',
-        statusEditing: 'You can edit the profile now.',
-        statusSaving: 'Saving...',
-        statusProfileSaveFailed: 'Save failed. Please check the database.',
-        statusProfileSaved: 'Saved successfully. Home location has been synchronized.',
-        statusLoadingHome: 'Loading country information and weather...',
-        statusFallbackData: 'Fallback data is shown. Please check the network or city name.',
-        statusUpdated: 'Updated',
-        statusHomeFailed: 'Home API failed. Please confirm that the backend is running.',
-        statusRetryHome: 'Home failed to load. You can change the country and city and search again.',
-        clothing: 'Clothing',
-        reminder: 'Reminder',
-        loading: 'Loading',
-        generatingTips: 'Generating life tips...',
-        readFailed: 'Load failed'
-    },
-    zh: {
-        menuHome: '首页',
-        menuNav: '快捷导航',
-        menuMe: '个人',
-        campusUser: 'Campus Flow 用户',
-        dateSubtitle: '持续学习，持续成长。',
-        languageLabel: '语言',
-        homeHeroTitle: '输入国家和城市，生成今天的生活提示',
-        countryLabel: '国家',
-        cityLabel: '城市',
-        searchBtn: '查询',
-        saveLocationBtn: '保存到资料',
-        currentWeather: '当前天气',
-        changeLocation: '修改地区',
-        windSpeed: '风速',
-        trend: '趋势',
-        countryInfo: '国家信息',
-        capital: '首都',
-        region: '地区',
-        population: '人口',
-        languages: '语言',
-        currency: '货币',
-        quickTitle: '常用网页入口',
-        profileTitle: '简历资料',
-        nameLabel: '姓名',
-        studentIdLabel: '学号',
-        emailLabel: '邮箱',
-        phoneLabel: '电话',
-        titleLabel: '标题',
-        summaryLabel: '自我介绍',
-        editBtn: '修改',
-        saveBtn: '保存',
-        exportPdf: '导出 PDF',
-        shortcutOpen: '打开链接',
-        statusHomeIndependent: '首页可以独立查询，不需要先打开个人资料。',
-        statusSavingLocation: '正在保存地区到个人资料...',
-        statusLocationSaveFailed: '地区没有保存成功，请检查数据库。',
-        statusLocationSaved: '地区已保存到个人资料，首页也已刷新。',
-        statusSaveLocationError: '保存失败，请确认后端和数据库正在运行。',
-        statusProfileLoadFailed: '个人资料读取失败，但首页仍可独立查询。',
-        statusEditing: '现在可以修改资料。',
-        statusSaving: '正在保存...',
-        statusProfileSaveFailed: '保存失败，请检查数据库。',
-        statusProfileSaved: '保存成功，首页地区已同步。',
-        statusLoadingHome: '正在读取国家信息和天气...',
-        statusFallbackData: '正在显示备用数据，请检查网络或城市名称。',
-        statusUpdated: '已更新',
-        statusHomeFailed: '首页 API 读取失败，请确认后端正在运行。',
-        statusRetryHome: '首页读取失败，可以修改国家和城市后重新查询。',
-        clothing: '穿衣建议',
-        reminder: '生活提醒',
-        loading: '读取中',
-        generatingTips: '正在生成生活建议...',
-        readFailed: '读取失败'
-    },
-    ja: {
-        menuHome: 'ホーム',
-        menuNav: 'クイックアクセス',
-        menuMe: 'プロフィール',
-        campusUser: 'Campus Flow ユーザー',
-        dateSubtitle: '学び続け、成長し続ける。',
-        languageLabel: '言語',
-        homeHeroTitle: '国と都市を入力して、今日の生活ヒントを表示',
-        countryLabel: '国',
-        cityLabel: '都市',
-        searchBtn: '検索',
-        saveLocationBtn: 'プロフィールに保存',
-        currentWeather: '現在の天気',
-        changeLocation: '地域を変更',
-        windSpeed: '風速',
-        trend: '傾向',
-        countryInfo: '国の情報',
-        capital: '首都',
-        region: '地域',
-        population: '人口',
-        languages: '言語',
-        currency: '通貨',
-        quickTitle: '便利なウェブリンク',
-        profileTitle: '履歴書プロフィール',
-        nameLabel: '名前',
-        studentIdLabel: '学生番号',
-        emailLabel: 'メール',
-        phoneLabel: '電話',
-        titleLabel: 'タイトル',
-        summaryLabel: '自己紹介',
-        editBtn: '編集',
-        saveBtn: '保存',
-        exportPdf: 'PDF 出力',
-        shortcutOpen: 'リンクを開く',
-        statusHomeIndependent: 'ホーム画面はプロフィールを開かなくても検索できます。',
-        statusSavingLocation: '地域をプロフィールに保存しています...',
-        statusLocationSaveFailed: '地域を保存できませんでした。データベースを確認してください。',
-        statusLocationSaved: '地域をプロフィールに保存し、ホーム画面も更新しました。',
-        statusSaveLocationError: '保存に失敗しました。バックエンドとデータベースを確認してください。',
-        statusProfileLoadFailed: 'プロフィールの読み込みに失敗しましたが、ホーム検索は利用できます。',
-        statusEditing: 'プロフィールを編集できます。',
-        statusSaving: '保存中...',
-        statusProfileSaveFailed: '保存に失敗しました。データベースを確認してください。',
-        statusProfileSaved: '保存しました。ホームの地域も同期しました。',
-        statusLoadingHome: '国情報と天気を読み込んでいます...',
-        statusFallbackData: '代替データを表示しています。ネットワークまたは都市名を確認してください。',
-        statusUpdated: '更新済み',
-        statusHomeFailed: 'ホーム API の読み込みに失敗しました。バックエンドを確認してください。',
-        statusRetryHome: 'ホームの読み込みに失敗しました。国と都市を変更して再検索できます。',
-        clothing: '服装',
-        reminder: 'リマインダー',
-        loading: '読み込み中',
-        generatingTips: '生活ヒントを生成しています...',
-        readFailed: '読み込み失敗'
-    }
-};
-
-const pageTitleKeys = {
-    home: 'menuHome',
-    nav: 'menuNav',
-    me: 'menuMe'
+const pageMeta = {
+    home: { number: '01 / 03', labelKey: 'navHome', contextKey: 'folioHome' },
+    me: { number: '02 / 03', labelKey: 'navMe', contextKey: 'folioPortfolio' },
+    account: { number: '03 / 03', labelKey: 'account', contextKey: 'folioAccount' }
 };
 
 const defaultLocation = { country: 'Japan', city: 'Kyoto' };
 const locationStorageKey = 'campusFlowLocation';
 const languageStorageKey = 'campusFlowLanguage';
-
-const form = document.getElementById('profileForm');
-const homeLocationForm = document.getElementById('homeLocationForm');
-const homeCountryInput = document.getElementById('homeCountryInput');
-const homeCityInput = document.getElementById('homeCityInput');
-const saveBtn = document.getElementById('saveBtn');
-const saveStatus = document.getElementById('saveStatus');
-const homeStatus = document.getElementById('homeStatus');
-const languageSelect = document.getElementById('languageSelect');
-const oauthStatusDot = document.getElementById('oauthStatusDot');
-const oauthStatusTitle = document.getElementById('oauthStatusTitle');
-const oauthStatusDetail = document.getElementById('oauthStatusDetail');
-const oauthProviderBadge = document.getElementById('oauthProviderBadge');
-const oauthModal = document.getElementById('oauthModal');
-const sideAvatar = document.getElementById('sideAvatar');
-const sideName = document.getElementById('sideName');
-const sideSubtitle = document.getElementById('sideSubtitle');
 let currentProfile = null;
-let currentLanguage = localStorage.getItem(languageStorageKey) || 'en';
-
-const seasonAssets = {
-    spring: 'assets/season-spring-optimized.jpg',
-    summer: 'assets/season-summer-optimized.jpg',
-    autumn: 'assets/season-autumn-optimized.jpg',
-    winter: 'assets/season-winter-optimized.jpg'
-};
+let currentHomeData = null;
+let currentOAuthUser = null;
+let currentJwtUser = null;
+let currentPortfolio = [];
+let currentPortfolioOwnerName = '';
+let csrfToken = '';
+let profileBeforeEdit = null;
+const storedLanguage = localStorage.getItem(languageStorageKey);
+let currentLanguage = ['en', 'zh'].includes(storedLanguage) ? storedLanguage : 'en';
 
 const effects = window.CampusFlowEffects || {
     runEntrance() {},
@@ -214,126 +30,580 @@ const effects = window.CampusFlowEffects || {
     bindShortcutHover() {}
 };
 
-const shortcuts = [
-    ['Google', 'https://www.google.com'],
-    ['YouTube', 'https://www.youtube.com'],
-    ['GitHub', 'https://github.com'],
-    ['Gmail', 'https://mail.google.com'],
-    ['Google Translate', 'https://translate.google.com'],
-    ['DeepL', 'https://www.deepl.com/translator'],
-    ['Notion', 'https://www.notion.so'],
-    ['Bilibili', 'https://www.bilibili.com'],
-    ['Zhihu', 'https://www.zhihu.com'],
-    ['Xiaohongshu', 'https://www.xiaohongshu.com'],
-    ['KCGI', 'https://www.kcg.edu/'],
-    ['Google Maps', 'https://maps.google.com']
-];
+const translations = {
+    en: {
+        navHome: 'Today', navMe: 'Portfolio',
+        languageLabel: 'Language', localDate: 'LOCAL DATE', account: 'Account',
+        folioHome: 'Kyoto · live conditions', folioPortfolio: 'Selected work · public view', folioAccount: 'Guest · browse freely',
+        accountEyebrow: 'ACCOUNT / SIGN IN', accountTitle: 'Welcome back.',
+        accountIntro: 'Sign in to edit your profile and save your usual place. You can keep browsing as a guest.',
+        todayChapter: 'TODAY / KYOTO', todayHeadline: 'A quiet day in', headlineSpacer: ' ', headlinePunctuation: '.', todayLead: 'Weather first. Everything else can wait.',
+        peopleLabel: 'people', todayPhotoMain: 'red lines / Kyoto, 2026', todayPhotoSecond: 'after the rain', todayPhotoThird: 'wind from the water',
+        portfolioPublicView: 'PORTFOLIO / PUBLIC VIEW', portfolioIndex: 'ABOUT / WORKS',
+        portraitMainCaption: 'spring beside the water', portraitSmallCaption: 'one leaf / late season',
+        portfolioChapter: 'PORTFOLIO / SELECTED WORK', selectedWork: 'SELECTED WORK',
+        openSignIn: 'Sign in / Create account', manageAccount: 'Manage account', close: 'Close',
+        ownerEditMode: 'OWNER EDIT MODE', editSheetTitle: 'Edit your page.', addWork: 'ADD A WORK',
+        addWorkHelp: 'Photography, drawing, design, or project', workTypeLabel: 'Type', descriptionLabel: 'Description',
+        imageUrlLabel: 'Image URL', addToPortfolio: '+ Add to portfolio', showPassword: 'SHOW', hidePassword: 'HIDE',
+        statusLabel: 'Status', accountImageCaption: 'KYOTO / EVENING',
+        finding: 'Finding\u2026', updatedNow: 'updated just now', limitedUpdate: 'limited update',
+        checkingSignIn: 'Checking sign-in…', checkingSignInDetail: 'This only takes a moment.', checking: 'Checking',
+        githubSigninNote: 'Use your GitHub identity and public profile.', googleSigninNote: 'Use your Google account and optional calendar.',
+        browseMode: 'Browse mode', signedInStatus: 'Signed in', localAccount: 'Local account',
+        roleLabel: 'Role', accountSummary: 'Account summary', visibilityLabel: 'Visibility',
+        localAccountTitle: 'Username and password', localAccountCopy: 'Create an account or sign in to edit your own page.',
+        authReady: 'Use at least 12 characters for a new password.', continueGuest: 'Continue as guest',
+        adminTitle: 'User management', adminCopy: 'Administrator accounts can review and disable accounts.',
+        homeEyebrow: 'International Student Dashboard', homeIntro: 'A personal campus dashboard for international students: check local conditions, keep your profile current, and export your resume.', loadingLocation: 'Loading profile location...',
+        countryLabel: 'Country', cityLabel: 'City', searchBtn: 'Search', saveToProfile: 'Save to Profile',
+        locationHelp: 'Search is temporary. Save to Profile updates your default campus location.', signInToSaveLocation: 'Sign in to save location',
+        homeInitialStatus: "Choose a location to see today's conditions.",
+        currentWeather: 'Current Weather', cityMetric: 'City', windMetric: 'Wind', trendMetric: 'Trend',
+        countryInfo: 'Country', nameMetric: 'Name', capitalMetric: 'Capital', regionMetric: 'Region',
+        populationMetric: 'Population', languagesMetric: 'Languages', currenciesMetric: 'Currencies',
+        dailyTip: 'Daily Tip', clothing: 'Clothing', reminder: 'Reminder',
+        quickEyebrow: 'Quick Access', quickTitle: 'Project Entrances',
+        quickSubtitle: 'Local APIs, OAuth targets, and classroom evidence links are arranged by project workflow.',
+        projectApiLabel: 'Project API Matrix', studyLinksEyebrow: 'Daily Study Links',
+        studyLinksCopy: 'Research, translation and note-taking shortcuts stay visible without competing with the main content.',
+        oauthEyebrow: 'Sign in', oauthTitle: 'Your Account', oauthNotConnected: 'Not signed in',
+        oauthChoose: 'Choose an account to continue. You can still browse as a guest.', notLoggedIn: 'Guest',
+        noOAuthUser: 'Guest mode', oauthUserMeta: 'Sign in to edit your profile and save your usual place.',
+        loginGithub: 'Login with GitHub', loginGoogle: 'Login with Google', logout: 'Logout',
+        refreshStatus: 'Refresh Status', oauthResultInitial: 'OAuth API result will be shown here.',
+        jwtEyebrow: 'JWT Role Test', jwtDefault: 'Default: student / pass', usernameLabel: 'Username',
+        passwordLabel: 'Password', userTypeLabel: 'User Type', login: 'Login', register: 'Register',
+        clearToken: 'Clear Token', verifyToken: 'Verify Token', studentArea: 'Student Area',
+        teacherArea: 'Teacher Area', adminArea: 'Admin Area', noJwtToken: 'No JWT token loaded.',
+        jwtResultInitial: 'JWT result will be shown here.',
+        profileEyebrow: 'Personal Workspace', profileTitle: 'My Profile', profileSubtitle: 'Keep your student profile current and export a clean resume when you need it.', nameLabel: 'Name',
+        studentIdLabel: 'Student ID', emailLabel: 'Email', phoneLabel: 'Phone', titleLabel: 'Title',
+        summaryLabel: 'Summary', edit: 'Edit', save: 'Save', cancel: 'Cancel', exportPrint: 'Export PDF / Print Resume',
+        ownerModeLabel: 'Owner Editing Mode', publicResumeLabel: 'Public Resume Preview', profileInitialStatus: 'Public preview hides private fields.', profileVisitorNote: 'Owner editing is locked. Sign in to edit private details.', profileOwnerNote: 'Owner editing mode is active. Private details are visible only to you.', signInToEdit: 'Sign in to edit your profile.', education: 'Education', skills: 'Skills',
+        projects: 'Projects', languages: 'Languages', aboutMe: 'About Me',
+        thirdPartyLogin: 'Account & Connected Service', modalTitle: 'Your Account',
+        modalCopy: 'Sign in to edit your profile and connect one useful campus service.',
+        signGoogle: 'Continue with Google', signGithub: 'Continue with GitHub', googlePurpose: 'Edit your profile and view upcoming Calendar events.', githubPurpose: 'Edit your profile and view your public repositories.',
+        calendarAction: 'View upcoming Calendar events', githubAction: 'View GitHub profile and repositories', connectedWith: 'Connected with', noUpcomingEvents: 'No upcoming events were returned.', noRepositories: 'No public repositories were returned.', serviceLoadFailed: 'Connected service could not be loaded.',
+        loadingHome: 'Loading country information and weather...', updated: 'Updated',
+        fallbackHome: 'Using fallback data, please check city name or network.',
+        homeApiFailed: 'Home API failed. Please confirm that the backend is running.',
+        savingLocation: 'Saving location to profile...', locationSaved: 'Location saved to profile. Home page refreshed.',
+        editingProfile: 'You can edit the profile now.', saving: 'Saving...',
+        profileSaved: 'Saved successfully. Home location has been synchronized.',
+        noEducation: 'No education records returned.', noSkills: 'No skills returned.',
+        noProjects: 'No projects returned.', noLanguages: 'No languages returned.',
+        databaseStatus: 'Database status', databaseFallback: 'fallback profile data', databaseAvailable: 'available',
+        oauthRedirecting: 'Redirecting to', oauthWaiting: 'Waiting for authorization',
+        oauthLoggedIn: 'Signed in with', oauthAuthorizedAs: 'Account',
+        oauthStatusFailed: 'Could not check sign-in', oauthApiLoading: 'Loading',
+        oauthApiSucceeded: 'OAuth API verification succeeded', oauthApiReturned: 'returned a valid response.',
+        oauthApiFailed: 'OAuth API verification failed', oauthProviderRequired: 'Please login with the correct provider first.',
+        registered: 'Registered', tokenCleared: 'JWT token cleared.', authSucceeded: 'succeeded.',
+        storedTokenVerified: 'Stored token verified', storedTokenInvalid: 'Stored token invalid',
+        oauthLoginFailed: 'Sign-in failed', oauthProviderIncomplete: 'The sign-in provider did not complete authorization.',
+        oauthLoggedOut: 'Signed out', oauthLoggedOutDetail: 'You can continue browsing as a guest.',
+        shortcutLocalHomeTitle: 'Local Home API', shortcutLocalHomeDesc: 'Live country, city, weather and life-tip response used by the first screen.',
+        shortcutLocalProfileTitle: 'Local Profile API', shortcutLocalProfileDesc: 'Profile data source for Me, resume preview and location persistence.',
+        shortcutApiDocsTitle: 'API Docs', shortcutApiDocsDesc: 'Endpoint documentation for quick verification.',
+        shortcutOpenApiTitle: 'OpenAPI', shortcutOpenApiDesc: 'OpenAPI YAML for checking request and response contracts.',
+        shortcutKcgiTitle: 'KCGI', shortcutKcgiDesc: 'School context for the Campus Flow profile and report screenshots.',
+        shortcutGithubTitle: 'GitHub', shortcutGithubDesc: 'OAuth provider and repository API target.',
+        shortcutCalendarTitle: 'Google Calendar', shortcutCalendarDesc: 'Google OAuth provider and Calendar API target.',
+        shortcutMeteoTitle: 'Open-Meteo', shortcutMeteoDesc: 'Geocoding and weather source used by Home.',
+        shortcutCountriesTitle: 'REST Countries', shortcutCountriesDesc: 'Country information source with local fallback support.',
+        shortcutCore: 'Core API', shortcutDocs: 'Docs', shortcutProvider: 'Provider', shortcutData: 'Data Source', open: 'Open'
+    },
+    zh: {
+        navHome: '\u4eca\u65e5', navMe: '\u4f5c\u54c1\u6863\u6848',
+        languageLabel: '\u8bed\u8a00', localDate: '\u5f53\u5730\u65e5\u671f', account: '\u8d26\u6237',
+        folioHome: '\u4eac\u90fd \u00b7 \u5b9e\u65f6\u72b6\u51b5', folioPortfolio: '\u7cbe\u9009\u4f5c\u54c1 \u00b7 \u516c\u5f00\u9875', folioAccount: '\u8bbf\u5ba2 \u00b7 \u81ea\u7531\u6d4f\u89c8',
+        accountEyebrow: '\u8d26\u6237 / \u767b\u5f55', accountTitle: '\u6b22\u8fce\u56de\u6765\u3002',
+        accountIntro: '\u767b\u5f55\u540e\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\u5e76\u4fdd\u5b58\u5e38\u7528\u5730\u70b9\uff1b\u672a\u767b\u5f55\u4e5f\u53ef\u4ee5\u7ee7\u7eed\u6d4f\u89c8\u3002',
+        todayChapter: '\u4eca\u65e5 / \u4eac\u90fd', todayHeadline: '\u5b89\u9759\u7684\u4e00\u5929\uff0c', headlineSpacer: '', headlinePunctuation: '\u3002', todayLead: '\u5148\u770b\u5929\u6c14\uff0c\u5176\u4ed6\u4e8b\u7a0d\u540e\u518d\u8bf4\u3002',
+        peopleLabel: '\u4eba', todayPhotoMain: '\u7ea2\u8272\u7ebf\u6761 / \u4eac\u90fd\uff0c2026', todayPhotoSecond: '\u96e8\u540e', todayPhotoThird: '\u6c34\u9762\u6765\u7684\u98ce',
+        portfolioPublicView: '\u4f5c\u54c1\u96c6 / \u516c\u5f00\u9875', portfolioIndex: '\u5173\u4e8e / \u4f5c\u54c1',
+        portraitMainCaption: '\u6cb3\u8fb9\u7684\u6625\u5929', portraitSmallCaption: '\u5b63\u8282\u672b\u7684\u4e00\u7247\u53f6',
+        portfolioChapter: '\u4f5c\u54c1\u96c6 / \u7cbe\u9009', selectedWork: '\u7cbe\u9009\u4f5c\u54c1',
+        openSignIn: '\u767b\u5f55 / \u6ce8\u518c', manageAccount: '\u7ba1\u7406\u8d26\u6237', close: '\u5173\u95ed',
+        ownerEditMode: '\u9875\u9762\u7f16\u8f91', editSheetTitle: '\u7f16\u8f91\u4f60\u7684\u9875\u9762\u3002', addWork: '\u6dfb\u52a0\u4f5c\u54c1',
+        addWorkHelp: '\u6444\u5f71\u3001\u7ed8\u753b\u3001\u8bbe\u8ba1\u6216\u9879\u76ee', workTypeLabel: '\u7c7b\u578b', descriptionLabel: '\u63cf\u8ff0',
+        imageUrlLabel: '\u56fe\u7247\u5730\u5740', addToPortfolio: '+ \u52a0\u5165\u4f5c\u54c1\u96c6', showPassword: '\u663e\u793a', hidePassword: '\u9690\u85cf',
+        statusLabel: '\u72b6\u6001', accountImageCaption: '\u4eac\u90fd / \u508d\u665a',
+        finding: '\u67e5\u8be2\u4e2d\u2026', updatedNow: '\u521a\u521a\u66f4\u65b0', limitedUpdate: '\u6709\u9650\u66f4\u65b0',
+        checkingSignIn: '\u6b63\u5728\u68c0\u67e5\u767b\u5f55\u72b6\u6001\u2026', checkingSignInDetail: '\u901a\u5e38\u53ea\u9700\u7247\u523b\u3002', checking: '\u68c0\u67e5\u4e2d',
+        githubSigninNote: '\u4f7f\u7528 GitHub \u8eab\u4efd\u548c\u516c\u5f00\u8d44\u6599\u3002', googleSigninNote: '\u4f7f\u7528 Google \u8d26\u6237\uff0c\u53ef\u9009\u8fde\u63a5\u65e5\u5386\u3002',
+        browseMode: '\u6d4f\u89c8\u6a21\u5f0f', signedInStatus: '\u5df2\u767b\u5f55', localAccount: '\u672c\u5730\u8d26\u53f7',
+        roleLabel: '\u89d2\u8272', accountSummary: '\u8d26\u6237\u6982\u89c8', visibilityLabel: '\u53ef\u89c1\u8303\u56f4',
+        localAccountTitle: '\u7528\u6237\u540d\u548c\u5bc6\u7801', localAccountCopy: '\u6ce8\u518c\u6216\u767b\u5f55\u540e\u5373\u53ef\u7f16\u8f91\u81ea\u5df1\u7684\u9875\u9762\u3002',
+        authReady: '\u65b0\u5bc6\u7801\u81f3\u5c11\u4f7f\u7528 12 \u4e2a\u5b57\u7b26\u3002', continueGuest: '\u4ee5\u8bbf\u5ba2\u8eab\u4efd\u7ee7\u7eed',
+        adminTitle: '\u7528\u6237\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u5458\u53ef\u4ee5\u67e5\u770b\u548c\u505c\u7528\u8d26\u6237\u3002',
+        homeEyebrow: '\u7559\u5b66\u751f\u4e2a\u4eba\u6821\u56ed\u4eea\u8868\u677f', homeIntro: '\u9762\u5411\u7559\u5b66\u751f\u7684\u4e2a\u4eba\u6821\u56ed\u4eea\u8868\u677f\uff1a\u67e5\u770b\u6240\u5728\u5730\u4eca\u65e5\u60c5\u51b5\uff0c\u7ef4\u62a4\u4e2a\u4eba\u8d44\u6599\uff0c\u5e76\u5bfc\u51fa\u7b80\u5386\u3002', loadingLocation: '\u6b63\u5728\u8bfb\u53d6\u4e2a\u4eba\u4f4d\u7f6e...',
+        countryLabel: '\u56fd\u5bb6', cityLabel: '\u57ce\u5e02', searchBtn: '\u67e5\u8be2', saveToProfile: '\u4fdd\u5b58\u5230\u8d44\u6599',
+        locationHelp: '\u67e5\u8be2\u4ec5\u7528\u4e8e\u4e34\u65f6\u67e5\u770b\uff1b\u201c\u4fdd\u5b58\u5230\u8d44\u6599\u201d\u4f1a\u66f4\u65b0\u4f60\u7684\u9ed8\u8ba4\u6821\u56ed\u5730\u70b9\u3002', signInToSaveLocation: '\u767b\u5f55\u540e\u4fdd\u5b58\u5730\u70b9',
+        homeInitialStatus: '\u9009\u62e9\u5730\u70b9\u540e\u67e5\u770b\u4eca\u65e5\u4fe1\u606f\u3002',
+        currentWeather: '\u5f53\u524d\u5929\u6c14', cityMetric: '\u57ce\u5e02', windMetric: '\u98ce\u901f', trendMetric: '\u8d8b\u52bf',
+        countryInfo: '\u56fd\u5bb6\u4fe1\u606f', nameMetric: '\u540d\u79f0', capitalMetric: '\u9996\u90fd', regionMetric: '\u5730\u533a',
+        populationMetric: '\u4eba\u53e3', languagesMetric: '\u8bed\u8a00', currenciesMetric: '\u8d27\u5e01',
+        dailyTip: '\u4eca\u65e5\u63d0\u793a', clothing: '\u7a7f\u8863\u5efa\u8bae', reminder: '\u63d0\u9192',
+        quickEyebrow: '\u5feb\u901f\u5165\u53e3', quickTitle: '\u9879\u76ee\u5165\u53e3',
+        quickSubtitle: '\u672c\u5730 API\u3001OAuth \u76ee\u6807\u548c\u8bfe\u5802\u9a8c\u6536\u94fe\u63a5\u6309\u7167\u9879\u76ee\u5de5\u4f5c\u6d41\u6392\u5217\u3002',
+        projectApiLabel: '\u9879\u76ee API \u77e9\u9635', studyLinksEyebrow: '\u65e5\u5e38\u5b66\u4e60\u5165\u53e3',
+        studyLinksCopy: '\u8bfe\u5802\u3001\u68c0\u7d22\u3001\u7ffb\u8bd1\u548c\u7b14\u8bb0\u94fe\u63a5\u4fdd\u6301\u53ef\u89c1\uff0c\u4f46\u4e0d\u62a2\u5360\u9879\u76ee API \u5361\u7247\u7684\u4e3b\u89c6\u89c9\u3002',
+        oauthEyebrow: '\u767b\u5f55', oauthTitle: '\u6211\u7684\u8d26\u6237', oauthNotConnected: '\u5c1a\u672a\u767b\u5f55',
+        oauthChoose: '\u9009\u62e9\u4e00\u4e2a\u8d26\u6237\u7ee7\u7eed\uff1b\u672a\u767b\u5f55\u4e5f\u53ef\u4ee5\u6d4f\u89c8\u3002', notLoggedIn: '\u8bbf\u5ba2',
+        noOAuthUser: '\u8bbf\u5ba2\u6a21\u5f0f', oauthUserMeta: '\u767b\u5f55\u540e\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\u5e76\u4fdd\u5b58\u5e38\u7528\u5730\u70b9\u3002',
+        loginGithub: '\u4f7f\u7528 GitHub \u767b\u5f55', loginGoogle: '\u4f7f\u7528 Google \u767b\u5f55', logout: '\u9000\u51fa', refreshStatus: '\u5237\u65b0\u72b6\u6001',
+        oauthResultInitial: 'OAuth API \u7ed3\u679c\u4f1a\u663e\u793a\u5728\u8fd9\u91cc\u3002', jwtEyebrow: 'JWT \u89d2\u8272\u6d4b\u8bd5', jwtDefault: '\u9ed8\u8ba4\u8d26\u53f7\uff1astudent / pass',
+        usernameLabel: '\u7528\u6237\u540d', passwordLabel: '\u5bc6\u7801', userTypeLabel: '\u7528\u6237\u7c7b\u578b', login: '\u767b\u5f55', register: '\u6ce8\u518c', clearToken: '\u6e05\u9664 Token',
+        verifyToken: '\u9a8c\u8bc1 Token', studentArea: '\u5b66\u751f\u533a\u57df', teacherArea: '\u6559\u5e08\u533a\u57df', adminArea: '\u7ba1\u7406\u5458\u533a\u57df',
+        noJwtToken: '\u5f53\u524d\u6ca1\u6709 JWT Token\u3002', jwtResultInitial: 'JWT \u7ed3\u679c\u4f1a\u663e\u793a\u5728\u8fd9\u91cc\u3002',
+        profileEyebrow: '\u4e2a\u4eba\u5de5\u4f5c\u533a', profileTitle: '\u6211\u7684\u8d44\u6599', profileSubtitle: '\u7ef4\u62a4\u5b66\u751f\u8d44\u6599\uff0c\u5e76\u5728\u9700\u8981\u65f6\u5bfc\u51fa\u6574\u6d01\u7684\u7b80\u5386\u3002', nameLabel: '\u59d3\u540d', studentIdLabel: '\u5b66\u53f7', emailLabel: '\u90ae\u7bb1', phoneLabel: '\u7535\u8bdd', titleLabel: '\u6807\u9898', summaryLabel: '\u7b80\u4ecb',
+        edit: '\u7f16\u8f91', save: '\u4fdd\u5b58', cancel: '\u53d6\u6d88', exportPrint: '\u5bfc\u51fa PDF / \u6253\u5370\u7b80\u5386', ownerModeLabel: '\u6240\u6709\u8005\u7f16\u8f91\u6a21\u5f0f', publicResumeLabel: '\u516c\u5f00\u7b80\u5386\u9884\u89c8', profileInitialStatus: '\u516c\u5f00\u9884\u89c8\u4e0d\u663e\u793a\u79c1\u5bc6\u5b57\u6bb5\u3002', profileVisitorNote: '\u6240\u6709\u8005\u7f16\u8f91\u5f53\u524d\u5df2\u9501\u5b9a\u3002\u767b\u5f55\u540e\u53ef\u4ee5\u4fee\u6539\u79c1\u5bc6\u8d44\u6599\u3002', profileOwnerNote: '\u6240\u6709\u8005\u7f16\u8f91\u6a21\u5f0f\u5df2\u542f\u7528\uff0c\u79c1\u5bc6\u8d44\u6599\u4ec5\u5bf9\u4f60\u53ef\u89c1\u3002', signInToEdit: '\u767b\u5f55\u540e\u624d\u80fd\u7f16\u8f91\u8d44\u6599\u3002',
+        education: '\u6559\u80b2\u7ecf\u5386', skills: '\u6280\u80fd', projects: '\u9879\u76ee', languages: '\u8bed\u8a00', aboutMe: '\u5173\u4e8e\u6211',
+        thirdPartyLogin: '\u8d26\u6237\u4e0e\u8fde\u63a5\u670d\u52a1', modalTitle: '\u6211\u7684\u8d26\u6237', modalCopy: '\u767b\u5f55\u540e\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\uff0c\u5e76\u8fde\u63a5\u4e00\u9879\u6709\u7528\u7684\u6821\u56ed\u670d\u52a1\u3002',
+        signGoogle: '\u4f7f\u7528 Google \u7ee7\u7eed', signGithub: '\u4f7f\u7528 GitHub \u7ee7\u7eed', googlePurpose: '\u7f16\u8f91\u8d44\u6599\u5e76\u67e5\u770b\u8fd1\u671f Calendar \u65e5\u7a0b\u3002', githubPurpose: '\u7f16\u8f91\u8d44\u6599\u5e76\u67e5\u770b\u516c\u5f00\u4ed3\u5e93\u3002', calendarAction: '\u67e5\u770b\u8fd1\u671f Calendar \u65e5\u7a0b', githubAction: '\u67e5\u770b GitHub \u8d44\u6599\u548c\u4ed3\u5e93', connectedWith: '\u5df2\u8fde\u63a5', noUpcomingEvents: '\u6ca1\u6709\u8fd4\u56de\u8fd1\u671f\u65e5\u7a0b\u3002', noRepositories: '\u6ca1\u6709\u8fd4\u56de\u516c\u5f00\u4ed3\u5e93\u3002', serviceLoadFailed: '\u65e0\u6cd5\u8bfb\u53d6\u5df2\u8fde\u63a5\u7684\u670d\u52a1\u3002', loadingHome: '\u6b63\u5728\u8bfb\u53d6\u56fd\u5bb6\u4fe1\u606f\u548c\u5929\u6c14...', updated: '\u5df2\u66f4\u65b0',
+        fallbackHome: '\u6b63\u5728\u4f7f\u7528\u5907\u7528\u6570\u636e\uff0c\u8bf7\u68c0\u67e5\u57ce\u5e02\u540d\u6216\u7f51\u7edc\u3002', homeApiFailed: 'Home API \u8bfb\u53d6\u5931\u8d25\uff0c\u8bf7\u786e\u8ba4\u540e\u7aef\u6b63\u5728\u8fd0\u884c\u3002',
+        savingLocation: '\u6b63\u5728\u4fdd\u5b58\u4f4d\u7f6e\u5230\u4e2a\u4eba\u8d44\u6599...', locationSaved: '\u4f4d\u7f6e\u5df2\u4fdd\u5b58\u5230\u8d44\u6599\uff0c\u9996\u9875\u5df2\u5237\u65b0\u3002',
+        editingProfile: '\u73b0\u5728\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\u3002', saving: '\u6b63\u5728\u4fdd\u5b58...', profileSaved: '\u4fdd\u5b58\u6210\u529f\uff0c\u9996\u9875\u4f4d\u7f6e\u5df2\u540c\u6b65\u3002',
+        noEducation: '\u6ca1\u6709\u8fd4\u56de\u6559\u80b2\u8bb0\u5f55\u3002', noSkills: '\u6ca1\u6709\u8fd4\u56de\u6280\u80fd\u6570\u636e\u3002', noProjects: '\u6ca1\u6709\u8fd4\u56de\u9879\u76ee\u6570\u636e\u3002', noLanguages: '\u6ca1\u6709\u8fd4\u56de\u8bed\u8a00\u6570\u636e\u3002',
+        databaseStatus: '\u6570\u636e\u5e93\u72b6\u6001', databaseFallback: '\u5907\u7528\u8d44\u6599\u6570\u636e', databaseAvailable: '\u53ef\u7528',
+        oauthRedirecting: '\u6b63\u5728\u8df3\u8f6c\u5230', oauthWaiting: '\u7b49\u5f85\u767b\u5f55', oauthLoggedIn: '\u5df2\u901a\u8fc7', oauthAuthorizedAs: '\u5f53\u524d\u8d26\u6237', oauthStatusFailed: '\u65e0\u6cd5\u68c0\u67e5\u767b\u5f55\u72b6\u6001',
+        oauthApiLoading: '\u6b63\u5728\u8bfb\u53d6', oauthApiSucceeded: 'OAuth API \u9a8c\u8bc1\u6210\u529f', oauthApiReturned: '\u8fd4\u56de\u4e86\u6709\u6548\u7ed3\u679c\u3002', oauthApiFailed: 'OAuth API \u9a8c\u8bc1\u5931\u8d25', oauthProviderRequired: '\u8bf7\u5148\u4f7f\u7528\u6b63\u786e\u7684 provider \u767b\u5f55\u3002',
+        registered: '\u5df2\u6ce8\u518c', tokenCleared: 'JWT Token \u5df2\u6e05\u9664\u3002', authSucceeded: '\u8c03\u7528\u6210\u529f\u3002', storedTokenVerified: '\u5df2\u9a8c\u8bc1\u672c\u5730 Token', storedTokenInvalid: '\u672c\u5730 Token \u65e0\u6548',
+        oauthLoginFailed: '\u767b\u5f55\u5931\u8d25', oauthProviderIncomplete: '\u7b2c\u4e09\u65b9\u767b\u5f55\u672a\u5b8c\u6210\u3002', oauthLoggedOut: '\u5df2\u9000\u51fa\u767b\u5f55', oauthLoggedOutDetail: '\u73b0\u5728\u53ef\u4ee5\u4ee5\u8bbf\u5ba2\u8eab\u4efd\u7ee7\u7eed\u6d4f\u89c8\u3002',
+        shortcutLocalHomeTitle: '\u672c\u5730 Home API', shortcutLocalHomeDesc: '\u9996\u5c4f\u4f7f\u7528\u7684\u56fd\u5bb6\u3001\u57ce\u5e02\u3001\u5929\u6c14\u548c\u751f\u6d3b\u5efa\u8bae\u63a5\u53e3\u3002', shortcutLocalProfileTitle: '\u672c\u5730 Profile API', shortcutLocalProfileDesc: 'Me \u9875\u9762\u3001\u7b80\u5386\u9884\u89c8\u548c\u4f4d\u7f6e\u4fdd\u5b58\u7684\u6570\u636e\u6765\u6e90\u3002',
+        shortcutApiDocsTitle: 'API \u6587\u6863', shortcutApiDocsDesc: '\u9002\u5408\u8bfe\u5802\u9a8c\u6536\u65f6\u5feb\u901f\u68c0\u67e5\u63a5\u53e3\u3002', shortcutOpenApiTitle: 'OpenAPI', shortcutOpenApiDesc: '\u7528\u4e8e\u786e\u8ba4\u8bf7\u6c42\u548c\u54cd\u5e94\u7ed3\u6784\u7684 YAML \u6587\u4ef6\u3002',
+        shortcutKcgiTitle: 'KCGI', shortcutKcgiDesc: 'Campus Flow \u4e2a\u4eba\u8d44\u6599\u548c\u62a5\u544a\u622a\u56fe\u7684\u5b66\u6821\u80cc\u666f\u3002', shortcutGithubTitle: 'GitHub', shortcutGithubDesc: 'OAuth provider \u548c\u4ed3\u5e93 API \u6d4b\u8bd5\u76ee\u6807\u3002', shortcutCalendarTitle: 'Google Calendar', shortcutCalendarDesc: 'Google OAuth \u548c Calendar API \u6d4b\u8bd5\u76ee\u6807\u3002',
+        shortcutMeteoTitle: 'Open-Meteo', shortcutMeteoDesc: 'Home \u9875\u9762\u4f7f\u7528\u7684\u5730\u7406\u7f16\u7801\u548c\u5929\u6c14\u6570\u636e\u6765\u6e90\u3002', shortcutCountriesTitle: 'REST Countries', shortcutCountriesDesc: '\u56fd\u5bb6\u4fe1\u606f\u6765\u6e90\uff0c\u5e76\u914d\u5408\u672c\u5730 fallback\u3002', shortcutCore: '\u6838\u5fc3 API', shortcutDocs: '\u6587\u6863', shortcutProvider: '\u670d\u52a1\u5165\u53e3', shortcutData: '\u6570\u636e\u6765\u6e90', open: '\u6253\u5f00'
+    },
+    ja: {
+        navHome: '\u4eca\u65e5', navQuick: '\u30af\u30a4\u30c3\u30af', navOAuth: '\u8a8d\u8a3c', navMe: '\u4f5c\u54c1',
+        languageLabel: '\u8a00\u8a9e', account: '\u30a2\u30ab\u30a6\u30f3\u30c8',
+        accountEyebrow: '\u30a2\u30ab\u30a6\u30f3\u30c8 / \u30ed\u30b0\u30a4\u30f3', accountTitle: '\u304a\u304b\u3048\u308a\u306a\u3055\u3044\u3002',
+        accountIntro: '\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3068\u3044\u3064\u3082\u306e\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002\u30b2\u30b9\u30c8\u306e\u307e\u307e\u3067\u3082\u95b2\u89a7\u3067\u304d\u307e\u3059\u3002',
+        todayChapter: '\u4eca\u65e5 / \u4eac\u90fd', todayHeadline: '\u9759\u304b\u306a\u4e00\u65e5\u3001', todayLead: '\u307e\u305a\u5929\u6c17\u3002\u305d\u306e\u4ed6\u306f\u3042\u3068\u3067\u3002',
+        portfolioPublicView: '\u4f5c\u54c1\u96c6 / \u516c\u958b\u30da\u30fc\u30b8', portfolioIndex: '\u7d39\u4ecb / \u4f5c\u54c1',
+        portraitMainCaption: '\u6c34\u8fba\u306e\u6625', portraitSmallCaption: '\u5b63\u7bc0\u306e\u7d42\u308f\u308a\u306e\u4e00\u679a',
+        portfolioChapter: '\u4f5c\u54c1\u96c6 / \u30bb\u30ec\u30af\u30c8', selectedWork: '\u30bb\u30ec\u30af\u30c8\u4f5c\u54c1',
+        openSignIn: '\u30ed\u30b0\u30a4\u30f3 / \u767b\u9332', manageAccount: '\u30a2\u30ab\u30a6\u30f3\u30c8\u7ba1\u7406', close: '\u9589\u3058\u308b',
+        statusLabel: '\u72b6\u614b', accountImageCaption: '\u4eac\u90fd / \u5915\u66ae\u308c',
+        languageLabel: '\u8a00\u8a9e', account: '\u30a2\u30ab\u30a6\u30f3\u30c8',
+        accountEyebrow: '\u30a2\u30ab\u30a6\u30f3\u30c8 / \u30ed\u30b0\u30a4\u30f3', accountTitle: '\u304a\u304b\u3048\u308a\u306a\u3055\u3044\u3002',
+        accountIntro: '\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3068\u3088\u304f\u4f7f\u3046\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002\u30b2\u30b9\u30c8\u306e\u307e\u307e\u3067\u3082\u95b2\u89a7\u3067\u304d\u307e\u3059\u3002',
+        checkingSignIn: '\u30ed\u30b0\u30a4\u30f3\u72b6\u614b\u3092\u78ba\u8a8d\u4e2d\u2026', checkingSignInDetail: '\u3057\u3070\u3089\u304f\u304a\u5f85\u3061\u304f\u3060\u3055\u3044\u3002', checking: '\u78ba\u8a8d\u4e2d',
+        githubSigninNote: 'GitHub \u306e\u30a2\u30ab\u30a6\u30f3\u30c8\u3068\u516c\u958b\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u4f7f\u7528\u3057\u307e\u3059\u3002', googleSigninNote: 'Google \u30a2\u30ab\u30a6\u30f3\u30c8\u3068\u4efb\u610f\u306e\u30ab\u30ec\u30f3\u30c0\u30fc\u3092\u4f7f\u7528\u3057\u307e\u3059\u3002',
+        browseMode: '\u95b2\u89a7\u30e2\u30fc\u30c9', signedInStatus: '\u30ed\u30b0\u30a4\u30f3\u6e08\u307f', localAccount: '\u30ed\u30fc\u30ab\u30eb\u30a2\u30ab\u30a6\u30f3\u30c8',
+        roleLabel: '\u5f79\u5272', accountSummary: '\u30a2\u30ab\u30a6\u30f3\u30c8\u6982\u8981', visibilityLabel: '\u516c\u958b\u7bc4\u56f2',
+        localAccountTitle: '\u30e6\u30fc\u30b6\u30fc\u540d\u3068\u30d1\u30b9\u30ef\u30fc\u30c9', localAccountCopy: '\u767b\u9332\u307e\u305f\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u81ea\u5206\u306e\u30da\u30fc\u30b8\u3092\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002',
+        authReady: '\u65b0\u3057\u3044\u30d1\u30b9\u30ef\u30fc\u30c9\u306f 12 \u6587\u5b57\u4ee5\u4e0a\u3067\u3059\u3002', continueGuest: '\u30b2\u30b9\u30c8\u3068\u3057\u3066\u7d9a\u884c',
+        adminTitle: '\u30e6\u30fc\u30b6\u30fc\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u8005\u306f\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u78ba\u8a8d\u30fb\u505c\u6b62\u3067\u304d\u307e\u3059\u3002',
+        homeEyebrow: '\u7559\u5b66\u751f\u5411\u3051\u500b\u4eba\u30ad\u30e3\u30f3\u30d1\u30b9\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9', homeIntro: '\u7559\u5b66\u751f\u5411\u3051\u306e\u500b\u4eba\u30ad\u30e3\u30f3\u30d1\u30b9\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9\u3067\u3059\u3002\u73fe\u5730\u306e\u4eca\u65e5\u306e\u60c5\u5831\u3092\u78ba\u8a8d\u3057\u3001\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u66f4\u65b0\u3057\u3066\u3001\u5c65\u6b74\u66f8\u3092\u51fa\u529b\u3067\u304d\u307e\u3059\u3002', countryLabel: '\u56fd', cityLabel: '\u90fd\u5e02', searchBtn: '\u691c\u7d22', saveToProfile: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58', locationHelp: '\u691c\u7d22\u306f\u4e00\u6642\u7684\u306a\u8868\u793a\u3067\u3059\u3002\u300c\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58\u300d\u3067\u65e2\u5b9a\u306e\u30ad\u30e3\u30f3\u30d1\u30b9\u6240\u5728\u5730\u3092\u66f4\u65b0\u3057\u307e\u3059\u3002', signInToSaveLocation: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u6240\u5728\u5730\u3092\u4fdd\u5b58',
+        quickEyebrow: '\u30af\u30a4\u30c3\u30af\u30a2\u30af\u30bb\u30b9', quickTitle: '\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u5165\u53e3', projectApiLabel: '\u30d7\u30ed\u30b8\u30a7\u30af\u30c8 API', studyLinksEyebrow: '\u5b66\u7fd2\u30ea\u30f3\u30af', studyLinksCopy: '\u6388\u696d\u3001\u8abf\u67fb\u3001\u7ffb\u8a33\u3001\u30ce\u30fc\u30c8\u306e\u30ea\u30f3\u30af\u3067\u3059\u3002', oauthTitle: '\u8a8d\u8a3c\u30c6\u30b9\u30c8', profileTitle: '\u5c65\u6b74\u66f8\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb',
+        oauthNotConnected: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u3044\u307e\u305b\u3093', oauthChoose: '\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u9078\u3093\u3067\u7d9a\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u30b2\u30b9\u30c8\u306e\u307e\u307e\u3067\u3082\u95b2\u89a7\u3067\u304d\u307e\u3059\u3002', notLoggedIn: '\u30b2\u30b9\u30c8',
+        noOAuthUser: '\u30b2\u30b9\u30c8\u30e2\u30fc\u30c9', oauthUserMeta: '\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3068\u3088\u304f\u4f7f\u3046\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002',
+        oauthRedirecting: '\u79fb\u52d5\u4e2d', oauthWaiting: '\u30ed\u30b0\u30a4\u30f3\u5f85\u3061', oauthLoggedIn: '\u30ed\u30b0\u30a4\u30f3\u4e2d', oauthAuthorizedAs: '\u30a2\u30ab\u30a6\u30f3\u30c8', oauthStatusFailed: '\u30ed\u30b0\u30a4\u30f3\u72b6\u614b\u3092\u78ba\u8a8d\u3067\u304d\u307e\u305b\u3093',
+        oauthLoginFailed: '\u30ed\u30b0\u30a4\u30f3\u306b\u5931\u6557\u3057\u307e\u3057\u305f', oauthProviderIncomplete: '\u30ed\u30b0\u30a4\u30f3\u304c\u5b8c\u4e86\u3057\u307e\u305b\u3093\u3067\u3057\u305f\u3002', oauthLoggedOut: '\u30ed\u30b0\u30a2\u30a6\u30c8\u3057\u307e\u3057\u305f', oauthLoggedOutDetail: '\u30b2\u30b9\u30c8\u3068\u3057\u3066\u95b2\u89a7\u3092\u7d9a\u3051\u3089\u308c\u307e\u3059\u3002',
+        currentWeather: '\u73fe\u5728\u306e\u5929\u6c17', countryInfo: '\u56fd\u60c5\u5831', dailyTip: '\u4eca\u65e5\u306e\u30d2\u30f3\u30c8', profileEyebrow: '\u500b\u4eba\u30ef\u30fc\u30af\u30b9\u30da\u30fc\u30b9', profileTitle: '\u30de\u30a4\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb', profileSubtitle: '\u5b66\u751f\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u6700\u65b0\u306b\u4fdd\u3061\u3001\u5fc5\u8981\u306a\u3068\u304d\u306b\u5c65\u6b74\u66f8\u3092\u51fa\u529b\u3067\u304d\u307e\u3059\u3002', ownerModeLabel: '\u6240\u6709\u8005\u7de8\u96c6\u30e2\u30fc\u30c9', publicResumeLabel: '\u516c\u958b\u5c65\u6b74\u66f8\u30d7\u30ec\u30d3\u30e5\u30fc', profileVisitorNote: '\u6240\u6709\u8005\u7de8\u96c6\u306f\u30ed\u30c3\u30af\u3055\u308c\u3066\u3044\u307e\u3059\u3002\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u975e\u516c\u958b\u60c5\u5831\u3092\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002', profileOwnerNote: '\u6240\u6709\u8005\u7de8\u96c6\u30e2\u30fc\u30c9\u304c\u6709\u52b9\u3067\u3059\u3002\u975e\u516c\u958b\u60c5\u5831\u306f\u3042\u306a\u305f\u3060\u3051\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002', profileInitialStatus: '\u516c\u958b\u30d7\u30ec\u30d3\u30e5\u30fc\u3067\u306f\u975e\u516c\u9805\u76ee\u3092\u8868\u793a\u3057\u307e\u305b\u3093\u3002', edit: '\u7de8\u96c6', save: '\u4fdd\u5b58', cancel: '\u30ad\u30e3\u30f3\u30bb\u30eb', exportPrint: 'PDF \u51fa\u529b / \u5c65\u6b74\u66f8\u3092\u5370\u5237', thirdPartyLogin: '\u30a2\u30ab\u30a6\u30f3\u30c8\u3068\u9023\u643a\u30b5\u30fc\u30d3\u30b9', modalTitle: '\u30de\u30a4\u30a2\u30ab\u30a6\u30f3\u30c8', modalCopy: '\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u7de8\u96c6\u3057\u3001\u5f79\u7acb\u3064\u30ad\u30e3\u30f3\u30d1\u30b9\u30b5\u30fc\u30d3\u30b9\u3092\u4e00\u3064\u9023\u643a\u3067\u304d\u307e\u3059\u3002', signGoogle: 'Google \u3067\u7d9a\u884c', signGithub: 'GitHub \u3067\u7d9a\u884c', googlePurpose: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u7de8\u96c6\u3057\u3001Calendar \u306e\u4eca\u5f8c\u306e\u4e88\u5b9a\u3092\u78ba\u8a8d\u3057\u307e\u3059\u3002', githubPurpose: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u7de8\u96c6\u3057\u3001\u516c\u958b\u30ea\u30dd\u30b8\u30c8\u30ea\u3092\u78ba\u8a8d\u3057\u307e\u3059\u3002', calendarAction: 'Calendar \u306e\u4eca\u5f8c\u306e\u4e88\u5b9a\u3092\u8868\u793a', githubAction: 'GitHub \u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3068\u30ea\u30dd\u30b8\u30c8\u30ea\u3092\u8868\u793a', connectedWith: '\u9023\u643a\u4e2d', logout: '\u30ed\u30b0\u30a2\u30a6\u30c8', login: '\u30ed\u30b0\u30a4\u30f3', register: '\u767b\u9332', open: 'Open'
+    }
+};
 
-function text(key) {
+function t(key) {
     return translations[currentLanguage]?.[key] || translations.en[key] || key;
 }
 
 function applyLanguage() {
-    document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage;
-    languageSelect.value = currentLanguage;
+    document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'ja' ? 'ja' : 'en';
+    const languageSelect = $('languageSelect');
+    if (languageSelect) languageSelect.value = currentLanguage;
 
     document.querySelectorAll('[data-i18n]').forEach(element => {
-        element.textContent = text(element.dataset.i18n);
+        element.textContent = t(element.dataset.i18n);
     });
 
     document.querySelectorAll('[data-i18n-label]').forEach(label => {
         const firstTextNode = Array.from(label.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-        if (firstTextNode) firstTextNode.nodeValue = text(label.dataset.i18nLabel);
+        if (firstTextNode) {
+            firstTextNode.nodeValue = t(label.dataset.i18nLabel);
+        }
     });
 
-    const activePage = document.querySelector('.menu-item.active')?.dataset.page || 'home';
-    document.getElementById('pageTitle').textContent = text(pageTitleKeys[activePage]);
-    document.getElementById('todayText').textContent = formatToday();
-    renderShortcuts();
-    refreshStaticMessages();
+    updateFolio();
+    updateOwnerUi();
 }
 
-function formatToday() {
-    const locale = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'ja' ? 'ja-JP' : 'en-US';
-    return new Date().toLocaleDateString(locale, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long'
+function updateFolio(name = document.body.dataset.page || 'home') {
+    const meta = pageMeta[name] || pageMeta.home;
+    if ($('folioNumber')) $('folioNumber').textContent = meta.number;
+    if ($('folioLabel')) $('folioLabel').textContent = t(meta.labelKey);
+    if ($('folioContext')) $('folioContext').textContent = t(meta.contextKey);
+}
+
+function isOwnerAuthenticated() {
+    return Boolean(currentJwtUser);
+}
+
+function updateOwnerUi() {
+    const owner = isOwnerAuthenticated();
+    const account = currentJwtUser;
+    const provider = account?.provider || currentOAuthUser?.currentProvider || '';
+    const displayName = account?.displayName || currentProfile?.name || t('notLoggedIn');
+    const role = account?.role || 'GUEST';
+    document.querySelectorAll('.private-field').forEach(field => field.classList.toggle('is-hidden', !owner));
+    if ($('editBtn')) $('editBtn').textContent = owner ? t('edit') : t('signInToEdit');
+    if ($('profileAccessNote')) $('profileAccessNote').textContent = owner ? t('profileOwnerNote') : t('profileVisitorNote');
+    if ($('saveLocationBtn')) $('saveLocationBtn').textContent = owner ? t('saveToProfile') : t('signInToSaveLocation');
+    if ($('openAuthBtn')) $('openAuthBtn').textContent = owner ? t('manageAccount') : t('openSignIn');
+    $('passportCard')?.classList.toggle('is-hidden', !owner);
+    if ($('accountConnectionStatus')) {
+        const status = owner
+            ? `${provider === 'local' ? t('localAccount') : provider.toUpperCase()} · ${t('signedInStatus')}`
+            : `${t('notLoggedIn')} · ${t('browseMode')}`;
+        $('accountConnectionStatus').textContent = status;
+        $('accountConnectionStatus').classList.toggle('connected', owner);
+    }
+    if ($('accountHolderName')) $('accountHolderName').textContent = displayName.toUpperCase();
+    if ($('accountRole')) $('accountRole').textContent = role;
+    if ($('folioContext') && document.body.dataset.page === 'account') {
+        $('folioContext').textContent = owner ? `${displayName} · ${role}` : t(pageMeta.account.contextKey);
+    }
+    if (account) {
+        setIdentity(displayName, account.avatarUrl || '');
+        setOAuthState(
+            'ok',
+            `${t('signedInStatus')}: ${displayName}`,
+            `${role} · ${provider === 'local' ? t('localAccount') : provider}`,
+            provider === 'local' ? role : provider,
+            account
+        );
+    }
+    updateConnectedAccount();
+    $('adminPanel')?.classList.toggle('is-hidden', role !== 'ADMIN');
+    if (role === 'ADMIN') loadAdminUsers();
+}
+
+const shortcuts = [
+    {
+        titleKey: 'shortcutLocalHomeTitle',
+        descriptionKey: 'shortcutLocalHomeDesc',
+        categoryKey: 'shortcutCore',
+        url: '/api/home',
+        image: 'assets/campus-photo-08.jpg'
+    },
+    {
+        titleKey: 'shortcutLocalProfileTitle',
+        descriptionKey: 'shortcutLocalProfileDesc',
+        categoryKey: 'shortcutCore',
+        url: '/api/profile',
+        image: 'assets/campus-photo-01.jpg'
+    },
+    {
+        titleKey: 'shortcutApiDocsTitle',
+        descriptionKey: 'shortcutApiDocsDesc',
+        categoryKey: 'shortcutDocs',
+        url: '/api-docs.html',
+        image: 'assets/campus-photo-07.jpg'
+    },
+    {
+        titleKey: 'shortcutOpenApiTitle',
+        descriptionKey: 'shortcutOpenApiDesc',
+        categoryKey: 'shortcutDocs',
+        url: '/openapi.yaml',
+        image: 'assets/campus-photo-06.jpg'
+    },
+    {
+        titleKey: 'shortcutGithubTitle',
+        descriptionKey: 'shortcutGithubDesc',
+        categoryKey: 'shortcutProvider',
+        url: 'https://github.com/',
+        image: 'assets/campus-photo-03.jpg'
+    },
+    {
+        titleKey: 'shortcutCalendarTitle',
+        descriptionKey: 'shortcutCalendarDesc',
+        categoryKey: 'shortcutProvider',
+        url: 'https://calendar.google.com/',
+        image: 'assets/campus-photo-02.jpg'
+    },
+    {
+        titleKey: 'shortcutMeteoTitle',
+        descriptionKey: 'shortcutMeteoDesc',
+        categoryKey: 'shortcutData',
+        url: 'https://open-meteo.com/',
+        image: 'assets/campus-photo-04.jpg'
+    },
+    {
+        titleKey: 'shortcutCountriesTitle',
+        descriptionKey: 'shortcutCountriesDesc',
+        categoryKey: 'shortcutData',
+        url: 'https://restcountries.com/',
+        image: 'assets/campus-photo-05.jpg'
+    },
+    {
+        titleKey: 'shortcutKcgiTitle',
+        descriptionKey: 'shortcutKcgiDesc',
+        categoryKey: 'shortcutProvider',
+        url: 'https://www.kcg.edu/',
+        image: 'assets/campus-photo-09.jpg'
+    }
+];
+
+const studyLinks = [
+    { title: 'Google', note: 'Search', url: 'https://www.google.com/' },
+    { title: 'Gmail', note: 'Mail', url: 'https://mail.google.com/' },
+    { title: 'Google Translate', note: 'Translate', url: 'https://translate.google.com/' },
+    { title: 'DeepL', note: 'Translate', url: 'https://www.deepl.com/translator' },
+    { title: 'Google Calendar', note: 'Schedule', url: 'https://calendar.google.com/' },
+    { title: 'YouTube', note: 'Lecture Video', url: 'https://www.youtube.com/' },
+    { title: 'Notion', note: 'Notes', url: 'https://www.notion.so/' },
+    { title: 'Google Maps', note: 'Campus Route', url: 'https://www.google.com/maps' },
+    { title: 'Bilibili', note: 'Chinese Study', url: 'https://www.bilibili.com/' },
+    { title: 'Zhihu', note: 'Research', url: 'https://www.zhihu.com/' }
+];
+
+function $(id) {
+    return document.getElementById(id);
+}
+
+function setStatus(element, message, isError = false) {
+    if (!element) return;
+    element.textContent = message;
+    element.classList.toggle('status-error', isError);
+    element.classList.toggle('status-ok', !isError);
+    element.classList.toggle('is-loading', !isError && /loading|saving|connecting|checking|waiting/i.test(String(message)));
+}
+
+function updateIssueDate() {
+    const issueDate = $('issueDate');
+    if (!issueDate) return;
+    const now = new Date();
+    const parts = Object.fromEntries(
+        new Intl.DateTimeFormat('en', { year: 'numeric', month: '2-digit', day: '2-digit' })
+            .formatToParts(now)
+            .filter(part => part.type !== 'literal')
+            .map(part => [part.type, part.value])
+    );
+    issueDate.textContent = `${parts.year}.${parts.month}.${parts.day}`;
+    issueDate.dateTime = `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+function setFolioStatus(status) {
+    if ($('folioStatus')) $('folioStatus').textContent = status;
+}
+
+function safeText(value, fallback = '--') {
+    if (value === null || value === undefined || value === '') return fallback;
+    return String(value);
+}
+
+function listText(value) {
+    const items = Array.isArray(value)
+        ? value
+        : value && typeof value === 'object'
+            ? Object.values(value)
+            : [safeText(value)];
+    return items.map(localizePlaceName).join(currentLanguage === 'zh' ? '\u3001' : ', ') || '--';
+}
+
+function formatTemperature(value) {
+    return `${safeText(value, '--')}\u00B0`;
+}
+
+function localizePlaceName(value) {
+    const text = safeText(value);
+    if (currentLanguage !== 'zh') return text;
+    const names = {
+        Kyoto: '\u4eac\u90fd',
+        Japan: '\u65e5\u672c',
+        Tokyo: '\u4e1c\u4eac',
+        Asia: '\u4e9a\u6d32',
+        Japanese: '\u65e5\u8bed',
+        'Japanese yen': '\u65e5\u5143'
+    };
+    return names[text] || text;
+}
+
+function canonicalPlaceName(value) {
+    const text = safeText(value, '');
+    const names = {
+        '\u4eac\u90fd': 'Kyoto',
+        '\u65e5\u672c': 'Japan',
+        '\u4e1c\u4eac': 'Tokyo',
+        '\u4e9a\u6d32': 'Asia'
+    };
+    return names[text] || text;
+}
+
+function localizedWeatherCopy(weather = {}) {
+    const code = Number(weather.weatherCode ?? -1);
+    const temperature = Number(weather.temperature ?? 20);
+    const wind = Number(weather.windSpeed ?? 0);
+    const conditionKey = code === 0 ? 'clear'
+        : code <= 3 ? 'cloudy'
+        : code <= 48 ? 'fog'
+        : code <= 67 ? 'rain'
+        : code <= 77 ? 'snow'
+        : code <= 86 ? 'showers'
+        : code >= 95 ? 'thunder'
+        : 'changeable';
+    const clothingKey = temperature < 5 ? 'winter'
+        : temperature < 12 ? 'coat'
+        : temperature < 18 ? 'jacket'
+        : temperature < 25 ? 'layers'
+        : temperature < 30 ? 'light'
+        : 'heat';
+    const reminderKey = code >= 95 ? 'avoidOpen'
+        : code >= 71 && code <= 86 ? 'slippery'
+        : code >= 51 && code <= 67 ? 'umbrella'
+        : code >= 45 && code <= 48 ? 'visibility'
+        : wind >= 30 ? 'wind'
+        : code === 0 && temperature >= 24 ? 'sun'
+        : 'walk';
+    const localized = {
+        en: {
+            condition: { clear: 'Clear', cloudy: 'Cloudy', fog: 'Fog', rain: 'Rain', snow: 'Snow', showers: 'Showers', thunder: 'Thunderstorms', changeable: 'Changeable' },
+            clothing: { winter: 'Winter coat and warm shoes', coat: 'Warm coat', jacket: 'Jacket or light layers', layers: 'Light layers', light: 'Light clothing', heat: 'Breathable clothing and water' },
+            reminder: { avoidOpen: 'Avoid exposed outdoor areas.', slippery: 'Allow extra travel time.', umbrella: 'Bring an umbrella.', visibility: 'Leave earlier in low visibility.', wind: 'Secure light belongings.', sun: 'Use sun protection and stay hydrated.', walk: 'Good conditions for errands or a short walk.' }
+        },
+        zh: {
+            condition: { clear: '\u6674\u6717', cloudy: '\u591a\u4e91', fog: '\u6709\u96fe', rain: '\u6709\u96e8', snow: '\u6709\u96ea', showers: '\u9635\u96e8', thunder: '\u96f7\u66b4', changeable: '\u5929\u6c14\u591a\u53d8' },
+            clothing: { winter: '\u7fbd\u7ed2\u670d\u548c\u4fdd\u6696\u978b', coat: '\u6e29\u6696\u5916\u5957', jacket: '\u5939\u514b\u6216\u8584\u5c42\u53e0\u7a7f', layers: '\u8f7b\u8584\u5c42\u53e0\u7a7f', light: '\u8f7b\u4fbf\u8863\u7269', heat: '\u900f\u6c14\u8863\u7269\u5e76\u53ca\u65f6\u8865\u6c34' },
+            reminder: { avoidOpen: '\u907f\u514d\u5728\u7a7a\u65f7\u6237\u5916\u505c\u7559\u3002', slippery: '\u8def\u9762\u53ef\u80fd\u6e7f\u6ed1\uff0c\u8bf7\u9884\u7559\u65f6\u95f4\u3002', umbrella: '\u8bb0\u5f97\u5e26\u4f1e\u3002', visibility: '\u80fd\u89c1\u5ea6\u8f83\u4f4e\uff0c\u5efa\u8bae\u65e9\u70b9\u51fa\u53d1\u3002', wind: '\u6536\u597d\u5bb9\u6613\u88ab\u98ce\u5439\u8d70\u7684\u7269\u54c1\u3002', sun: '\u6ce8\u610f\u9632\u6652\u548c\u8865\u6c34\u3002', walk: '\u9002\u5408\u529e\u4e8b\u6216\u77ed\u9014\u6563\u6b65\u3002' }
+        },
+        ja: {
+            condition: { clear: '\u6674\u308c', cloudy: '\u66c7\u308a', fog: '\u9727', rain: '\u96e8', snow: '\u96ea', showers: '\u306b\u308f\u304b\u96e8', thunder: '\u96f7\u96e8', changeable: '\u5909\u308f\u308a\u3084\u3059\u3044\u5929\u6c17' },
+            clothing: { winter: '\u30c0\u30a6\u30f3\u3068\u6696\u304b\u3044\u9774', coat: '\u6696\u304b\u3044\u30b3\u30fc\u30c8', jacket: '\u30b8\u30e3\u30b1\u30c3\u30c8\u307e\u305f\u306f\u8584\u624b\u306e\u91cd\u306d\u7740', layers: '\u8584\u624b\u306e\u91cd\u306d\u7740', light: '\u8efd\u3044\u670d\u88c5', heat: '\u901a\u6c17\u6027\u306e\u826f\u3044\u670d\u3068\u6c34\u5206\u88dc\u7d66' },
+            reminder: { avoidOpen: '\u958b\u3051\u305f\u5c4b\u5916\u306f\u907f\u3051\u3066\u304f\u3060\u3055\u3044\u3002', slippery: '\u8def\u9762\u306b\u6ce8\u610f\u3057\u3001\u6642\u9593\u306b\u4f59\u88d5\u3092\u3002', umbrella: '\u5098\u3092\u5fd8\u308c\u305a\u306b\u3002', visibility: '\u8996\u754c\u304c\u60aa\u3044\u305f\u3081\u65e9\u3081\u306e\u51fa\u767a\u3092\u3002', wind: '\u8efd\u3044\u8377\u7269\u306f\u3057\u3063\u304b\u308a\u53ce\u7d0d\u3057\u3066\u304f\u3060\u3055\u3044\u3002', sun: '\u65e5\u713c\u3051\u5bfe\u7b56\u3068\u6c34\u5206\u88dc\u7d66\u3092\u3002', walk: '\u7528\u4e8b\u3084\u77ed\u3044\u6563\u6b69\u306b\u5411\u3044\u3066\u3044\u307e\u3059\u3002' }
+        }
+    };
+    const copy = localized[currentLanguage] || localized.en;
+    return {
+        condition: copy.condition[conditionKey],
+        trend: copy.condition[conditionKey],
+        tip: `${copy.clothing[clothingKey]}${currentLanguage === 'en' ? '. ' : '\u3002'}${copy.reminder[reminderKey]}`
+    };
+}
+
+async function readResponseBody(response) {
+    const contentType = response.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+        return response.json();
+    }
+    const text = await response.text();
+    return text ? { message: text } : {};
+}
+
+async function safeFetch(url, options = {}) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 12000);
+    const method = String(options.method || 'GET').toUpperCase();
+    const csrfHeaders = csrfToken && !['GET', 'HEAD', 'OPTIONS'].includes(method)
+        ? { 'X-XSRF-TOKEN': csrfToken }
+        : {};
+    try {
+        const response = await fetch(url, {
+            ...options,
+            credentials: 'same-origin',
+            signal: options.signal || controller.signal,
+            headers: { Accept: 'application/json', ...csrfHeaders, ...(options.headers || {}) }
+        });
+        const data = await readResponseBody(response);
+        if (!response.ok) {
+            const message = data.error || data.message || `Request failed with ${response.status}`;
+            const error = new Error(message);
+            error.status = response.status;
+            error.data = data;
+            throw error;
+        }
+        return data;
+    } catch (error) {
+        if (error.status) throw error;
+        if (error.name === 'AbortError') {
+            const timeoutError = new Error('Request timed out. The page is still available; please try again.');
+            timeoutError.data = { error: timeoutError.message };
+            throw timeoutError;
+        }
+        const networkError = new Error(`Network error: ${error.message}`);
+        networkError.data = { error: networkError.message };
+        throw networkError;
+    } finally {
+        window.clearTimeout(timeout);
+    }
+}
+
+async function loadCsrfToken() {
+    try {
+        const data = await safeFetch('/api/csrf');
+        csrfToken = data.token || '';
+    } catch (error) {
+        csrfToken = '';
+    }
+}
+
+function switchPage(name, updateHash = true) {
+    if (!pages[name]) return;
+    Object.entries(pages).forEach(([pageName, page]) => {
+        const active = pageName === name;
+        page.classList.toggle('active-page', active);
+        page.hidden = !active;
+    });
+    setActiveNav(name);
+    document.body.dataset.page = name;
+    updateFolio(name);
+    if (name === 'account') updateOwnerUi();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (updateHash) {
+        history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${name}`);
+    }
+    if (name === 'home' && currentHomeData) loadHome(currentHomeLocation());
+    if (name === 'account' && currentProfile) loadOAuthStatus();
+}
+
+function setActiveNav(name) {
+    document.querySelectorAll('[data-page-link]').forEach(button => {
+        button.classList.toggle('active', button.dataset.pageLink === name);
     });
 }
 
-function seasonForDate(date = new Date()) {
-    const month = date.getMonth() + 1;
-    if (month >= 3 && month <= 5) return 'spring';
-    if (month >= 6 && month <= 8) return 'summer';
-    if (month >= 9 && month <= 11) return 'autumn';
-    return 'winter';
-}
+document.querySelectorAll('[data-page-link]').forEach(button => {
+    button.addEventListener('click', event => {
+        event.preventDefault();
+        switchPage(button.dataset.pageLink);
+    });
+});
 
-function setSeasonImageVariable(variableName, season) {
-    const imagePath = seasonAssets[season] || seasonAssets.spring;
-    document.documentElement.style.setProperty(variableName, `url("${imagePath}")`);
-}
+$('languageSelect')?.addEventListener('change', event => {
+    currentLanguage = event.target.value;
+    localStorage.setItem(languageStorageKey, currentLanguage);
+    applyLanguage();
+    if (currentProfile) renderProfile(currentProfile);
+    if (currentHomeData) renderHome(currentHomeData);
+    updatePortfolioOwnerLabel();
+    loadOAuthStatus();
+});
 
-function applySeasonImages() {
-    const seasons = ['spring', 'summer', 'autumn', 'winter'];
-    const homeSeason = seasonForDate();
-    const homeIndex = seasons.indexOf(homeSeason);
-    const navSeason = seasons[(homeIndex + 1) % seasons.length];
-    const meSeason = seasons[(homeIndex + 2) % seasons.length];
-
-    document.body.dataset.season = homeSeason;
-    setSeasonImageVariable('--theme-bg-image', homeSeason);
-    setSeasonImageVariable('--home-season-image', homeSeason);
-    setSeasonImageVariable('--nav-season-image', navSeason);
-    setSeasonImageVariable('--me-season-image', meSeason);
-}
-
-function setSidebarIdentity(name = 'Student', avatarUrl = '', subtitle = text('campusUser')) {
-    if (sideName) sideName.textContent = name || 'Student';
-    if (sideSubtitle) sideSubtitle.textContent = subtitle || text('campusUser');
-    if (!sideAvatar) return;
-
-    sideAvatar.style.backgroundImage = '';
-    sideAvatar.textContent = (name || 'S').trim().charAt(0).toUpperCase() || 'S';
+function setIdentity(name = 'Student', avatarUrl = '') {
+    const initial = (name || 'S').trim().charAt(0).toUpperCase() || 'S';
+    $('accountAvatar').textContent = initial;
+    $('previewAvatar').textContent = initial;
+    if ($('accountHolderName')) $('accountHolderName').textContent = (name || 'Student').toUpperCase();
+    $('oauthAvatar').style.backgroundImage = '';
+    $('oauthAvatar').textContent = 'O';
     if (avatarUrl) {
-        sideAvatar.textContent = '';
-        sideAvatar.style.backgroundImage = `url("${avatarUrl}")`;
+        $('accountAvatar').textContent = '';
+        $('accountAvatar').style.backgroundImage = `url("${avatarUrl}")`;
+        $('oauthAvatar').textContent = '';
+        $('oauthAvatar').style.backgroundImage = `url("${avatarUrl}")`;
+        $('previewAvatar').textContent = '';
+        $('previewAvatar').style.backgroundImage = `url("${avatarUrl}")`;
+    } else {
+        $('accountAvatar').style.backgroundImage = '';
+        $('previewAvatar').style.backgroundImage = '';
     }
 }
 
-function refreshStaticMessages() {
-    const knownHomeMessages = Object.values(translations)
-        .map(lang => lang.statusHomeIndependent)
-        .concat(['']);
-    if (knownHomeMessages.includes(homeStatus.textContent)) {
-        setStatus(homeStatus, text('statusHomeIndependent'));
-    }
-
-    const dailyTip = document.getElementById('dailyTip');
-    const knownTipMessages = Object.values(translations).map(lang => lang.generatingTips);
-    if (knownTipMessages.includes(dailyTip.textContent)) {
-        dailyTip.textContent = text('generatingTips');
-    }
-}
-
-function switchPage(name) {
-    Object.values(pages).forEach(page => page.classList.remove('active-page'));
-    pages[name].classList.add('active-page');
-    document.getElementById('pageTitle').textContent = text(pageTitleKeys[name]);
-
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.toggle('active', item.dataset.page === name);
-    });
-
-    if (name === 'home') loadHome();
-}
-
-function savedHomeLocation() {
-    const urlLocation = locationFromUrl();
-    if (urlLocation) return urlLocation;
-
+function getSavedLocation() {
     try {
         return JSON.parse(localStorage.getItem(locationStorageKey)) || defaultLocation;
     } catch (error) {
@@ -341,413 +611,20 @@ function savedHomeLocation() {
     }
 }
 
-function locationFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const country = params.get('country');
-    const city = params.get('city');
-    if (!country && !city) return null;
-    return {
-        country: country || defaultLocation.country,
-        city: city || defaultLocation.city
-    };
-}
-
 function currentHomeLocation() {
     return {
-        country: homeCountryInput.value.trim() || defaultLocation.country,
-        city: homeCityInput.value.trim() || defaultLocation.city
+        country: canonicalPlaceName($('homeCountryInput').value.trim()) || defaultLocation.country,
+        city: canonicalPlaceName($('homeCityInput').value.trim()) || defaultLocation.city
     };
 }
 
 function setHomeInputs(location) {
-    homeCountryInput.value = location.country || defaultLocation.country;
-    homeCityInput.value = location.city || defaultLocation.city;
+    $('homeCountryInput').value = localizePlaceName(location.country || defaultLocation.country);
+    $('homeCityInput').value = localizePlaceName(location.city || defaultLocation.city);
 }
 
-function rememberHomeLocation(location) {
+function rememberLocation(location) {
     localStorage.setItem(locationStorageKey, JSON.stringify(location));
-}
-
-function setStatus(element, message, isError = false) {
-    element.textContent = message;
-    element.style.color = isError ? '#dc2626' : '#0f766e';
-}
-
-document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', () => switchPage(item.dataset.page));
-});
-
-languageSelect.addEventListener('change', () => {
-    currentLanguage = languageSelect.value;
-    localStorage.setItem(languageStorageKey, currentLanguage);
-    applyLanguage();
-});
-
-document.getElementById('goProfileBtn').addEventListener('click', () => switchPage('me'));
-document.getElementById('reloadHomeBtn')?.addEventListener('click', () => loadHome());
-document.getElementById('exportPdfBtn').addEventListener('click', () => window.print());
-
-document.querySelectorAll('[data-oauth-api]').forEach(button => {
-    button.addEventListener('click', async () => {
-        await loadOAuthApi(button.dataset.oauthApi);
-    });
-});
-
-function openOAuthModal() {
-    oauthModal?.classList.remove('hidden');
-    oauthModal?.setAttribute('aria-hidden', 'false');
-}
-
-function closeOAuthModal() {
-    oauthModal?.classList.add('hidden');
-    oauthModal?.setAttribute('aria-hidden', 'true');
-}
-
-document.getElementById('oauthChooseBtn')?.addEventListener('click', openOAuthModal);
-document.getElementById('oauthModalClose')?.addEventListener('click', closeOAuthModal);
-oauthModal?.addEventListener('click', event => {
-    if (event.target === oauthModal) closeOAuthModal();
-});
-
-document.querySelectorAll('[data-oauth-provider]').forEach(button => {
-    button.addEventListener('click', () => {
-        const provider = button.dataset.oauthProvider;
-        setOAuthState('pending', `Redirecting to ${provider} login...`, 'Waiting for authorization', provider);
-        window.location.href = `/oauth2/authorization/${provider}`;
-    });
-});
-
-document.getElementById('oauthRefreshBtn')?.addEventListener('click', loadOAuthStatus);
-
-function setOAuthState(state, title, detail, provider = 'Not logged in') {
-    if (!oauthStatusDot || !oauthStatusTitle || !oauthStatusDetail || !oauthProviderBadge) return;
-
-    oauthStatusDot.classList.remove('ok', 'error', 'pending');
-    oauthProviderBadge.classList.remove('ok', 'error', 'pending');
-    if (state === 'ok') {
-        oauthStatusDot.classList.add('ok');
-        oauthProviderBadge.classList.add('ok');
-    }
-    if (state === 'error') {
-        oauthStatusDot.classList.add('error');
-        oauthProviderBadge.classList.add('error');
-    }
-    if (state === 'pending') {
-        oauthStatusDot.classList.add('pending');
-        oauthProviderBadge.classList.add('pending');
-    }
-
-    oauthStatusTitle.textContent = title;
-    oauthStatusDetail.textContent = detail;
-    oauthProviderBadge.textContent = provider || 'Not logged in';
-}
-
-async function loadOAuthStatus() {
-    try {
-        const response = await fetch('/api/oauth/status', {
-            headers: { 'Accept': 'application/json' }
-        });
-        const data = await response.json();
-        if (data.authenticated) {
-            const provider = data.currentProvider || 'oauth';
-            const displayName = data.name || data.login || data.email || 'authorized user';
-            setOAuthState('ok', `Logged in with ${provider}`, `Authorized as ${displayName}. You can verify the related API below.`, provider);
-            setSidebarIdentity(displayName, data.avatarUrl || '', provider);
-            return data;
-        }
-
-        setOAuthState('idle', 'OAuth not connected', 'Choose Google or GitHub to verify third-party login.', 'Not logged in');
-        if (currentProfile) {
-            setSidebarIdentity(currentProfile.name || 'Student', '', text('campusUser'));
-        }
-        return data;
-    } catch (error) {
-        setOAuthState('error', 'OAuth status check failed', 'The app could not read login status. Confirm that the backend is running.', 'Error');
-        console.error(error);
-        return null;
-    }
-}
-
-async function loadOAuthApi(apiPath) {
-    const output = document.getElementById('oauthResult');
-    if (!output) return;
-    output.textContent = `Loading ${apiPath} ...`;
-    setOAuthState('pending', 'Checking OAuth API...', `Requesting ${apiPath}`, 'Checking');
-
-    try {
-        const response = await fetch(apiPath, {
-            headers: { 'Accept': 'application/json' }
-        });
-        const contentType = response.headers.get('content-type') || '';
-        const data = contentType.includes('application/json')
-            ? await response.json()
-            : { message: await response.text() };
-
-        output.textContent = JSON.stringify(data, null, 2);
-        if (response.ok) {
-            setOAuthState('ok', 'OAuth API verification succeeded', `${data.source || apiPath} returned a valid response.`, data.source || 'Authorized');
-        } else {
-            setOAuthState('error', 'OAuth API verification failed', data.error || 'Login is missing, expired, or for the wrong provider.', 'Failed');
-        }
-    } catch (error) {
-        output.textContent = `OAuth API request failed: ${error.message}`;
-        setOAuthState('error', 'OAuth API request failed', error.message, 'Error');
-        console.error(error);
-    }
-}
-
-async function autoVerifyOAuthFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    const provider = params.get('oauth');
-    const oauthError = params.get('oauthError');
-    const logout = params.get('logout');
-    if (logout) {
-        switchPage('me');
-        setOAuthState('idle', 'OAuth logged out', 'You are not connected to Google or GitHub now.', 'Not logged in');
-        return;
-    }
-    if (oauthError) {
-        switchPage('me');
-        const status = await loadOAuthStatus();
-        if (status?.authenticated) {
-            clearOAuthQuery();
-            return;
-        }
-        setOAuthState('error', 'OAuth login failed', oauthError === 'true' ? 'The third-party provider did not complete authorization.' : oauthError, 'Failed');
-        return;
-    }
-    if (!provider) return;
-
-    const apiByProvider = {
-        github: '/api/oauth/github/profile',
-        google: '/api/oauth/google/calendar'
-    };
-    const apiPath = apiByProvider[provider];
-    if (!apiPath) return;
-
-    switchPage('me');
-    await loadOAuthStatus();
-    await loadOAuthApi(apiPath);
-    clearOAuthQuery();
-}
-
-function clearOAuthQuery() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('oauth');
-    url.searchParams.delete('oauthError');
-    url.searchParams.delete('logout');
-    window.history.replaceState({}, '', url);
-}
-
-homeLocationForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const location = currentHomeLocation();
-    rememberHomeLocation(location);
-    await loadHome(location);
-});
-
-document.getElementById('saveLocationBtn').addEventListener('click', async () => {
-    const location = currentHomeLocation();
-    rememberHomeLocation(location);
-    setStatus(homeStatus, text('statusSavingLocation'));
-
-    try {
-        const result = await saveProfile({
-            country: location.country,
-            city: location.city,
-            location: `${location.city}, ${location.country}`
-        });
-
-        if (result.saved === false) {
-            setStatus(homeStatus, result.message || text('statusLocationSaveFailed'), true);
-            return;
-        }
-
-        currentProfile = result.profile;
-        fillForm(currentProfile);
-        renderPreview(currentProfile);
-        setStatus(homeStatus, text('statusLocationSaved'));
-        effects.runSaveFeedback(homeStatus);
-        await loadHome(location);
-    } catch (error) {
-        setStatus(homeStatus, text('statusSaveLocationError'), true);
-        console.error(error);
-    }
-});
-
-function renderShortcuts() {
-    const grid = document.getElementById('shortcutGrid');
-    grid.innerHTML = shortcuts.map(([name, url]) => `
-        <a class="shortcut" href="${url}" target="_blank" rel="noopener noreferrer">
-            <span>${name}</span>
-            <small>${text('shortcutOpen')} -&gt;</small>
-        </a>
-    `).join('');
-    effects.bindShortcutHover();
-}
-
-async function loadProfile() {
-    try {
-        const response = await fetch('/api/profile');
-        if (!response.ok) throw new Error('Profile API failed');
-
-        currentProfile = await response.json();
-        fillForm(currentProfile);
-        renderPreview(currentProfile);
-        setSidebarIdentity(currentProfile.name || 'Student', '', text('campusUser'));
-
-        if (!localStorage.getItem(locationStorageKey) && !locationFromUrl()) {
-            const profileLocation = {
-                country: currentProfile.country || defaultLocation.country,
-                city: currentProfile.city || defaultLocation.city
-            };
-            setHomeInputs(profileLocation);
-            rememberHomeLocation(profileLocation);
-            await loadHome(profileLocation);
-        }
-    } catch (error) {
-        currentProfile = defaultProfile();
-        fillForm(currentProfile);
-        renderPreview(currentProfile);
-        setSidebarIdentity(currentProfile.name || 'Student', '', text('campusUser'));
-        setStatus(saveStatus, text('statusProfileLoadFailed'), true);
-        console.error(error);
-    }
-}
-
-function defaultProfile() {
-    return {
-        name: 'シュフシン',
-        studentId: 'M25W7195',
-        email: 'st232527@kcg.edu',
-        phone: '123-4567-8901',
-        country: defaultLocation.country,
-        city: defaultLocation.city,
-        title: 'Information Technology / Network Management Student',
-        summary: 'I am studying information technology and network management. Campus Flow is my integrated web project for profile management, weather and country information, JWT authorization, OAuth API verification, Docker, and cloud deployment.',
-        education: [{
-            school: 'The Kyoto College of Graduate Studies for Informatics',
-            degree: 'Master Program',
-            major: 'Network Management',
-            period: '2025 - Present',
-            description: 'Main study areas include network management, cloud systems, database basics, web APIs, and software development.'
-        }],
-        skills: [
-            'Java and Spring Boot API development',
-            'HTML, CSS and JavaScript frontend development',
-            'MySQL database design and SQL operations',
-            'JWT authentication and role-based authorization',
-            'OAuth 2.0 integration with Google and GitHub',
-            'Docker, Docker Compose and Azure container deployment'
-        ],
-        projects: [{
-            name: 'Campus Flow',
-            description: 'A Spring Boot web application that combines a student profile, weather and country APIs, JWT login, OAuth verification, MySQL persistence, Docker sidecar deployment, and Azure App Service deployment.'
-        }],
-        languages: [
-            { name: 'Chinese', level: 'Native' },
-            { name: 'Japanese', level: 'Daily communication / learning toward JLPT N2' },
-            { name: 'English', level: 'Basic reading and presentation' }
-        ]
-    };
-}
-
-function fillForm(profile) {
-    form.name.value = profile.name || '';
-    form.studentId.value = profile.studentId || '';
-    form.email.value = profile.email || '';
-    form.phone.value = profile.phone || '';
-    form.country.value = profile.country || defaultLocation.country;
-    form.city.value = profile.city || defaultLocation.city;
-    form.title.value = profile.title || '';
-    form.summary.value = profile.summary || '';
-}
-
-function collectForm() {
-    const country = form.country.value.trim() || defaultLocation.country;
-    const city = form.city.value.trim() || defaultLocation.city;
-    return {
-        name: form.name.value.trim(),
-        studentId: form.studentId.value.trim(),
-        email: form.email.value.trim(),
-        phone: form.phone.value.trim(),
-        location: `${city}, ${country}`,
-        country,
-        city,
-        title: form.title.value.trim(),
-        summary: form.summary.value.trim()
-    };
-}
-
-function setEditing(enabled) {
-    form.querySelectorAll('input, textarea').forEach(input => input.disabled = !enabled);
-    saveBtn.disabled = !enabled;
-}
-
-document.getElementById('editBtn').addEventListener('click', () => {
-    setEditing(true);
-    setStatus(saveStatus, text('statusEditing'));
-});
-
-async function saveProfile(payload) {
-    const response = await fetch('/api/profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: JSON.stringify(payload)
-    });
-    if (!response.ok) throw new Error('Profile save failed');
-    return response.json();
-}
-
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const payload = collectForm();
-    setStatus(saveStatus, text('statusSaving'));
-
-    try {
-        const result = await saveProfile(payload);
-        if (result.saved === false) {
-            setStatus(saveStatus, result.message || text('statusProfileSaveFailed'), true);
-            return;
-        }
-
-        currentProfile = result.profile;
-        fillForm(currentProfile);
-        renderPreview(currentProfile);
-        setSidebarIdentity(currentProfile.name || 'Student', '', text('campusUser'));
-        setEditing(false);
-
-        const location = { country: currentProfile.country, city: currentProfile.city };
-        setHomeInputs(location);
-        rememberHomeLocation(location);
-        setStatus(saveStatus, text('statusProfileSaved'));
-        effects.runSaveFeedback(saveStatus);
-        await loadHome(location);
-    } catch (error) {
-        setStatus(saveStatus, text('statusSaveLocationError'), true);
-        console.error(error);
-    }
-});
-
-function renderPreview(profile) {
-    document.getElementById('previewName').textContent = profile.name || 'Student';
-    document.getElementById('previewTitle').textContent = profile.title || '';
-    document.getElementById('previewContact').textContent = `${profile.email || ''} | ${profile.phone || ''} | ${profile.city || ''}, ${profile.country || ''}`;
-    document.getElementById('previewSummary').textContent = profile.summary || '';
-
-    document.getElementById('previewEducation').innerHTML = (profile.education || []).map(item => `
-        <p><strong>${item.school}</strong><br>${item.degree} / ${item.major}<br><span class="muted">${item.period}</span><br>${item.description}</p>
-    `).join('');
-
-    document.getElementById('previewSkills').textContent = (profile.skills || []).join(' · ');
-
-    document.getElementById('previewProjects').innerHTML = (profile.projects || []).map(project => `
-        <p><strong>${project.name}</strong><br>${project.description}</p>
-    `).join('');
-
-    document.getElementById('previewLanguages').textContent = (profile.languages || [])
-        .map(item => `${item.name}: ${item.level}`)
-        .join(' · ');
 }
 
 async function loadHome(location = currentHomeLocation()) {
@@ -756,68 +633,735 @@ async function loadHome(location = currentHomeLocation()) {
         city: location.city || defaultLocation.city
     };
     setHomeInputs(selected);
-    setStatus(homeStatus, text('statusLoadingHome'));
+    setStatus($('homeStatus'), t('loadingHome'));
 
     try {
         const params = new URLSearchParams(selected);
-        const response = await fetch(`/api/home?${params.toString()}`);
-        if (!response.ok) throw new Error('Home API failed');
-        const data = await response.json();
-
-        document.getElementById('homeLocation').textContent = `${data.city.name}, ${data.country.name}`;
-        document.getElementById('temperature').textContent = `${data.weather.temperature}°C`;
-        document.getElementById('weatherCondition').textContent = data.weather.condition;
-        document.getElementById('weatherTime').textContent = data.weather.time || '';
-        document.getElementById('weatherCity').textContent = data.city.name;
-        document.getElementById('windSpeed').textContent = `${data.weather.windSpeed} km/h`;
-        document.getElementById('weatherTrend').textContent = data.tips.weatherTrend;
-        document.getElementById('dailyTip').textContent = data.tips.dailyTip;
-        document.getElementById('clothingTip').textContent = `${text('clothing')}: ${data.tips.clothing}`;
-        document.getElementById('reminderTip').textContent = `${text('reminder')}: ${data.tips.reminder}`;
-
-        document.getElementById('countryName').textContent = data.country.name;
-        document.getElementById('capitalName').textContent = data.country.capital;
-        document.getElementById('regionName').textContent = data.country.region;
-        document.getElementById('populationText').textContent = Number(data.country.population || 0).toLocaleString();
-        document.getElementById('languageText').textContent = (data.country.languages || []).join(', ') || '--';
-        document.getElementById('currencyText').textContent = (data.country.currencies || []).join(', ') || '--';
-
-        if (data.country.note || data.city.note || data.weather.note) {
-            setStatus(homeStatus, text('statusFallbackData'), true);
-        } else {
-            setStatus(homeStatus, `${text('statusUpdated')}: ${data.selectedCity}, ${data.selectedCountry}`);
-        }
+        const data = await safeFetch(`/api/home?${params.toString()}`);
+        currentHomeData = data;
+        renderHome(data);
     } catch (error) {
-        document.getElementById('homeLocation').textContent = `${selected.city}, ${selected.country}`;
-        document.getElementById('temperature').textContent = '--°C';
-        document.getElementById('weatherCondition').textContent = text('readFailed');
-        document.getElementById('weatherTime').textContent = '';
-        document.getElementById('weatherCity').textContent = selected.city;
-        document.getElementById('windSpeed').textContent = '--';
-        document.getElementById('weatherTrend').textContent = '--';
-        document.getElementById('dailyTip').textContent = text('statusHomeFailed');
-        setStatus(homeStatus, text('statusRetryHome'), true);
-        console.error(error);
+        $('homeLocation').textContent = `${selected.city}, ${selected.country}`;
+        $('temperature').textContent = formatTemperature('--');
+        $('weatherCondition').textContent = 'Load failed';
+        $('weatherTime').textContent = '';
+        $('weatherCity').textContent = selected.city;
+        $('windSpeed').textContent = '--';
+        $('weatherTrend').textContent = '--';
+        $('dailyTip').textContent = t('homeApiFailed');
+        setStatus($('homeStatus'), error.message, true);
     }
 }
 
-applySeasonImages();
-applyLanguage();
-setHomeInputs(savedHomeLocation());
-loadHome(savedHomeLocation());
-loadProfile();
+function renderHome(data) {
+    const city = data.city || {};
+    const country = data.country || {};
+    const weather = data.weather || {};
+    const localizedWeather = localizedWeatherCopy(weather);
+    const cityName = localizePlaceName(safeText(city.name, data.selectedCity));
+    const countryName = localizePlaceName(safeText(country.name, data.selectedCountry));
+    setHomeInputs({
+        city: safeText(city.name, data.selectedCity),
+        country: safeText(country.name, data.selectedCountry)
+    });
 
-const initialParams = new URLSearchParams(window.location.search);
-const startPage = initialParams.get('page');
-if (pages[startPage]) {
-    switchPage(startPage);
-}
-if (initialParams.get('loginModal') === '1') {
-    openOAuthModal();
+    $('homeLocation').textContent = `${cityName}${currentLanguage === 'zh' ? '\uff0c' : ', '}${countryName}`;
+    if ($('heroCityName')) $('heroCityName').textContent = cityName;
+    $('temperature').textContent = formatTemperature(weather.temperature);
+    $('weatherCondition').textContent = localizedWeather.condition;
+    const weatherTime = safeText(weather.time, 'No update time').replace('T', ' ');
+    const weatherTimezone = safeText(weather.timezone, '');
+    $('weatherTime').textContent = weatherTimezone ? `${weatherTime} · ${weatherTimezone}` : weatherTime;
+    $('weatherCity').textContent = cityName;
+    $('windSpeed').textContent = `${safeText(weather.windSpeed, '--')} km/h`;
+    $('weatherTrend').textContent = localizedWeather.trend;
+    $('dailyTip').textContent = localizedWeather.tip;
+
+    $('countryName').textContent = countryName;
+    $('capitalName').textContent = localizePlaceName(safeText(country.capital));
+    $('regionName').textContent = localizePlaceName(safeText(country.region));
+    $('populationText').textContent = Number(country.population || 0).toLocaleString();
+    $('languageText').textContent = listText(country.languages);
+    $('currencyText').textContent = listText(country.currencies);
+
+    const fallbackNotes = [country.note, city.note, weather.note].filter(Boolean);
+    if (fallbackNotes.length) {
+        setStatus($('homeStatus'), t('fallbackHome'), true);
+        if ($('folioContext') && document.body.dataset.page === 'home') $('folioContext').textContent = `${cityName} \u00b7 ${t('limitedUpdate')}`;
+    } else {
+        setStatus($('homeStatus'), `${t('updated')}: ${cityName}${currentLanguage === 'zh' ? '\uff0c' : ', '}${countryName}`);
+        if (document.body.dataset.page === 'home') {
+            if ($('folioContext')) $('folioContext').textContent = `${cityName.toUpperCase()} \u00b7 ${t('updatedNow')}`;
+        }
+    }
 }
 
-autoVerifyOAuthFromUrl();
-if (!initialParams.has('oauth') && !initialParams.has('oauthError') && !initialParams.has('logout')) {
-    loadOAuthStatus();
+$('homeLocationForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const location = currentHomeLocation();
+    rememberLocation(location);
+    const button = $('homeSearchBtn');
+    if (button) {
+        button.disabled = true;
+        button.textContent = t('finding');
+    }
+    try {
+        await loadHome(location);
+    } finally {
+        if (button) {
+            button.disabled = false;
+            button.textContent = t('searchBtn');
+        }
+    }
+});
+
+$('saveLocationBtn').addEventListener('click', async () => {
+    if (!isOwnerAuthenticated()) {
+        setStatus($('homeStatus'), t('signInToSaveLocation'), true);
+        openOAuthModal();
+        return;
+    }
+    const location = currentHomeLocation();
+    rememberLocation(location);
+    setStatus($('homeStatus'), t('savingLocation'));
+    try {
+        const profile = await safeFetch('/api/profile', { headers: jwtHeaders() });
+        const payload = {
+            name: profile.name || '',
+            studentId: profile.studentId || '',
+            email: profile.email || '',
+            phone: profile.phone || '',
+            title: profile.title || '',
+            summary: profile.summary || '',
+            country: location.country,
+            city: location.city,
+            location: `${location.city}, ${location.country}`
+        };
+        const result = await saveProfile(payload);
+        if (result.saved === false) {
+            setStatus($('homeStatus'), result.message || 'Location was not saved.', true);
+            return;
+        }
+        currentProfile = result.profile || { ...profile, ...payload };
+        renderProfile(currentProfile);
+        setStatus($('homeStatus'), t('locationSaved'));
+        effects.runSaveFeedback($('homeStatus'));
+        await loadHome(location);
+    } catch (error) {
+        setStatus($('homeStatus'), error.message, true);
+    }
+});
+
+function renderShortcuts() {
+    const shortcutGrid = $('shortcutGrid');
+    const studyLinkGrid = $('studyLinkGrid');
+
+    if (shortcutGrid) {
+        shortcutGrid.innerHTML = shortcuts.map(item => `
+        <article class="shortcut">
+            <img src="${item.image}" alt="">
+            <div>
+                <span class="shortcut-category">${t(item.categoryKey)}</span>
+                <h3>${t(item.titleKey)}</h3>
+                <p>${t(item.descriptionKey)}</p>
+                <a class="secondary-btn" href="${item.url}" target="_blank" rel="noopener noreferrer">${t('open')}</a>
+            </div>
+        </article>
+        `).join('');
+    }
+
+    if (studyLinkGrid) {
+        studyLinkGrid.innerHTML = studyLinks.map(item => `
+            <a class="study-link" href="${item.url}" target="_blank" rel="noopener noreferrer">
+                <strong>${item.title}</strong>
+                <span>${item.note}</span>
+            </a>
+        `).join('');
+    }
+
+    effects.bindShortcutHover();
 }
-window.addEventListener('load', effects.runEntrance);
+
+async function loadProfile() {
+    try {
+        currentProfile = await safeFetch('/api/profile');
+        renderProfile(currentProfile);
+        await loadPortfolio();
+        const profileLocation = {
+            country: currentProfile.country || defaultLocation.country,
+            city: currentProfile.city || defaultLocation.city
+        };
+        setHomeInputs(profileLocation);
+        rememberLocation(profileLocation);
+        return currentProfile;
+    } catch (error) {
+        setStatus($('saveStatus'), error.message, true);
+        return null;
+    }
+}
+
+function renderProfile(profile) {
+    if (!profile) return;
+    const form = $('profileForm');
+    form.name.value = profile.name || '';
+    form.email.value = profile.email || '';
+    form.phone.value = profile.phone || '';
+    form.country.value = profile.country || defaultLocation.country;
+    form.city.value = profile.city || defaultLocation.city;
+    form.title.value = profile.title || '';
+    form.summary.value = profile.summary || '';
+    form.visibility.value = profile.visibility || 'PUBLIC';
+
+    $('previewName').textContent = profile.name || 'Student';
+    $('previewTitle').textContent = profile.title || '';
+    $('previewContact').textContent = [profile.email, [profile.city, profile.country].filter(Boolean).join(', ')].filter(Boolean).join(' | ');
+    $('previewSummary').textContent = profile.summary || '';
+    if ($('accountHolderName')) $('accountHolderName').textContent = (profile.name || 'Student').toUpperCase();
+    if ($('previewAvatar')) {
+        $('previewAvatar').textContent = (profile.name || 'S').charAt(0).toUpperCase();
+        $('previewAvatar').style.backgroundImage = profile.avatarUrl ? `url("${profile.avatarUrl}")` : '';
+    }
+    setIdentity(
+        currentJwtUser?.displayName || profile.name || 'Student',
+        currentJwtUser?.avatarUrl || profile.avatarUrl || ''
+    );
+    if ($('folioContext') && document.body.dataset.page === 'me') {
+        $('folioContext').textContent = `${profile.name || t('navMe')} · ${t('selectedWork')}`;
+    }
+}
+
+async function loadPortfolio() {
+    try {
+        const data = await safeFetch('/api/portfolio');
+        currentPortfolio = Array.isArray(data.items) ? data.items : [];
+        currentPortfolioOwnerName = data.ownerName || '';
+        renderPortfolio();
+        updatePortfolioOwnerLabel();
+        return data;
+    } catch (error) {
+        currentPortfolio = [];
+        if ($('portfolioGrid')) $('portfolioGrid').innerHTML = `<p class="muted">${safeText(error.message)}</p>`;
+        return null;
+    }
+}
+
+function updatePortfolioOwnerLabel() {
+    const label = $('portfolioOwnerLabel');
+    if (!label) return;
+    const count = currentPortfolio.length;
+    const countText = currentLanguage === 'zh'
+        ? `${count} \u9879\u4f5c\u54c1`
+        : currentLanguage === 'ja'
+            ? `${count} \u4f5c\u54c1`
+            : `${count} ${count === 1 ? 'work' : 'works'}`;
+    label.textContent = currentPortfolioOwnerName
+        ? `${currentPortfolioOwnerName} · ${countText}`
+        : countText;
+}
+
+function renderPortfolio() {
+    const grid = $('portfolioGrid');
+    if (!grid) return;
+    grid.replaceChildren();
+    if (!currentPortfolio.length) {
+        const empty = document.createElement('p');
+        empty.className = 'muted';
+        empty.textContent = currentLanguage === 'zh' ? '\u6682\u65e0\u516c\u5f00\u4f5c\u54c1\u3002' : 'No public work has been added yet.';
+        grid.appendChild(empty);
+        return;
+    }
+    currentPortfolio.slice(0, 6).forEach(item => {
+        const card = document.createElement('article');
+        card.className = 'portfolio-card';
+        const image = document.createElement('img');
+        image.src = item.imageUrl || 'assets/campus-photo-01.jpg';
+        image.alt = item.title || '';
+        const type = document.createElement('span');
+        type.textContent = item.type || 'WORK';
+        const title = document.createElement('strong');
+        title.textContent = item.title || 'Untitled';
+        const description = document.createElement('p');
+        description.textContent = item.description || '';
+        card.append(image, type, title, description);
+        if (item.externalUrl) {
+            card.tabIndex = 0;
+            card.addEventListener('click', () => window.open(item.externalUrl, '_blank', 'noopener'));
+        }
+        grid.appendChild(card);
+    });
+}
+
+function renderPortfolioManager() {
+    const list = $('portfolioManageList');
+    if (!list) return;
+    list.replaceChildren();
+    currentPortfolio.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'portfolio-manage-item';
+        const copy = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = item.title || 'Untitled';
+        const meta = document.createElement('small');
+        meta.textContent = item.type || 'WORK';
+        copy.append(title, meta);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.textContent = 'REMOVE';
+        remove.addEventListener('click', () => deletePortfolioItem(item.id));
+        row.append(copy, remove);
+        list.appendChild(row);
+    });
+}
+
+async function deletePortfolioItem(itemId) {
+    try {
+        await safeFetch(`/api/portfolio/${itemId}`, { method: 'DELETE' });
+        await loadPortfolio();
+        renderPortfolioManager();
+    } catch (error) {
+        setStatus($('saveStatus'), error.message, true);
+    }
+}
+
+$('addWorkBtn')?.addEventListener('click', async () => {
+    const title = $('workTitle').value.trim();
+    if (!title) {
+        setStatus($('saveStatus'), 'Add a title before saving the work.', true);
+        return;
+    }
+    try {
+        await safeFetch('/api/portfolio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+                type: $('workType').value,
+                title,
+                description: $('workDescription').value.trim(),
+                imageUrl: $('workImageUrl').value.trim(),
+                public: true,
+                displayOrder: currentPortfolio.length + 1
+            })
+        });
+        $('workTitle').value = '';
+        $('workDescription').value = '';
+        await loadPortfolio();
+        renderPortfolioManager();
+        setStatus($('saveStatus'), 'Work added to your portfolio.');
+    } catch (error) {
+        setStatus($('saveStatus'), error.message, true);
+    }
+});
+
+function collectProfileForm() {
+    const form = $('profileForm');
+    const country = form.country.value.trim() || defaultLocation.country;
+    const city = form.city.value.trim() || defaultLocation.city;
+    return {
+        name: form.name.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+        location: `${city}, ${country}`,
+        country,
+        city,
+        title: form.title.value.trim(),
+        summary: form.summary.value.trim(),
+        visibility: form.visibility.value
+    };
+}
+
+function setEditing(enabled) {
+    if (enabled && !isOwnerAuthenticated()) {
+        setStatus($('saveStatus'), t('signInToEdit'), true);
+        openOAuthModal();
+        return;
+    }
+    $('profileForm').querySelectorAll('input, textarea, select').forEach(input => {
+        input.disabled = !enabled;
+    });
+    $('saveBtn').disabled = !enabled;
+    $('cancelEditBtn').classList.toggle('is-hidden', !enabled);
+    $('editBtn').classList.toggle('is-hidden', enabled);
+    $('profileForm').classList.toggle('editing-open', enabled);
+    $('profileForm').setAttribute('aria-hidden', String(!enabled));
+    $('portfolioEditor')?.classList.toggle('is-hidden', !enabled);
+    if (enabled) renderPortfolioManager();
+}
+
+$('editBtn').addEventListener('click', () => {
+    if (!isOwnerAuthenticated()) {
+        setStatus($('saveStatus'), t('signInToEdit'), true);
+        openOAuthModal();
+        return;
+    }
+    profileBeforeEdit = currentProfile ? structuredClone(currentProfile) : null;
+    setEditing(true);
+    setStatus($('saveStatus'), t('editingProfile'));
+});
+
+$('cancelEditBtn').addEventListener('click', () => {
+    if (profileBeforeEdit) renderProfile(profileBeforeEdit);
+    setEditing(false);
+    setStatus($('saveStatus'), isOwnerAuthenticated() ? t('profileOwnerNote') : t('profileInitialStatus'));
+});
+
+async function saveProfile(payload) {
+    return safeFetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8', ...jwtHeaders() },
+        body: JSON.stringify(payload)
+    });
+}
+
+$('profileForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    setStatus($('saveStatus'), t('saving'));
+    $('saveBtn').disabled = true;
+    $('profileForm').classList.add('is-saving');
+    try {
+        const result = await saveProfile(collectProfileForm());
+        if (result.saved === false) {
+            setStatus($('saveStatus'), result.message || 'Profile was not saved.', true);
+            return;
+        }
+        currentProfile = result.profile;
+        renderProfile(currentProfile);
+        setEditing(false);
+        const location = { country: currentProfile.country, city: currentProfile.city };
+        setHomeInputs(location);
+        rememberLocation(location);
+        setStatus($('saveStatus'), t('profileSaved'));
+        effects.runSaveFeedback($('saveStatus'));
+        await loadHome(location);
+    } catch (error) {
+        setStatus($('saveStatus'), error.message, true);
+    } finally {
+        $('profileForm').classList.remove('is-saving');
+        if ($('profileForm').classList.contains('editing-open')) $('saveBtn').disabled = false;
+    }
+});
+
+$('exportPdfBtn').addEventListener('click', () => window.print());
+
+function openOAuthModal() {
+    switchPage('account');
+    const dialog = $('authDialog');
+    if (dialog && !dialog.open) dialog.showModal();
+}
+
+function closeOAuthModal() {
+    const dialog = $('authDialog');
+    if (dialog?.open) dialog.close();
+}
+
+$('openAuthBtn')?.addEventListener('click', openOAuthModal);
+$('closeAuthBtn')?.addEventListener('click', closeOAuthModal);
+document.querySelector('.guest-action')?.addEventListener('click', closeOAuthModal);
+$('authDialog')?.addEventListener('click', event => {
+    if (event.target === $('authDialog')) closeOAuthModal();
+});
+
+document.querySelectorAll('[data-oauth-provider]').forEach(button => {
+    button.addEventListener('click', () => {
+        const provider = button.dataset.oauthProvider;
+        document.querySelectorAll('[data-oauth-provider]').forEach(item => {
+            item.disabled = true;
+        });
+        button.classList.add('is-loading');
+        setOAuthState('pending', `${t('oauthRedirecting')} ${provider} login...`, t('oauthWaiting'), provider);
+        window.location.href = `/oauth2/authorization/${provider}`;
+    });
+});
+
+function setOAuthState(state, title, detail, provider = t('notLoggedIn'), user = {}) {
+    const dot = $('oauthStatusDot');
+    const badge = $('oauthProviderBadge');
+    if (dot) dot.className = `status-dot ${state}`;
+    if (badge) {
+        badge.className = `provider-badge ${state}`;
+        badge.textContent = provider || t('notLoggedIn');
+    }
+    if ($('oauthStatusTitle')) $('oauthStatusTitle').textContent = title;
+    if ($('oauthStatusDetail')) $('oauthStatusDetail').textContent = detail;
+    if ($('oauthUserName')) $('oauthUserName').textContent = user.name || user.login || user.email || t('noOAuthUser');
+    if ($('oauthUserMeta')) $('oauthUserMeta').textContent = t('oauthUserMeta');
+}
+
+async function loadOAuthStatus() {
+    try {
+        const data = await safeFetch('/api/oauth/status');
+        currentOAuthUser = data.authenticated ? data : null;
+        if (data.authenticated) {
+            const provider = data.currentProvider || 'OAuth';
+            const displayName = data.name || data.login || data.email || 'authorized user';
+            setOAuthState('ok', `${t('oauthLoggedIn')} ${provider}`, `${t('oauthAuthorizedAs')} ${displayName}.`, provider, data);
+            setIdentity(displayName, data.avatarUrl || '');
+        } else {
+            setOAuthState('idle', t('oauthNotConnected'), t('oauthChoose'), t('notLoggedIn'));
+            setIdentity(currentProfile?.name || 'Student');
+        }
+        updateOwnerUi();
+        return data;
+    } catch (error) {
+        currentOAuthUser = null;
+        setOAuthState('error', t('oauthStatusFailed'), error.message, 'Error');
+        updateOwnerUi();
+        return null;
+    }
+}
+
+function updateConnectedAccount() {
+    const panel = $('connectedAccount');
+    if (!panel) return;
+    const user = currentJwtUser;
+    const connected = Boolean(user);
+    panel.classList.toggle('is-hidden', !connected);
+    document.querySelector('.provider-options')?.classList.toggle('is-hidden', connected);
+    $('authForm')?.closest('.local-account')?.classList.toggle('is-hidden', connected);
+    if (!connected) return;
+
+    const name = user.displayName || user.username || 'Student';
+    const provider = user.provider || 'local';
+    const providerLabel = provider === 'local' ? t('localAccount') : provider;
+    $('connectedName').textContent = name;
+    $('connectedMeta').textContent = `${user.role} · ${providerLabel}`;
+    const hasConnectedService = provider === 'google' || provider === 'github';
+    $('connectedServiceBtn').classList.toggle('is-hidden', !hasConnectedService);
+    $('connectedServiceBtn').textContent = provider === 'google' ? t('calendarAction') : t('githubAction');
+    $('connectedAvatar').textContent = (name.charAt(0) || 'S').toUpperCase();
+    $('connectedAvatar').style.backgroundImage = user.avatarUrl ? `url("${user.avatarUrl}")` : '';
+}
+
+function appendServiceItem(container, title, meta = '', url = '') {
+    const item = document.createElement(url ? 'a' : 'div');
+    item.className = 'service-item';
+    if (url) {
+        item.href = url;
+        item.target = '_blank';
+        item.rel = 'noopener noreferrer';
+    }
+    const strong = document.createElement('strong');
+    strong.textContent = title;
+    item.appendChild(strong);
+    if (meta) {
+        const small = document.createElement('small');
+        small.textContent = meta;
+        item.appendChild(small);
+    }
+    container.appendChild(item);
+}
+
+async function loadConnectedService() {
+    const result = $('connectedServiceResult');
+    const provider = currentJwtUser?.provider;
+    if (!provider) return;
+    result.replaceChildren();
+    result.textContent = t('oauthApiLoading');
+    try {
+        result.replaceChildren();
+        if (provider === 'google') {
+            const data = await safeFetch('/api/oauth/google/calendar');
+            const events = data.events?.items || [];
+            if (!events.length) result.textContent = t('noUpcomingEvents');
+            events.slice(0, 5).forEach(event => {
+                const start = event.start?.dateTime || event.start?.date || '';
+                appendServiceItem(result, event.summary || 'Untitled event', start ? new Date(start).toLocaleString() : '');
+            });
+        } else {
+            const [profile, reposData] = await Promise.all([
+                safeFetch('/api/oauth/github/profile'),
+                safeFetch('/api/oauth/github/repos')
+            ]);
+            appendServiceItem(result, profile.name || profile.login || 'GitHub profile', `${profile.publicRepos ?? 0} public repositories`, profile.profileUrl || '');
+            const repos = Array.isArray(reposData.repos) ? reposData.repos : [];
+            if (!repos.length) appendServiceItem(result, t('noRepositories'));
+            repos.slice(0, 5).forEach(repo => appendServiceItem(result, repo.name || 'Repository', repo.description || '', repo.html_url || ''));
+        }
+    } catch (error) {
+        result.textContent = `${t('serviceLoadFailed')} ${error.message}`;
+    }
+}
+
+$('connectedServiceBtn').addEventListener('click', loadConnectedService);
+
+async function loadOAuthApi(apiPath) {
+    const output = $('oauthResult');
+    output.textContent = `${t('oauthApiLoading')} ${apiPath} ...`;
+    try {
+        const data = await safeFetch(apiPath);
+        output.textContent = JSON.stringify(data, null, 2);
+        setOAuthState('ok', t('oauthApiSucceeded'), `${data.source || apiPath} ${t('oauthApiReturned')}`, data.source || 'Authorized');
+    } catch (error) {
+        const message = error.status === 401 ? t('oauthProviderRequired') : error.message;
+        output.textContent = JSON.stringify(error.data || { error: message }, null, 2);
+        setOAuthState('error', t('oauthApiFailed'), message, 'Failed');
+    }
+}
+
+function jwtHeaders() {
+    return {};
+}
+
+function updateAuthStatus(message, isError = false) {
+    setStatus($('authStatus'), message, isError);
+}
+
+$('authForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    updateAuthStatus(t('checkingSignIn'));
+    try {
+        const data = await safeFetch('/api/authenticate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+                username: $('authUsername').value.trim(),
+                password: $('authPassword').value
+            })
+        });
+        currentJwtUser = data.user || null;
+        $('authPassword').value = '';
+        updateAuthStatus(`${t('signedInStatus')}: ${data.user?.displayName || data.user?.username || ''}`);
+        updateOwnerUi();
+        await loadProfile();
+        closeOAuthModal();
+    } catch (error) {
+        updateAuthStatus(error.message, true);
+    }
+});
+
+$('registerBtn').addEventListener('click', async () => {
+    updateAuthStatus(t('checkingSignIn'));
+    try {
+        const data = await safeFetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+                username: $('authUsername').value.trim(),
+                password: $('authPassword').value
+            })
+        });
+        currentJwtUser = data.user || null;
+        $('authPassword').value = '';
+        updateAuthStatus(`${t('registered')}: ${data.user?.displayName || data.user?.username || ''}`);
+        updateOwnerUi();
+        await loadProfile();
+        closeOAuthModal();
+    } catch (error) {
+        updateAuthStatus(error.message, true);
+    }
+});
+
+$('togglePasswordBtn')?.addEventListener('click', () => {
+    const password = $('authPassword');
+    const reveal = password.type === 'password';
+    password.type = reveal ? 'text' : 'password';
+    $('togglePasswordBtn').textContent = reveal ? t('hidePassword') : t('showPassword');
+    $('togglePasswordBtn').setAttribute('aria-label', reveal ? t('hidePassword') : t('showPassword'));
+});
+
+$('logoutBtn')?.addEventListener('click', async () => {
+    try {
+        await safeFetch('/api/auth/logout', { method: 'POST' });
+    } catch (error) {
+        // Clear the browser view even if the local session has already expired.
+    }
+    if (currentJwtUser?.provider && currentJwtUser.provider !== 'local') {
+        window.location.href = '/logout';
+        return;
+    }
+    currentJwtUser = null;
+    currentOAuthUser = null;
+    updateAuthStatus(t('authReady'));
+    updateOwnerUi();
+    await loadProfile();
+    setOAuthState('idle', t('oauthLoggedOut'), t('oauthLoggedOutDetail'), t('notLoggedIn'));
+});
+
+async function loadCurrentAccount() {
+    try {
+        const data = await safeFetch('/api/auth/me');
+        currentJwtUser = data.authenticated ? data.user : null;
+        if (currentJwtUser) {
+            updateAuthStatus(`${t('signedInStatus')}: ${currentJwtUser.displayName || currentJwtUser.username}`);
+        } else {
+            updateAuthStatus(t('authReady'));
+        }
+        updateOwnerUi();
+        return currentJwtUser;
+    } catch (error) {
+        currentJwtUser = null;
+        updateAuthStatus(error.message, true);
+        updateOwnerUi();
+        return null;
+    }
+}
+
+async function loadAdminUsers() {
+    if (currentJwtUser?.role !== 'ADMIN' || !$('adminUserList')) return;
+    try {
+        const data = await safeFetch('/api/admin/users');
+        $('adminUserList').replaceChildren();
+        (data.users || []).forEach(user => {
+            const row = document.createElement('div');
+            row.className = 'admin-user-row';
+            const copy = document.createElement('div');
+            const name = document.createElement('strong');
+            name.textContent = user.displayName || user.username;
+            const meta = document.createElement('small');
+            meta.textContent = `${user.username} · ${user.role} · ${user.provider}`;
+            copy.append(name, meta);
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.textContent = user.enabled ? 'DISABLE' : 'ENABLE';
+            toggle.disabled = user.id === currentJwtUser.id;
+            toggle.addEventListener('click', async () => {
+                await safeFetch(`/api/admin/users/${user.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify({ enabled: !user.enabled })
+                });
+                await loadAdminUsers();
+            });
+            row.append(copy, toggle);
+            $('adminUserList').appendChild(row);
+        });
+    } catch (error) {
+        $('adminUserList').textContent = error.message;
+    }
+}
+
+async function handleUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get('page');
+    const authError = params.get('authError');
+
+    if (page === 'oauth' || page === 'account') {
+        switchPage('account');
+    } else if (pages[page]) {
+        switchPage(page);
+    }
+    if (authError) {
+        switchPage('account');
+        setOAuthState('error', t('oauthLoginFailed'), t('oauthProviderIncomplete'), 'Failed');
+    }
+
+    ['page', 'authError'].forEach(key => params.delete(key));
+    const query = params.toString();
+    history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash || '#home'}`);
+}
+
+async function init() {
+    updateIssueDate();
+    window.setInterval(updateIssueDate, 60000);
+    applyLanguage();
+    const hashPage = window.location.hash.replace('#', '');
+    if (pages[hashPage]) switchPage(hashPage, false);
+    await loadCsrfToken();
+    await loadOAuthStatus();
+    await loadCurrentAccount();
+    const profile = await loadProfile();
+    await loadHome(profile ? { country: profile.country, city: profile.city } : getSavedLocation());
+    await handleUrlParams();
+    effects.runEntrance();
+}
+
+init();

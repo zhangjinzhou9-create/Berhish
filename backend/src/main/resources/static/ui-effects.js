@@ -6,12 +6,12 @@
 
     function runEntrance() {
         if (!canUseGsap()) return;
-        window.gsap.from(['.brand', '.menu-item', '.topbar', '.hero-card', '.weather-card', '.tip-card', '.country-card'], {
-            opacity: 0,
+        window.gsap.from(['.wordmark', '.nav-link', '.active-page .page-stagger', '.active-page .paper-photo'], {
             y: 10,
-            duration: 0.36,
+            duration: 0.42,
             ease: 'power2.out',
-            stagger: 0.035
+            stagger: 0.035,
+            clearProps: 'transform'
         });
     }
 
@@ -27,7 +27,7 @@
 
     function bindShortcutHover() {
         if (!canUseGsap()) return;
-        document.querySelectorAll('.shortcut').forEach(card => {
+        document.querySelectorAll('.shortcut, .study-link').forEach(card => {
             card.addEventListener('mouseenter', () => {
                 window.gsap.to(card, { scale: 1.008, y: -2, duration: 0.14, ease: 'power1.out' });
             });

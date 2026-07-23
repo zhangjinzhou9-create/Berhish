@@ -2,11 +2,13 @@ package com.example.resumeapp.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.LinkedHashMap;
@@ -15,9 +17,22 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET = "campus_flow_super_secret_key_for_jwt_2026";
     private static final long EXPIRE_SECONDS = 60 * 60;
+    private final byte[] secret;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public JwtUtil(@Value("${app.jwt-secret:}") String configuredSecret) {
+        if (configuredSecret == null || configuredSecret.isBlank()) {
+            this.secret = new byte[48];
+            new SecureRandom().nextBytes(this.secret);
+        } else {
+            byte[] configuredBytes = configuredSecret.getBytes(StandardCharsets.UTF_8);
+            if (configuredBytes.length < 32) {
+                throw new IllegalArgumentException("app.jwt-secret must contain at least 32 UTF-8 bytes");
+            }
+            this.secret = configuredBytes;
+        }
+    }
 
     public String generateToken(String username, String userType) {
         try {
@@ -61,6 +76,12 @@ public class JwtUtil {
         return userType == null ? "" : userType.toString();
     }
 
+    public boolean validateAuthorizationHeader(String authHeader) {
+        return authHeader != null
+                && authHeader.startsWith("Bearer ")
+                && validateToken(authHeader.substring(7));
+    }
+
     public Map<String, Object> parseClaims(String token) {
         try {
             String[] parts = token.split("\\.");
@@ -88,7 +109,7 @@ public class JwtUtil {
 
     private String sign(String value) throws Exception {
         Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+        mac.init(new SecretKeySpec(secret, "HmacSHA256"));
         return base64Url(mac.doFinal(value.getBytes(StandardCharsets.UTF_8)));
     }
 

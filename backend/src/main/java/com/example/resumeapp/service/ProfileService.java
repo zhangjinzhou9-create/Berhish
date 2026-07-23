@@ -1,5 +1,6 @@
 package com.example.resumeapp.service;
 
+import com.example.resumeapp.service.AccountService.UserAccount;
 import jakarta.annotation.PostConstruct;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,14 +10,127 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProfileService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final AccountService accountService;
 
-    public ProfileService(JdbcTemplate jdbcTemplate) {
+    public ProfileService(JdbcTemplate jdbcTemplate, AccountService accountService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountService = accountService;
+    }
+
+    public Map<String, Object> getProfileFor(Optional<UserAccount> currentAccount) {
+        if (currentAccount.isPresent()) {
+            return readUserProfile(currentAccount.get(), true);
+        }
+        Optional<UserAccount> featured = accountService.featuredUser();
+        if (featured.isPresent()) {
+            return readUserProfile(featured.get(), false);
+        }
+        Map<String, Object> fallback = getProfile();
+        fallback.remove("studentId");
+        fallback.remove("phone");
+        fallback.put("editable", false);
+        fallback.put("guestView", true);
+        return fallback;
+    }
+
+    public Map<String, Object> updateProfile(long userId, Map<String, Object> body) {
+        UserAccount account = accountService.requireById(userId);
+        accountService.ensureProfile(userId, value(body, "name", account.displayName()), value(body, "email", ""));
+
+        Map<String, Object> current = readUserProfile(account, true);
+        String name = value(body, "name", current.get("name"));
+        String email = value(body, "email", current.get("email"));
+        String phone = value(body, "phone", current.get("phone"));
+        String title = value(body, "title", current.get("title"));
+        String summary = value(body, "summary", current.get("summary"));
+        String country = value(body, "country", current.get("country"));
+        String city = value(body, "city", current.get("city"));
+        String visibility = value(body, "visibility", current.get("visibility")).toUpperCase();
+        if (!"PUBLIC".equals(visibility) && !"PRIVATE".equals(visibility)) {
+            visibility = "PUBLIC";
+        }
+
+        jdbcTemplate.update(
+                "UPDATE auth_users SET display_name = ? WHERE id = ?",
+                name,
+                userId
+        );
+        jdbcTemplate.update(
+                """
+                UPDATE user_profiles
+                SET email = ?, phone = ?, title = ?, summary = ?, country = ?, city = ?,
+                    visibility = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = ?
+                """,
+                email,
+                phone,
+                title,
+                summary,
+                country,
+                city,
+                visibility,
+                userId
+        );
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("saved", true);
+        result.put("message", "Profile updated successfully.");
+        result.put("profile", readUserProfile(accountService.requireById(userId), true));
+        return result;
+    }
+
+    private Map<String, Object> readUserProfile(UserAccount account, boolean owner) {
+        accountService.ensureProfile(account.id(), account.displayName(), "");
+        Map<String, Object> personal = jdbcTemplate.queryForMap(
+                """
+                SELECT p.email, p.phone, p.title, p.summary, p.country, p.city, p.visibility,
+                       a.display_name, a.avatar_url, a.username, a.user_type
+                FROM user_profiles p
+                JOIN auth_users a ON a.id = p.user_id
+                WHERE p.user_id = ?
+                """,
+                account.id()
+        );
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("userId", account.id());
+        result.put("username", personal.get("username"));
+        result.put("name", personal.get("display_name"));
+        result.put("avatarUrl", personal.get("avatar_url"));
+        result.put("role", personal.get("user_type"));
+        result.put("email", personal.get("email"));
+        if (owner) {
+            result.put("phone", personal.get("phone"));
+        }
+        result.put("title", personal.get("title"));
+        result.put("summary", personal.get("summary"));
+        result.put("country", personal.get("country"));
+        result.put("city", personal.get("city"));
+        result.put("location", personal.get("city") + ", " + personal.get("country"));
+        result.put("visibility", personal.get("visibility"));
+        result.put("editable", owner);
+        result.put("guestView", !owner);
+        result.put("education", safeLegacyList("education"));
+        result.put("skills", safeLegacyList("skills"));
+        result.put("projects", safeLegacyList("projects"));
+        result.put("languages", safeLegacyList("languages"));
+        result.put("databaseAvailable", true);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object safeLegacyList(String key) {
+        try {
+            return readProfileFromDatabase().getOrDefault(key, List.of());
+        } catch (DataAccessException e) {
+            return defaultProfile().getOrDefault(key, List.of());
+        }
     }
 
     @PostConstruct
@@ -82,6 +196,7 @@ public class ProfileService {
             fallback.put("summary", summary);
             fallback.put("country", country);
             fallback.put("city", city);
+            fallback.put("databaseAvailable", false);
 
             result.put("saved", false);
             result.put("message", "Profile was not saved. Please check MySQL and the personal_info table.");

@@ -1,235 +1,139 @@
-# Campus Flow
+# CampusFlow
 
-Campus Flow is a Spring Boot web application with a browser frontend. It combines a student resume/profile page, country and weather APIs, JWT authentication, OAuth login, MySQL persistence, Docker, and cloud deployment preparation.
+CampusFlow is a desktop-first Spring Boot portfolio site prepared for a course
+presentation. Its three pages keep the same editorial visual language while the
+content is backed by real accounts, profiles, saved locations, portfolio items,
+OAuth identities, and MySQL data.
 
-Student: `ZHU FUXIN / シュフシン / M25W7195`
+## Presentation flow
 
-## Main Features
+1. **Today** is the default guest page and shows the current date plus the
+   featured user's saved country and city.
+2. **Portfolio** presents photography, drawing, design, project, and note items.
+3. **Account** supports guest browsing, local registration/sign-in, Google or
+   GitHub sign-in, and a separate administrator account.
 
-- Home page search by country and city
-- Resume/profile page with MySQL persistence
-- REST Countries and Open-Meteo API integration
-- JWT login and role-based API authorization
-- HTTPS local profile for TLS testing
-- OAuth 2.0 login with Google Calendar API and GitHub API
-- Docker Compose setup with an app container and a MySQL sidecar container
-- Classroom-friendly visual style and a compact login status area in the sidebar
+Registered users can edit only their own profile, save a daily location, and
+manage their own portfolio. Public registration always creates a `USER`;
+`ADMIN` is supplied only through server environment variables.
 
-## Project Structure
+## Security model
+
+- Password inputs use `type="password"` and never contain preset values.
+- Local passwords are stored as BCrypt hashes.
+- The browser receives an HttpOnly `campusflow_session` cookie.
+- State-changing browser requests require an `X-XSRF-TOKEN` CSRF header.
+- OAuth accounts save the provider identity, authorized display name, and
+  avatar URL.
+- Guests have read-only access to the featured public profile and portfolio.
+- Administrators can list and enable or disable accounts; ordinary users
+  receive `403` for administrator routes.
+
+## Local structure
 
 ```text
 backend/                                  Spring Boot application
 backend/src/main/java/com/example/resumeapp/
-  ResumeAppApplication.java               Application entry point
-  config/SecurityConfig.java              Spring Security, OAuth, and logout flow
-  controller/ProfileController.java       Profile and Home API route entry
-  controller/AuthController.java          JWT login and role API route entry
-  controller/OAuthApiController.java      Google Calendar and GitHub API route entry
-  controller/JwtUtil.java                 Small classroom JWT helper
-  service/ProfileService.java             Profile database read/write logic
-  service/HomeService.java                Country, weather, and life-tip logic
-backend/src/main/resources/static/        Frontend HTML, CSS, JavaScript, and images
-database/init/                            MySQL initialization scripts for Docker
-database/report_screenshots/              Screenshots used in report.md and PDF
-docker-compose.yml                        App + MySQL sidecar container setup
-OAUTH_SETUP.md                            OAuth setup notes
-report.md                                 Project report
+  config/SecurityConfig.java              Browser security and OAuth flow
+  controller/AuthController.java          Registration, sign-in, session, admin
+  controller/ProfileController.java       Profile and Today APIs
+  controller/PortfolioController.java     Portfolio CRUD API
+  service/AccountService.java             Users, roles, OAuth linking, BCrypt
+  service/ProfileService.java             Per-user profile persistence
+  service/PortfolioService.java           Per-user portfolio persistence
+backend/src/main/resources/static/        HTML, CSS, motion, images, OpenAPI
+database/init/                            Existing MySQL initialization files
+opendesign/                               Design-system and mockup source
+backups/                                  Local database migration backups
 ```
 
-## Requirements
+## Current local presentation service
 
-- Java 17 or newer
-- MySQL running on port `3307` for normal local development
-- Docker Desktop for Docker Compose testing
-- Docker Hub account for image publishing
-
-Default local database settings:
+The verified presentation instance runs at:
 
 ```text
-Database: user_db2
-User: root
-Password: pass
+http://localhost:8081/index.html
 ```
 
-The application can still open with fallback profile data if MySQL is not running, but database persistence tests need MySQL.
+MySQL is exposed only to the local machine on port `3308`. The active app
+container is `campus-flow-local-link`, and the pre-migration app container is
+kept stopped as `campus-flow-local-link-legacy-20260723`.
 
-## Run with Docker Desktop
-
-The Docker version runs the Spring Boot app and MySQL together.
+Useful checks:
 
 ```powershell
-cd C:\Users\佩索阿\Documents\CampusFlow_Deployment
-docker compose build
-docker compose up -d
+docker ps --filter name=campus-flow
+docker logs --tail 100 campus-flow-local-link
+curl.exe http://localhost:8081/api/profile
+curl.exe http://localhost:8081/api/portfolio
+curl.exe http://localhost:8081/openapi.yaml
 ```
 
-Open:
+## Build and test
 
-```text
-http://localhost:8080/index.html
-http://localhost:8080/api/home
-http://localhost:8080/api/profile
-```
-
-Check containers and logs:
+The Docker build uses Java 17 and runs the regression suite:
 
 ```powershell
-docker compose ps
-docker compose logs app
-docker compose logs mysql
+cd C:\ProgramData\campusflow\backend
+docker build --tag campus-flow:formal-local .
 ```
 
-Stop containers:
+The regression suite covers public registration restrictions, BCrypt login,
+cookie authentication, CSRF-protected profile writes, forged-token rejection,
+and Japan time/date behavior.
 
-```powershell
-docker compose down
-```
+## OAuth callback URLs
 
-For a clean database restart:
-
-```powershell
-docker compose down -v
-docker compose up -d
-```
-
-Local Docker OAuth callback URLs:
+For the current local service, the provider consoles must contain these exact
+authorized redirect URIs:
 
 ```text
-http://localhost:8080/login/oauth2/code/github
-http://localhost:8080/login/oauth2/code/google
+http://localhost:8081/login/oauth2/code/google
+http://localhost:8081/login/oauth2/code/github
 ```
 
-For cloud deployment, add the deployed HTTPS URL to the GitHub OAuth App and Google Cloud Console.
+OAuth client IDs and secrets belong in the local `.env` file and must not be
+committed. The application constructs provider callbacks from `APP_BASE_URL`.
 
-## Run with HTTP
+## API documentation
 
-```powershell
-cd C:\Users\佩索阿\Documents\CampusFlow_Deployment\backend
-.\mvnw.cmd clean package -DskipTests
-java -jar target\resumeapp-0.0.1-SNAPSHOT.jar
-```
-
-Open:
+The complete OpenAPI file is served at:
 
 ```text
-http://localhost:8080/index.html
-http://localhost:8080/api-docs.html
+http://localhost:8081/openapi.yaml
 ```
 
-## Run with HTTPS for TLS and OAuth
-
-```powershell
-cd C:\Users\佩索阿\Documents\CampusFlow_Deployment\backend
-.\mvnw.cmd clean package -DskipTests
-java -jar target\resumeapp-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
-```
-
-Open:
+Primary endpoints:
 
 ```text
-https://localhost:8443/index.html
+GET    /api/csrf
+POST   /api/register
+POST   /api/authenticate
+GET    /api/auth/me
+POST   /api/auth/logout
+GET    /api/home
+GET    /api/profile
+POST   /api/profile
+GET    /api/portfolio
+POST   /api/portfolio
+PUT    /api/portfolio/{id}
+DELETE /api/portfolio/{id}
+GET    /api/admin/users
+PATCH  /api/admin/users/{id}
 ```
 
-The local certificate is self-signed. If the browser shows a warning, choose the advanced option and continue for local testing.
+## Published container and Azure
 
-## OAuth Setup
-
-The full OAuth flow needs valid Google and GitHub OAuth credentials. Do not commit client secrets.
-
-Set environment variables before running the HTTPS profile:
-
-```powershell
-$env:GITHUB_CLIENT_ID="your-github-client-id"
-$env:GITHUB_CLIENT_SECRET="your-github-client-secret"
-$env:GOOGLE_CLIENT_ID="your-google-client-id"
-$env:GOOGLE_CLIENT_SECRET="your-google-client-secret"
-```
-
-Use these callback URLs when creating OAuth apps:
+The verified presentation image is available from Docker Hub:
 
 ```text
-https://localhost:8443/login/oauth2/code/github
-https://localhost:8443/login/oauth2/code/google
+berhish/campus-flow:formal-20260724
+sha256:4ec8359bb8d1026401b8601e950c155a5e1d21d884242267bd38f4c39525e511
 ```
 
-For Google Cloud, enable Google Calendar API and add the testing Gmail account as an OAuth test user. More setup notes are in `OAUTH_SETUP.md`.
+The fixed tag and `latest` currently point to the same build. Azure App Service
+portal values, environment variables, OAuth callbacks, and verification URLs
+are documented in
+[`docs/AZURE_PORTAL_DEPLOYMENT.md`](docs/AZURE_PORTAL_DEPLOYMENT.md).
 
-## Main API Endpoints
-
-```text
-GET  /api/home
-GET  /api/home?country=Japan&city=Tokyo
-GET  /api/profile
-POST /api/profile
-```
-
-OAuth API endpoints:
-
-```text
-GET /api/oauth/status
-GET /api/oauth/github/profile
-GET /api/oauth/github/repos
-GET /api/oauth/google/calendar
-```
-
-JWT authentication endpoints:
-
-```text
-POST /api/authenticate
-POST /api/register
-GET  /api/verify
-GET  /api/student-area
-GET  /api/teacher-area
-GET  /api/admin-area
-```
-
-Default JWT test users:
-
-```text
-student / pass / STUDENT
-teacher / pass / TEACHER
-admin   / pass / ADMIN
-```
-
-## Docker Hub and Azure
-
-```powershell
-docker tag campus-flow:deployment berhish/campus-flow:latest
-docker push berhish/campus-flow:latest
-```
-
-Docker Hub repository:
-
-```text
-https://hub.docker.com/r/berhish/campus-flow
-```
-
-Azure App Service should use:
-
-```text
-Registry URL: https://index.docker.io
-Image: berhish/campus-flow:latest
-Port: 8080
-```
-
-## Reproduction Checklist
-
-1. Start the app with Docker Compose or the Spring Boot Maven command.
-2. Open `http://localhost:8080/index.html`.
-3. Test `/api/home` and `/api/profile` from browser, Postman, or Swagger UI.
-4. Start the app with the `local` profile for HTTPS/OAuth tests.
-5. Open `https://localhost:8443/index.html`.
-6. Click Login in the sidebar user card.
-7. Choose GitHub or Google and complete OAuth authorization.
-8. Use the API test area or direct URLs to verify GitHub profile/repos and Google Calendar.
-9. For deployment, capture Docker Desktop, Docker Hub, Azure overview, online page, and online API screenshots.
-
-## Build Jar
-
-```powershell
-cd C:\Users\佩索阿\Documents\CampusFlow_Deployment\backend
-.\mvnw.cmd package -DskipTests
-java -jar target\resumeapp-0.0.1-SNAPSHOT.jar
-```
-
-Note: on this Windows environment, `.\mvnw.cmd spring-boot:run` can fail when Maven handles the Chinese user path. The packaged jar command above is the verified local run method.
+Release details are recorded in [`CHANGELOG.md`](CHANGELOG.md).

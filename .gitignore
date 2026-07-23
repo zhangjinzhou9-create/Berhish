@@ -11,3 +11,6 @@ backend/*.out.log
 *.zip
 
 tmp/
+backups/
+screenshots/design-reset-audit-*/
+screenshots/product-expression-audit-*/

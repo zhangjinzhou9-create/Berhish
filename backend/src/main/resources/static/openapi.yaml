@@ -1,221 +1,235 @@
 openapi: 3.0.3
 info:
-  title: Campus Flow API
-  version: 1.0.0
-  description: API documentation for Campus Flow, a student daily-life dashboard with profile management and external API integration.
+  title: CampusFlow API
+  version: 2.0.0
+  description: >
+    Local API for the CampusFlow presentation site. Guests can browse the
+    featured profile and public work. Registered users manage only their own
+    profile and portfolio. Administrators use a separately configured account.
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:8081
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: campusflow_session
+    csrfHeader:
+      type: apiKey
+      in: header
+      name: X-XSRF-TOKEN
+  schemas:
+    Account:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        username: { type: string }
+        displayName: { type: string }
+        avatarUrl: { type: string }
+        role: { type: string, enum: [USER, ADMIN] }
+        provider: { type: string, enum: [local, google, github] }
+        enabled: { type: boolean }
+    Profile:
+      type: object
+      properties:
+        userId: { type: integer, format: int64 }
+        username: { type: string }
+        name: { type: string }
+        avatar: { type: string }
+        title: { type: string }
+        summary: { type: string }
+        email: { type: string }
+        phone: { type: string, description: Returned only to the owner. }
+        country: { type: string }
+        city: { type: string }
+        location: { type: string }
+        visibility: { type: string, enum: [PUBLIC, PRIVATE] }
+        editable: { type: boolean }
+    PortfolioItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        type: { type: string, enum: [PHOTO, DRAWING, DESIGN, PROJECT, NOTE] }
+        title: { type: string }
+        description: { type: string }
+        imageUrl: { type: string }
+        externalUrl: { type: string }
+        displayOrder: { type: integer }
+        public: { type: boolean }
 paths:
-  /api/authenticate:
-    post:
-      summary: Login and receive a token
-      description: Checks the username and plain text password from the user database, then returns a JWT token.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  example: student
-                password:
-                  type: string
-                  example: pass
-      responses:
-        '200':
-          description: Login successful
-        '401':
-          description: Unknown user or wrong password
-  /api/verify:
+  /api/csrf:
     get:
-      summary: Verify token
-      description: Reads the Bearer token and returns the username and user type.
-      security:
-        - bearerAuth: []
+      summary: Start a browser session and obtain the CSRF header value
       responses:
         '200':
-          description: Token is valid
-        '401':
-          description: Missing or invalid token
-  /api/student-area:
-    get:
-      summary: Student area
-      description: Accessible by STUDENT, TEACHER, and ADMIN users.
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Access allowed
-        '401':
-          description: Missing or invalid token
-        '403':
-          description: User type is not allowed
-  /api/teacher-area:
-    get:
-      summary: Teacher area
-      description: Accessible by TEACHER and ADMIN users.
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Access allowed
-        '401':
-          description: Missing or invalid token
-        '403':
-          description: User type is not allowed
-  /api/admin-area:
-    get:
-      summary: Admin area
-      description: Accessible by ADMIN users only.
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: Access allowed
-        '401':
-          description: Missing or invalid token
-        '403':
-          description: User type is not allowed
+          description: CSRF token returned and XSRF-TOKEN cookie set
   /api/register:
     post:
-      summary: Register a user
-      description: Optional endpoint to add a new user with username, password, and user type.
+      summary: Register an ordinary user
+      description: >
+        Public registration always creates a USER account. Passwords must be
+        12-72 characters and are stored as BCrypt hashes.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [username, password]
               properties:
-                username:
-                  type: string
-                  example: newstudent
-                password:
-                  type: string
-                  example: pass
-                userType:
-                  type: string
-                  example: STUDENT
+                username: { type: string, example: demoartist }
+                password: { type: string, format: password, minLength: 12, maxLength: 72 }
+                displayName: { type: string, example: Kyoto Sketchbook }
       responses:
-        '200':
-          description: User registered
-        '400':
-          description: Invalid user type
-        '409':
-          description: Username already exists
+        '200': { description: Account created and signed in }
+        '400': { description: Invalid input }
+        '403': { description: Attempted privileged public registration }
+        '409': { description: Username already exists }
+  /api/authenticate:
+    post:
+      summary: Sign in with a local account
+      description: Sets an HttpOnly campusflow_session cookie after BCrypt verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string, format: password }
+      responses:
+        '200': { description: Signed in }
+        '401': { description: Unknown, disabled, or incorrect credentials }
+  /api/auth/me:
+    get:
+      summary: Read the current account
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: Current account or anonymous state }
+  /api/auth/logout:
+    post:
+      summary: End the local session
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      responses:
+        '200': { description: Session cookie cleared }
   /api/home:
     get:
-      summary: Get homepage weather and country information
-      description: Returns country information and weather tips. If country and city are not provided, the service uses the saved profile settings.
+      summary: Read Today page data
+      description: Uses the supplied location or the featured saved location.
       parameters:
         - name: country
           in: query
-          required: false
-          schema:
-            type: string
-            example: Japan
+          schema: { type: string, example: Japan }
         - name: city
           in: query
-          required: false
-          schema:
-            type: string
-            example: Kyoto
+          schema: { type: string, example: Kyoto }
       responses:
-        '200':
-          description: Homepage data returned successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  country:
-                    type: object
-                  city:
-                    type: object
-                  weather:
-                    type: object
-                  tips:
-                    type: object
+        '200': { description: Country, city, weather and daily tip data }
   /api/profile:
     get:
-      summary: Get saved profile
-      description: Reads the profile and resume information from MySQL.
+      summary: Read the current or featured public profile
       responses:
         '200':
-          description: Profile data returned successfully
+          description: Owner profile when signed in; featured public profile for guests
           content:
             application/json:
-              schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  studentId:
-                    type: string
-                  email:
-                    type: string
-                  phone:
-                    type: string
-                  country:
-                    type: string
-                  city:
-                    type: string
-                  summary:
-                    type: string
+              schema: { $ref: '#/components/schemas/Profile' }
     post:
-      summary: Update saved profile
-      description: Updates the profile information. The saved country and city are also used by the homepage weather service.
+      summary: Save the signed-in user's own profile and daily location
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Profile' }
+      responses:
+        '200': { description: Profile saved }
+        '401': { description: Sign-in required }
+  /api/portfolio:
+    get:
+      summary: List current-owner or featured public portfolio items
+      responses:
+        '200': { description: Portfolio items returned }
+    post:
+      summary: Add an item to the signed-in user's portfolio
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PortfolioItem' }
+      responses:
+        '200': { description: Item created }
+        '401': { description: Sign-in required }
+  /api/portfolio/{id}:
+    put:
+      summary: Update an owned portfolio item
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PortfolioItem' }
+      responses:
+        '200': { description: Item updated }
+        '403': { description: Item is owned by another user }
+    delete:
+      summary: Delete an owned portfolio item
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200': { description: Item deleted }
+        '403': { description: Item is owned by another user }
+  /api/admin/users:
+    get:
+      summary: List accounts for administration
+      security:
+        - sessionCookie: []
+      responses:
+        '200': { description: Account list returned }
+        '403': { description: Administrator account required }
+  /api/admin/users/{id}:
+    patch:
+      summary: Enable or disable an ordinary account
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required: [enabled]
               properties:
-                name:
-                  type: string
-                  example: シュフシン
-                studentId:
-                  type: string
-                  example: M25W7195
-                email:
-                  type: string
-                  example: st232527@kcg.edu
-                phone:
-                  type: string
-                  example: 123-4567-8901
-                location:
-                  type: string
-                  example: Kyoto, Japan
-                country:
-                  type: string
-                  example: Japan
-                city:
-                  type: string
-                  example: Kyoto
-                title:
-                  type: string
-                  example: Student / M25W7195
-                summary:
-                  type: string
-                  example: I am currently studying information technology.
+                enabled: { type: boolean }
       responses:
-        '200':
-          description: Profile updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  profile:
-                    type: object
+        '200': { description: Account state updated }
+        '403': { description: Administrator account required }

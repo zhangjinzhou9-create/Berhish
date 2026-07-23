@@ -14,13 +14,14 @@ import java.util.Map;
 public class HomeService {
 
     private final ProfileService profileService;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${restcountries.api.key:}")
     private String restCountriesApiKey;
 
-    public HomeService(ProfileService profileService) {
+    public HomeService(ProfileService profileService, RestTemplate restTemplate) {
         this.profileService = profileService;
+        this.restTemplate = restTemplate;
     }
 
     public Map<String, Object> getHome(String country, String city) {
@@ -262,11 +263,13 @@ public class HomeService {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> fetchWeatherInfo(Map<String, Object> geoInfo) {
+        String timezone = safeText(geoInfo.get("timezone"), "auto");
         String url = UriComponentsBuilder
                 .fromUriString("https://api.open-meteo.com/v1/forecast")
                 .queryParam("latitude", geoInfo.get("latitude"))
                 .queryParam("longitude", geoInfo.get("longitude"))
                 .queryParam("current_weather", true)
+                .queryParam("timezone", timezone)
                 .toUriString();
 
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
@@ -285,29 +288,70 @@ public class HomeService {
         result.put("weatherCode", weatherCode);
         result.put("condition", weatherText(weatherCode));
         result.put("time", current.get("time"));
+        result.put("timezone", response == null ? timezone : response.getOrDefault("timezone", timezone));
         return result;
     }
 
     private Map<String, Object> buildTips(Map<String, Object> weather) {
         double temperature = toDouble(weather.get("temperature"));
         String condition = String.valueOf(weather.get("condition"));
+        int weatherCode = toInt(weather.get("weatherCode"));
+        double windSpeed = toDouble(weather.get("windSpeed"));
 
         String clothing;
-        if (temperature < 10) {
-            clothing = "Wear a warm coat";
-        } else if (temperature < 20) {
-            clothing = "A light jacket is suitable";
-        } else {
+        if (temperature <= 0) {
+            clothing = "Wear a winter coat, gloves, and warm shoes";
+        } else if (temperature < 8) {
+            clothing = "Wear a warm coat and keep your neck covered";
+        } else if (temperature < 16) {
+            clothing = "A jacket or layered outfit is suitable";
+        } else if (temperature < 24) {
+            clothing = "Light layers should be comfortable";
+        } else if (temperature < 30) {
             clothing = "Light clothes are enough";
+        } else {
+            clothing = "Choose breathable clothes and drink water often";
         }
 
-        String reminder = condition.toLowerCase().contains("rain") ?
-                "Remember to bring an umbrella" :
-                "Good weather for going out";
+        String reminder;
+        if (weatherCode >= 95) {
+            reminder = "Thunder is possible, avoid exposed outdoor areas";
+        } else if (weatherCode >= 71 && weatherCode <= 77) {
+            reminder = "Watch for slippery roads and allow extra travel time";
+        } else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+            reminder = "Bring an umbrella and protect notebooks or devices";
+        } else if (weatherCode >= 45 && weatherCode <= 48) {
+            reminder = "Visibility may be low, leave earlier for class";
+        } else if (windSpeed >= 10) {
+            reminder = "It may be windy, secure light items before going out";
+        } else if (weatherCode == 0 && temperature >= 24) {
+            reminder = "Clear weather, remember sun protection and hydration";
+        } else if (weatherCode <= 3) {
+            reminder = "Stable weather for campus errands or a short walk";
+        } else {
+            reminder = "Check the sky once before leaving";
+        }
+
+        String weatherTrend;
+        if (weatherCode >= 95) {
+            weatherTrend = "Thunderstorm risk";
+        } else if (weatherCode >= 71 && weatherCode <= 77) {
+            weatherTrend = "Snow conditions";
+        } else if ((weatherCode >= 51 && weatherCode <= 67) || (weatherCode >= 80 && weatherCode <= 82)) {
+            weatherTrend = "Rain expected";
+        } else if (weatherCode >= 45 && weatherCode <= 48) {
+            weatherTrend = "Foggy visibility";
+        } else if (weatherCode == 0) {
+            weatherTrend = "Clear and bright";
+        } else if (weatherCode <= 3) {
+            weatherTrend = "Cloud cover is light to moderate";
+        } else {
+            weatherTrend = condition;
+        }
 
         Map<String, Object> tips = new LinkedHashMap<>();
         tips.put("clothing", clothing);
-        tips.put("weatherTrend", condition);
+        tips.put("weatherTrend", weatherTrend);
         tips.put("reminder", reminder);
         tips.put("dailyTip", clothing + ". " + reminder + ".");
         return tips;

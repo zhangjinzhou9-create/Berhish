@@ -1,231 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Flow</title>
+    <title>CampusFlow — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho:wght@400;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="vendor/gsap.min.js"></script>
 </head>
-<body>
-<div class="app-shell">
-    <aside class="sidebar">
-        <div class="brand">
-            <div class="brand-mark">CF</div>
-            <div>
-                <h1>Campus Flow</h1>
-                <p>Study · Life · Profile</p>
-            </div>
-        </div>
+<body data-page="home">
+<div class="site-shell">
+    <header class="site-header">
+        <button class="wordmark" type="button" data-page-link="home" aria-label="Open Today">
+            <span>CAMPUS</span><b>FLOW</b>
+        </button>
 
-        <nav class="menu">
-            <button class="menu-item active" data-page="home" data-i18n="menuHome">Home</button>
-            <button class="menu-item" data-page="nav" data-i18n="menuNav">Quick Access</button>
-            <button class="menu-item" data-page="me" data-i18n="menuMe">Me</button>
+        <nav class="top-nav" aria-label="Main pages">
+            <button class="nav-link active" type="button" data-page-link="home">
+                <span>01</span><b data-i18n="navHome">Today</b>
+            </button>
+            <button class="nav-link" type="button" data-page-link="me">
+                <span>02</span><b data-i18n="navMe">Portfolio</b>
+            </button>
+            <button id="accountBtn" class="nav-link account-btn" type="button" data-page-link="account">
+                <span id="accountAvatar">S</span><b data-i18n="account">Account</b>
+            </button>
         </nav>
 
-        <div class="sidebar-footer">
-            <div id="sideAvatar" class="avatar">S</div>
-            <div class="sidebar-user-main">
-                <strong id="sideName">Student</strong>
-                <p id="sideSubtitle" data-i18n="campusUser">Campus Flow User</p>
-                <div class="user-auth-row" aria-label="OAuth login status">
-                    <span id="oauthStatusDot" class="status-dot"></span>
-                    <strong id="oauthStatusTitle">OAuth not connected</strong>
-                    <span id="oauthProviderBadge" class="provider-badge">Not logged in</span>
-                </div>
-                <small id="oauthStatusDetail" class="user-auth-detail">Choose Google or GitHub to verify third-party login.</small>
-                <div class="oauth-actions-row sidebar-actions">
-                    <button type="button" id="oauthChooseBtn" class="oauth-login-btn">Login</button>
-                    <button type="button" id="oauthRefreshBtn" class="icon-btn compact-icon" title="Refresh status" aria-label="Refresh OAuth status">R</button>
-                    <a class="icon-btn compact-icon" href="/logout" title="Logout" aria-label="Logout">L</a>
-                </div>
-                <details class="oauth-tools sidebar-oauth-tools">
-                    <summary>API test</summary>
-                    <div class="oauth-verify-row">
-                        <button type="button" class="secondary-btn" data-oauth-api="/api/oauth/github/profile">GitHub Profile</button>
-                        <button type="button" class="secondary-btn" data-oauth-api="/api/oauth/github/repos">GitHub Repos</button>
-                        <button type="button" class="secondary-btn" data-oauth-api="/api/oauth/google/calendar">Google Calendar</button>
-                    </div>
-                    <pre id="oauthResult" class="oauth-result compact-result">OAuth API result will be shown here.</pre>
-                </details>
+        <div class="header-tools">
+            <label class="language-switch">
+                <span data-i18n="languageLabel">Language</span>
+                <select id="languageSelect" aria-label="Language">
+                    <option value="en">EN</option>
+                    <option value="zh">中文</option>
+                </select>
+            </label>
+            <div class="issue-label">
+                <span data-i18n="localDate">LOCAL DATE</span>
+                <time id="issueDate" datetime="">----</time>
             </div>
         </div>
-    </aside>
+    </header>
 
-    <main class="main">
-        <header class="topbar">
-            <div>
-                <h2 id="pageTitle">Home</h2>
-            </div>
-            <div class="topbar-actions">
-                <label class="language-switch">
-                    <span data-i18n="languageLabel">Language</span>
-                    <select id="languageSelect" aria-label="Language">
-                        <option value="en">English</option>
-                        <option value="zh">中文</option>
-                        <option value="ja">日本語</option>
-                    </select>
-                </label>
-                <div class="date-card">
-                    <span id="todayText">Today</span>
-                    <small data-i18n="dateSubtitle">Keep learning, keep growing.</small>
-                </div>
-            </div>
-        </header>
+    <main class="page-stage">
+        <section id="homePage" class="page editorial-page today-page active-page" data-page="home" aria-labelledby="todayTitle">
+            <div class="today-copy hero-copy page-stagger">
+                <p class="chapter-mark" data-i18n="todayChapter">TODAY / KYOTO</p>
+                <h1 id="todayTitle"><span data-i18n="todayHeadline">A quiet day in</span><span data-i18n="headlineSpacer"> </span><em><span id="heroCityName">Kyoto</span><span data-i18n="headlinePunctuation">.</span></em></h1>
+                <p class="lead" data-i18n="todayLead">Weather first. Everything else can wait.</p>
+                <p id="homeLocation" class="hero-location">Loading profile location…</p>
 
-        <section id="homePage" class="page active-page">
-            <div class="hero-card">
-                <div class="hero-copy">
-                    <p class="eyebrow">Location & Weather</p>
-                    <h3 data-i18n="homeHeroTitle">Enter a country and city to generate today's life tips</h3>
-                    <p id="homeLocation">Loading...</p>
-                </div>
-                <form id="homeLocationForm" class="home-location-form">
-                    <label data-i18n-label="countryLabel">Country<input id="homeCountryInput" name="country" placeholder="Japan"></label>
-                    <label data-i18n-label="cityLabel">City<input id="homeCityInput" name="city" placeholder="Kyoto"></label>
-                    <div class="home-actions">
-                        <button type="submit" class="primary-btn" data-i18n="searchBtn">Search</button>
-                        <button type="button" id="saveLocationBtn" class="ghost-btn" data-i18n="saveLocationBtn">Save to Profile</button>
-                    </div>
-                    <small id="homeStatus">The Home page can search independently.</small>
+                <form id="homeLocationForm" class="location-search" aria-describedby="homeStatus">
+                    <label data-i18n-label="countryLabel">
+                        Country
+                        <input id="homeCountryInput" name="country" value="Japan" autocomplete="country-name">
+                    </label>
+                    <label data-i18n-label="cityLabel">
+                        City
+                        <input id="homeCityInput" name="city" value="Kyoto" autocomplete="address-level2">
+                    </label>
+                    <button id="homeSearchBtn" class="ink-button" type="submit" data-i18n="searchBtn">Search</button>
                 </form>
+                <div class="location-actions">
+                    <button id="saveLocationBtn" class="text-action" type="button" data-i18n="saveToProfile">+ save this place to profile</button>
+                    <p id="homeStatus" class="request-status" role="status" data-i18n="homeInitialStatus">Connecting to the local API…</p>
+                </div>
+                <p class="country-micro">
+                    <span id="countryName">Japan</span> ·
+                    <span id="regionName">Asia</span> ·
+                    <span id="populationText">--</span> <span data-i18n="peopleLabel">people</span>
+                </p>
             </div>
 
-            <div class="weather-grid">
-                <div class="weather-card primary-card">
-                    <div class="card-head">
-                        <span data-i18n="currentWeather">Current Weather</span>
-                        <button id="goProfileBtn" class="small-link" data-i18n="changeLocation">Change Location</button>
-                    </div>
-                    <div class="weather-main">
-                        <strong id="temperature">--°C</strong>
-                        <div>
-                            <p id="weatherCondition">Loading</p>
-                            <small id="weatherTime">--</small>
-                        </div>
-                    </div>
-                    <div class="weather-meta">
-                        <div><span data-i18n="cityLabel">City</span><strong id="weatherCity">--</strong></div>
-                        <div><span data-i18n="windSpeed">Wind Speed</span><strong id="windSpeed">--</strong></div>
-                        <div><span data-i18n="trend">Trend</span><strong id="weatherTrend">--</strong></div>
-                    </div>
+            <article class="today-weather page-stagger" aria-label="Current weather">
+                <span class="vertical-caption" data-i18n="currentWeather">Current weather</span>
+                <strong id="temperature" class="temperature">--°</strong>
+                <div class="weather-copy">
+                    <strong id="weatherCondition">Connecting…</strong>
+                    <span id="weatherTime">--</span>
                 </div>
+                <div class="sun-track" aria-hidden="true"><i></i></div>
+                <p id="dailyTip" class="weather-note">Waiting for today’s note.</p>
+            </article>
 
-                <div class="tip-card">
-                    <span class="pill">Daily Tip</span>
-                    <h3 id="dailyTip">Generating life tips...</h3>
-                    <div class="chips">
-                        <span id="clothingTip">Clothing: --</span>
-                        <span id="reminderTip">Reminder: --</span>
-                    </div>
-                </div>
+            <div class="today-collage collage-set" aria-label="Kyoto photo collage">
+                <figure class="paper-photo primary-photo">
+                    <img src="assets/campus-extra-red-temple.jpg" alt="Red temple architecture">
+                    <figcaption data-i18n="todayPhotoMain">red lines / Kyoto, 2026</figcaption>
+                </figure>
+                <figure class="paper-photo support-photo support-one">
+                    <img src="assets/campus-photo-07.jpg" alt="Magnolia branches against a pale building">
+                    <figcaption data-i18n="todayPhotoSecond">after the rain</figcaption>
+                </figure>
+                <figure class="paper-photo support-photo support-two">
+                    <img src="assets/campus-photo-03.jpg" alt="A gull by the harbor">
+                    <figcaption data-i18n="todayPhotoThird">wind from the water</figcaption>
+                </figure>
+                <span class="registration-mark" aria-hidden="true">＋</span>
             </div>
 
-            <div class="country-card">
-                <h3 data-i18n="countryInfo">Country Information</h3>
-                <div class="country-list">
-                    <p><span data-i18n="countryLabel">Country</span><strong id="countryName">--</strong></p>
-                    <p><span data-i18n="capital">Capital</span><strong id="capitalName">--</strong></p>
-                    <p><span data-i18n="region">Region</span><strong id="regionName">--</strong></p>
-                    <p><span data-i18n="population">Population</span><strong id="populationText">--</strong></p>
-                    <p><span data-i18n="languages">Languages</span><strong id="languageText">--</strong></p>
-                    <p><span data-i18n="currency">Currency</span><strong id="currencyText">--</strong></p>
-                </div>
-            </div>
+            <aside class="today-facts page-stagger" aria-label="Today at a glance">
+                <div><span data-i18n="cityMetric">Place</span><strong id="weatherCity">--</strong></div>
+                <div><span data-i18n="capitalMetric">Capital</span><strong id="capitalName">--</strong></div>
+                <div><span data-i18n="windMetric">Wind</span><strong id="windSpeed">--</strong></div>
+                <div><span data-i18n="trendMetric">Trend</span><strong id="weatherTrend">--</strong></div>
+                <div><span data-i18n="languagesMetric">Language</span><strong id="languageText">--</strong></div>
+                <div><span data-i18n="currenciesMetric">Currency</span><strong id="currencyText">--</strong></div>
+            </aside>
         </section>
 
-        <section id="navPage" class="page">
-            <div class="season-banner nav-season" aria-hidden="true"></div>
-            <div class="section-title">
-                <p class="eyebrow">Quick Access</p>
-                <h3 data-i18n="quickTitle">Useful Web Shortcuts</h3>
+        <section id="mePage" class="page editorial-page profile-page" data-page="me" aria-labelledby="previewName" hidden>
+            <aside class="profile-index page-stagger">
+                <span data-i18n="portfolioPublicView">PORTFOLIO / PUBLIC VIEW</span>
+                <i aria-hidden="true"></i>
+                <small data-i18n="portfolioIndex">ABOUT / WORKS</small>
+            </aside>
+
+            <div class="profile-portrait collage-set">
+                <figure class="paper-photo portrait-main">
+                    <img src="assets/campus-photo-02.jpg" alt="Cherry trees beside a river">
+                    <figcaption data-i18n="portraitMainCaption">spring beside the water</figcaption>
+                </figure>
+                <figure class="paper-photo portrait-small">
+                    <img src="assets/campus-photo-06.jpg" alt="A red leaf held against winter trees">
+                    <figcaption data-i18n="portraitSmallCaption">one leaf / late season</figcaption>
+                </figure>
             </div>
-            <div id="shortcutGrid" class="shortcut-grid"></div>
+
+            <article id="resumePreview" class="profile-story page-stagger">
+                <div class="profile-kicker">
+                    <p class="chapter-mark" data-i18n="portfolioChapter">PORTFOLIO / SELECTED WORK</p>
+                    <span id="previewAvatar" class="profile-avatar">S</span>
+                </div>
+                <h1 id="previewName">Student</h1>
+                <p id="previewTitle" class="profile-role">Loading profile…</p>
+                <p id="previewSummary" class="profile-summary">Connecting to the profile API.</p>
+                <p id="previewContact" class="profile-contact"></p>
+
+                <section class="portfolio-showcase" aria-labelledby="portfolioHeading">
+                    <div class="portfolio-heading">
+                        <span id="portfolioHeading" class="section-label" data-i18n="selectedWork">SELECTED WORK</span>
+                        <small id="portfolioOwnerLabel">Photography · Projects</small>
+                    </div>
+                    <div id="portfolioGrid" class="portfolio-grid">
+                        <p class="muted">Loading selected work…</p>
+                    </div>
+                </section>
+
+                <div class="profile-actions">
+                    <button id="editBtn" class="vermilion-button" type="button" data-i18n="edit">Edit profile</button>
+                    <button id="exportPdfBtn" class="text-action dark" type="button" data-i18n="exportPrint">Print this page ↗</button>
+                </div>
+            </article>
+
+            <form id="profileForm" class="profile-form edit-sheet" aria-hidden="true">
+                <div class="sheet-heading">
+                    <div>
+                        <span data-i18n="ownerEditMode">OWNER EDIT MODE</span>
+                        <h2 data-i18n="editSheetTitle">Edit your page.</h2>
+                    </div>
+                </div>
+                <div id="profileAccessNote" class="profile-access-note">Sign in to edit private details.</div>
+                <div class="form-grid">
+                    <label data-i18n-label="nameLabel">Name<input name="name" disabled></label>
+                    <label data-i18n-label="emailLabel">Email<input name="email" type="email" disabled></label>
+                    <label class="private-field" data-i18n-label="phoneLabel">Phone<input name="phone" disabled></label>
+                    <label data-i18n-label="countryLabel">Country<input name="country" disabled></label>
+                    <label data-i18n-label="cityLabel">City<input name="city" disabled></label>
+                    <label class="wide" data-i18n-label="titleLabel">Title<input name="title" disabled></label>
+                    <label class="wide" data-i18n-label="summaryLabel">Summary<textarea name="summary" rows="4" disabled></textarea></label>
+                    <label class="wide" data-i18n-label="visibilityLabel">Visibility
+                        <select name="visibility" disabled>
+                            <option value="PUBLIC">PUBLIC</option>
+                            <option value="PRIVATE">PRIVATE</option>
+                        </select>
+                    </label>
+                </div>
+                <section id="portfolioEditor" class="portfolio-editor is-hidden">
+                    <div class="portfolio-editor-head">
+                        <span data-i18n="addWork">ADD A WORK</span>
+                        <small data-i18n="addWorkHelp">Photography, drawing, design, or project</small>
+                    </div>
+                    <div class="portfolio-form-grid">
+                        <label data-i18n-label="workTypeLabel">Type
+                            <select id="workType">
+                                <option value="PHOTOGRAPHY">Photography</option>
+                                <option value="DRAWING">Drawing</option>
+                                <option value="DESIGN">Design</option>
+                                <option value="PROJECT">Project</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </label>
+                        <label data-i18n-label="titleLabel">Title<input id="workTitle" maxlength="160"></label>
+                        <label class="wide" data-i18n-label="descriptionLabel">Description<textarea id="workDescription" rows="2"></textarea></label>
+                        <label class="wide" data-i18n-label="imageUrlLabel">Image URL<input id="workImageUrl" value="assets/campus-photo-01.jpg"></label>
+                    </div>
+                    <button id="addWorkBtn" class="text-action" type="button" data-i18n="addToPortfolio">+ Add to portfolio</button>
+                    <div id="portfolioManageList" class="portfolio-manage-list"></div>
+                </section>
+                <div class="sheet-actions">
+                    <button id="saveBtn" class="ink-button" type="submit" disabled data-i18n="save">Save changes</button>
+                    <button id="cancelEditBtn" class="text-action" type="button" data-i18n="cancel">Cancel</button>
+                </div>
+                <p id="saveStatus" class="request-status" role="status" data-i18n="profileInitialStatus">Public preview hides private fields.</p>
+            </form>
         </section>
 
-        <section id="mePage" class="page">
-            <div class="season-banner me-season" aria-hidden="true"></div>
-            <div class="profile-layout">
-                <form id="profileForm" class="profile-form">
-                    <div class="section-title compact">
-                        <p class="eyebrow">Profile</p>
-                        <h3 data-i18n="profileTitle">Resume Profile</h3>
-                    </div>
-
-                    <div class="form-grid">
-                        <label data-i18n-label="nameLabel">Name<input name="name" disabled></label>
-                        <label data-i18n-label="studentIdLabel">Student ID<input name="studentId" disabled></label>
-                        <label data-i18n-label="emailLabel">Email<input name="email" disabled></label>
-                        <label data-i18n-label="phoneLabel">Phone<input name="phone" disabled></label>
-                        <label data-i18n-label="countryLabel">Country<input name="country" disabled placeholder="Japan"></label>
-                        <label data-i18n-label="cityLabel">City<input name="city" disabled placeholder="Kyoto"></label>
-                        <label class="wide" data-i18n-label="titleLabel">Title<input name="title" disabled></label>
-                        <label class="wide" data-i18n-label="summaryLabel">Summary<textarea name="summary" disabled rows="5"></textarea></label>
-                    </div>
-
-                    <div class="actions">
-                        <button type="button" id="editBtn" class="secondary-btn" data-i18n="editBtn">Edit</button>
-                        <button type="submit" id="saveBtn" class="primary-btn" disabled data-i18n="saveBtn">Save</button>
-                        <span id="saveStatus"></span>
-                    </div>
-                </form>
-
-                <div class="resume-preview" id="resumePreview">
-                    <div class="preview-head">
-                        <div class="avatar large">S</div>
-                        <div>
-                            <h3 id="previewName">Student</h3>
-                            <p id="previewTitle">Student</p>
-                        </div>
-                    </div>
-                    <p id="previewContact" class="muted"></p>
-                    <hr>
-                    <h4>Education</h4>
-                    <div id="previewEducation"></div>
-                    <h4>Skills</h4>
-                    <p id="previewSkills"></p>
-                    <h4>Projects</h4>
-                    <div id="previewProjects"></div>
-                    <h4>Languages</h4>
-                    <p id="previewLanguages"></p>
-                    <h4>About Me</h4>
-                    <p id="previewSummary"></p>
-                    <button id="exportPdfBtn" class="pdf-btn" data-i18n="exportPdf">Export PDF</button>
-                </div>
+        <section id="accountPage" class="page editorial-page account-page" data-page="account" aria-labelledby="accountTitle" hidden>
+            <div class="account-heading page-stagger">
+                <p class="chapter-mark inverse" data-i18n="accountEyebrow">ACCOUNT / SIGN IN</p>
+                <h1 id="accountTitle" data-i18n="accountTitle">Welcome back.</h1>
+                <p data-i18n="accountIntro">Sign in to edit your profile and save your usual place. You can keep browsing as a guest.</p>
+                <button id="openAuthBtn" class="account-primary-action" type="button" data-i18n="openSignIn">Sign in / Create account</button>
             </div>
+
+            <figure class="account-image page-stagger">
+                <img src="assets/campus-photo-04.jpg" alt="Palm trees silhouetted against sunset">
+                <figcaption data-i18n="accountImageCaption">KYOTO / EVENING</figcaption>
+            </figure>
+
+            <article id="passportCard" class="passport-card page-stagger is-hidden">
+                <div class="passport-top"><span data-i18n="accountSummary">ACCOUNT SUMMARY</span></div>
+                <div class="passport-body">
+                    <div class="id-photo"><img src="assets/campus-photo-09.jpg" alt="Cat on outdoor steps"></div>
+                    <div class="id-data">
+                        <span data-i18n="nameLabel">NAME</span><strong id="accountHolderName">GUEST</strong>
+                        <span data-i18n="roleLabel">ROLE</span><strong id="accountRole">GUEST</strong>
+                        <span data-i18n="statusLabel">STATUS</span><strong id="accountConnectionStatus">GUEST MODE</strong>
+                    </div>
+                </div>
+            </article>
+
+            <dialog id="authDialog" class="auth-dialog" aria-labelledby="authDialogTitle">
+                <div class="auth-dialog-shell">
+                    <div class="auth-dialog-heading">
+                        <div>
+                            <span data-i18n="accountEyebrow">ACCOUNT / SIGN IN</span>
+                            <h2 id="authDialogTitle" data-i18n="modalTitle">Your account</h2>
+                        </div>
+                        <button id="closeAuthBtn" type="button" data-i18n="close">Close</button>
+                    </div>
+            <section class="provider-panel" aria-label="Sign in">
+                <div class="oauth-status-row">
+                    <span id="oauthStatusDot" class="status-dot"></span>
+                    <div>
+                        <strong id="oauthStatusTitle" data-i18n="checkingSignIn">Checking sign-in…</strong>
+                        <p id="oauthStatusDetail" data-i18n="checkingSignInDetail">This only takes a moment.</p>
+                    </div>
+                    <span id="oauthProviderBadge" class="provider-badge" data-i18n="checking">Checking</span>
+                </div>
+
+                <div id="oauthAvatar" class="is-hidden" aria-hidden="true"></div>
+                <span id="oauthUserName" class="is-hidden"></span>
+                <span id="oauthUserMeta" class="is-hidden"></span>
+
+                <div id="connectedAccount" class="connected-account is-hidden">
+                    <div class="connected-account-head">
+                        <div id="connectedAvatar" class="avatar">S</div>
+                        <div><strong id="connectedName">Student</strong><p id="connectedMeta"></p></div>
+                    </div>
+                    <button id="connectedServiceBtn" class="provider-button service-button" type="button"></button>
+                    <div id="connectedServiceResult" class="service-result" aria-live="polite"></div>
+                    <button id="logoutBtn" class="text-action inverse-action" type="button" data-i18n="logout">Logout</button>
+                </div>
+
+                <div class="provider-options">
+                    <button class="provider-button" type="button" data-oauth-provider="github">
+                        <span>GH</span>
+                        <span><strong data-i18n="signGithub">Continue with GitHub</strong><small data-i18n="githubSigninNote">Use your GitHub identity and public profile.</small></span>
+                        <i>↗</i>
+                    </button>
+                    <button class="provider-button" type="button" data-oauth-provider="google">
+                        <span>G</span>
+                        <span><strong data-i18n="signGoogle">Continue with Google</strong><small data-i18n="googleSigninNote">Use your Google account and optional calendar.</small></span>
+                        <i>↗</i>
+                    </button>
+                </div>
+
+                <div class="local-account">
+                    <div class="local-account-heading">
+                        <strong data-i18n="localAccountTitle">Username and password</strong>
+                        <p data-i18n="localAccountCopy">Create an account or sign in to edit your own page.</p>
+                    </div>
+                    <form id="authForm" class="auth-form">
+                        <label data-i18n-label="usernameLabel">Username
+                            <input id="authUsername" autocomplete="username" minlength="3" maxlength="50" required>
+                        </label>
+                        <label data-i18n-label="passwordLabel">Password
+                            <span class="password-field">
+                                <input id="authPassword" type="password" autocomplete="current-password" minlength="12" maxlength="72" required>
+                                <button id="togglePasswordBtn" type="button" aria-label="Show password" data-i18n="showPassword">SHOW</button>
+                            </span>
+                        </label>
+                        <div class="local-auth-actions">
+                            <button type="submit" class="paper-button" data-i18n="login">Sign in</button>
+                            <button id="registerBtn" type="button" class="text-action inverse-action" data-i18n="register">Create account</button>
+                        </div>
+                    </form>
+                    <p id="authStatus" class="request-status" role="status" data-i18n="authReady">Use at least 12 characters for a new password.</p>
+                    <button class="text-action inverse-action guest-action" type="button" data-page-link="home" data-i18n="continueGuest">Continue as guest</button>
+                </div>
+
+                <section id="adminPanel" class="admin-panel is-hidden">
+                    <div class="admin-panel-heading">
+                        <strong data-i18n="adminTitle">User management</strong>
+                        <p data-i18n="adminCopy">Administrator accounts can review and disable accounts.</p>
+                    </div>
+                    <div id="adminUserList" class="admin-user-list"></div>
+                </section>
+            </section>
+                </div>
+            </dialog>
         </section>
     </main>
+
+    <footer class="folio">
+        <span id="folioNumber">01 / 03</span>
+        <i></i>
+        <p id="folioContext">Kyoto · updating</p>
+        <b id="folioLabel">TODAY</b>
+    </footer>
 </div>
 
-<div id="oauthModal" class="modal-backdrop hidden" aria-hidden="true">
-    <div class="login-modal" role="dialog" aria-modal="true" aria-labelledby="oauthModalTitle">
-        <div class="modal-visual">
-            <button type="button" id="oauthModalClose" class="icon-btn modal-close" aria-label="Close">X</button>
-            <div class="modal-title-block">
-                <p class="eyebrow">Third-party Login</p>
-                <h3 id="oauthModalTitle">Choose a login provider</h3>
-            </div>
-        </div>
-        <p class="modal-copy">Login updates only the status bar. Your resume content stays unchanged.</p>
-        <div class="provider-options">
-            <button type="button" class="provider-option" data-oauth-provider="google">
-                <span class="provider-logo google-logo" aria-hidden="true">G</span>
-                <span>
-                    <strong>Google</strong>
-                    <small>Calendar API authorization</small>
-                </span>
-            </button>
-            <button type="button" class="provider-option" data-oauth-provider="github">
-                <span class="provider-logo github-logo" aria-hidden="true">Git</span>
-                <span>
-                    <strong>GitHub</strong>
-                    <small>Profile and repository authorization</small>
-                </span>
-            </button>
-        </div>
-    </div>
-</div>
 <script src="ui-effects.js"></script>
 <script src="script.js"></script>
 </body>

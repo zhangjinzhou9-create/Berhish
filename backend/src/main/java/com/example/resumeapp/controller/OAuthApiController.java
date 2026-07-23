@@ -26,13 +26,14 @@ import java.util.Map;
 public class OAuthApiController {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${app.base-url:http://localhost:8080}")
     private String appBaseUrl;
 
-    public OAuthApiController(OAuth2AuthorizedClientService authorizedClientService) {
+    public OAuthApiController(OAuth2AuthorizedClientService authorizedClientService, RestTemplate restTemplate) {
         this.authorizedClientService = authorizedClientService;
+        this.restTemplate = restTemplate;
     }
 
     @GetMapping("/status")
