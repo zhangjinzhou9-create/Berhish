@@ -20,8 +20,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.HashSet;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -29,6 +31,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(properties = {
@@ -40,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "spring.sql.init.schema-locations=classpath:schema-h2.sql",
         "spring.sql.init.data-locations=classpath:data-h2.sql",
         "app.jwt-secret=regression-test-secret-with-more-than-thirty-two-bytes",
+        "app.base-url=https://campusflow.example",
         "app.demo-users-enabled=false"
 })
 @AutoConfigureMockMvc
@@ -104,19 +109,19 @@ class SecurityAndTimezoneRegressionTest {
     }
 
     @Test
-    void oldSourceCodeSecretCannotForgeAdminToken() throws Exception {
+    void oldSourceCodeSecretCannotForgeAdminSession() throws Exception {
         String forged = tokenSignedWith(
                 "campus_flow_super_secret_key_for_jwt_2026",
                 "forged",
                 "ADMIN"
         );
 
-        mockMvc.perform(get("/api/admin-area").header("Authorization", "Bearer " + forged))
+        mockMvc.perform(get("/api/admin/users").header("Authorization", "Bearer " + forged))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void profileWritesRequireAuthenticationButJwtStudentCanStillSave() throws Exception {
+    void profileWritesRequireAuthenticationButSignedInUserCanSave() throws Exception {
         String body = "{\"country\":\"Japan\",\"city\":\"Kyoto\",\"location\":\"Kyoto, Japan\"}";
 
         mockMvc.perform(post("/api/profile")
@@ -134,6 +139,55 @@ class SecurityAndTimezoneRegressionTest {
                         .content(body))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.saved").value(true));
+    }
+
+    @Test
+    void guestPortfolioAlwaysIncludesPresetWork() throws Exception {
+        String response = mockMvc.perform(get("/api/portfolio"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.editable").value(false))
+                .andExpect(jsonPath("$.preset").value(true))
+                .andExpect(jsonPath("$.items.length()").value(4))
+                .andExpect(jsonPath("$.items[0].presetKey").value("guestWork01"))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode items = objectMapper.readTree(response).path("items");
+        HashSet<String> imageUrls = new HashSet<>();
+        items.forEach(item -> imageUrls.add(item.path("imageUrl").asText()));
+        org.assertj.core.api.Assertions.assertThat(imageUrls).hasSize(4);
+    }
+
+    @Test
+    void releaseUiKeepsThreeLanguagesAndRemovesLegacyLabels() throws Exception {
+        mockMvc.perform(get("/index.html"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("<option value=\"en\">EN</option>")))
+                .andExpect(content().string(containsString("<option value=\"ja\">日本語</option>")))
+                .andExpect(content().string(containsString("<option value=\"zh\">中文</option>")))
+                .andExpect(content().string(containsString("id=\"authPassword\" type=\"password\"")))
+                .andExpect(content().string(not(containsString("CLASSROOM EDITION"))))
+                .andExpect(content().string(not(containsString("CLASS07"))))
+                .andExpect(content().string(not(containsString("OAUTH API EVIDENCE"))))
+                .andExpect(content().string(not(containsString("LOCAL JWT TEST"))));
+    }
+
+    @Test
+    void oauthRedirectsUseTheConfiguredPublicBaseUrl() throws Exception {
+        mockMvc.perform(get("/oauth2/authorization/google"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string(
+                        "Location",
+                        containsString("redirect_uri=https://campusflow.example/login/oauth2/code/google")
+                ));
+
+        mockMvc.perform(get("/oauth2/authorization/github"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string(
+                        "Location",
+                        containsString("redirect_uri=https://campusflow.example/login/oauth2/code/github")
+                ));
     }
 
     @Test

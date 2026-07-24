@@ -312,10 +312,10 @@ public class ProfileService {
         result.put("name", "シュフシン");
         result.put("studentId", "M25W7195");
         result.put("email", "st232527@kcg.edu");
-        result.put("phone", "123-4567-8901");
+        result.put("phone", "");
         result.put("location", "Kyoto, Japan");
-        result.put("title", "Information Technology / Network Management Student");
-        result.put("summary", "I am studying information technology and network management. Campus Flow is my integrated web project for profile management, weather and country information, JWT authorization, OAuth API verification, Docker, and cloud deployment.");
+        result.put("title", "Visual diary / web design student");
+        result.put("summary", "Photography, sketches, and small web experiments collected between classes and walks through Kyoto.");
         result.put("country", "Japan");
         result.put("city", "Kyoto");
 
@@ -325,30 +325,29 @@ public class ProfileService {
         school.put("degree", "Master Program");
         school.put("major", "Network Management");
         school.put("period", "2025 - Present");
-        school.put("description", "Main study areas include network management, cloud systems, database basics, web APIs, and software development.");
+        school.put("description", "Web services, database systems, cloud deployment, and visual interface design.");
         education.add(school);
         result.put("education", education);
 
         result.put("skills", List.of(
-                "Java and Spring Boot API development",
-                "HTML, CSS and JavaScript frontend development",
-                "MySQL database design and SQL operations",
-                "JWT authentication and role-based authorization",
-                "OAuth 2.0 integration with Google and GitHub",
-                "Docker, Docker Compose and Azure container deployment"
+                "Java and Spring Boot web services",
+                "HTML, CSS, and JavaScript interface design",
+                "MySQL data persistence",
+                "OAuth 2.0 and secure account sessions",
+                "Docker and Azure container deployment"
         ));
 
         List<Map<String, Object>> projects = new ArrayList<>();
         Map<String, Object> campusFlow = new LinkedHashMap<>();
-        campusFlow.put("name", "Campus Flow");
-        campusFlow.put("description", "A Spring Boot web application that combines a student profile, weather and country APIs, JWT login, OAuth verification, MySQL persistence, Docker sidecar deployment, and Azure App Service deployment.");
+        campusFlow.put("name", "CampusFlow");
+        campusFlow.put("description", "A three-page web service client combining live daily information, a personal portfolio, secure accounts, and cloud deployment.");
         projects.add(campusFlow);
         result.put("projects", projects);
 
         List<Map<String, Object>> languages = new ArrayList<>();
         languages.add(language("Chinese", "Native"));
-        languages.add(language("Japanese", "Daily communication / learning toward JLPT N2"));
-        languages.add(language("English", "Basic reading and presentation"));
+        languages.add(language("Japanese", "Daily communication"));
+        languages.add(language("English", "Reading and presentation"));
         result.put("languages", languages);
         return result;
     }

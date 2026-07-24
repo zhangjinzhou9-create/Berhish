@@ -111,39 +111,6 @@ public class AuthController {
         );
     }
 
-    @GetMapping("/verify")
-    public ResponseEntity<?> verify(HttpServletRequest request, Authentication authentication) {
-        return accountService.resolve(request, authentication)
-                .<ResponseEntity<?>>map(account -> ResponseEntity.ok(account.toPublicMap()))
-                .orElseGet(() -> ResponseEntity.status(401).body(Map.of("error", "missing or invalid session")));
-    }
-
-    @GetMapping("/student-area")
-    public ResponseEntity<?> userArea(HttpServletRequest request, Authentication authentication) {
-        return accountService.resolve(request, authentication)
-                .<ResponseEntity<?>>map(account -> ResponseEntity.ok(Map.of(
-                        "message", "User area",
-                        "role", account.role()
-                )))
-                .orElseGet(() -> ResponseEntity.status(401).body(Map.of("error", "missing or invalid session")));
-    }
-
-    @GetMapping("/teacher-area")
-    public ResponseEntity<?> creatorArea(HttpServletRequest request, Authentication authentication) {
-        return userArea(request, authentication);
-    }
-
-    @GetMapping("/admin-area")
-    public ResponseEntity<?> adminArea(HttpServletRequest request, Authentication authentication) {
-        return accountService.resolve(request, authentication)
-                .filter(account -> "ADMIN".equals(account.role()))
-                .<ResponseEntity<?>>map(account -> ResponseEntity.ok(Map.of(
-                        "message", "Administrator area",
-                        "role", account.role()
-                )))
-                .orElseGet(() -> ResponseEntity.status(403).body(Map.of("error", "administrator account required")));
-    }
-
     @GetMapping("/admin/users")
     public ResponseEntity<?> users(HttpServletRequest request, Authentication authentication) {
         try {

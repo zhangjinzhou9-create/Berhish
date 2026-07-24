@@ -34,7 +34,12 @@ public class PortfolioService {
                 ? currentAccount
                 : accountService.featuredUser();
         if (subject.isEmpty()) {
-            return Map.of("items", List.of(), "editable", false);
+            return Map.of(
+                    "items", guestPortfolio(),
+                    "editable", false,
+                    "ownerName", "シュフシン",
+                    "preset", true
+            );
         }
         boolean owner = currentAccount.isPresent() && currentAccount.get().id() == subject.get().id();
         String sql = """
@@ -63,6 +68,39 @@ public class PortfolioService {
                 "items", items,
                 "editable", owner,
                 "ownerName", subject.get().displayName()
+        );
+    }
+
+    private List<Map<String, Object>> guestPortfolio() {
+        return List.of(
+                Map.of(
+                        "id", -1,
+                        "type", "PHOTOGRAPHY",
+                        "imageUrl", "assets/campus-photo-01.jpg",
+                        "presetKey", "guestWork01",
+                        "public", true
+                ),
+                Map.of(
+                        "id", -2,
+                        "type", "PHOTOGRAPHY",
+                        "imageUrl", "assets/campus-photo-05.jpg",
+                        "presetKey", "guestWork02",
+                        "public", true
+                ),
+                Map.of(
+                        "id", -3,
+                        "type", "PHOTOGRAPHY",
+                        "imageUrl", "assets/campus-photo-08.jpg",
+                        "presetKey", "guestWork03",
+                        "public", true
+                ),
+                Map.of(
+                        "id", -4,
+                        "type", "PHOTOGRAPHY",
+                        "imageUrl", "assets/campus-extra-pond.jpg",
+                        "presetKey", "guestWork04",
+                        "public", true
+                )
         );
     }
 

@@ -34,6 +34,7 @@
                 <span data-i18n="languageLabel">Language</span>
                 <select id="languageSelect" aria-label="Language">
                     <option value="en">EN</option>
+                    <option value="ja">日本語</option>
                     <option value="zh">中文</option>
                 </select>
             </label>
@@ -266,19 +267,6 @@
                     <button id="logoutBtn" class="text-action inverse-action" type="button" data-i18n="logout">Logout</button>
                 </div>
 
-                <div class="provider-options">
-                    <button class="provider-button" type="button" data-oauth-provider="github">
-                        <span>GH</span>
-                        <span><strong data-i18n="signGithub">Continue with GitHub</strong><small data-i18n="githubSigninNote">Use your GitHub identity and public profile.</small></span>
-                        <i>↗</i>
-                    </button>
-                    <button class="provider-button" type="button" data-oauth-provider="google">
-                        <span>G</span>
-                        <span><strong data-i18n="signGoogle">Continue with Google</strong><small data-i18n="googleSigninNote">Use your Google account and optional calendar.</small></span>
-                        <i>↗</i>
-                    </button>
-                </div>
-
                 <div class="local-account">
                     <div class="local-account-heading">
                         <strong data-i18n="localAccountTitle">Username and password</strong>
@@ -300,8 +288,24 @@
                         </div>
                     </form>
                     <p id="authStatus" class="request-status" role="status" data-i18n="authReady">Use at least 12 characters for a new password.</p>
-                    <button class="text-action inverse-action guest-action" type="button" data-page-link="home" data-i18n="continueGuest">Continue as guest</button>
                 </div>
+
+                <div class="auth-divider"><span data-i18n="thirdPartyOption">Or use a third-party account</span></div>
+
+                <div class="provider-options">
+                    <button class="provider-button" type="button" data-oauth-provider="github">
+                        <span>GH</span>
+                        <span><strong data-i18n="signGithub">Continue with GitHub</strong><small data-i18n="githubSigninNote">Use your GitHub identity and public profile.</small></span>
+                        <i>↗</i>
+                    </button>
+                    <button class="provider-button" type="button" data-oauth-provider="google">
+                        <span>G</span>
+                        <span><strong data-i18n="signGoogle">Continue with Google</strong><small data-i18n="googleSigninNote">Use your Google account and optional calendar.</small></span>
+                        <i>↗</i>
+                    </button>
+                </div>
+
+                <button class="text-action inverse-action guest-action" type="button" data-page-link="home" data-i18n="continueGuest">Continue as guest</button>
 
                 <section id="adminPanel" class="admin-panel is-hidden">
                     <div class="admin-panel-heading">

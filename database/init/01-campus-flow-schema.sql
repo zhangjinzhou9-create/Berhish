@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS personal_info (
 INSERT INTO personal_info
     (id, name, student_id, email, phone, location, title, summary, country, city)
 VALUES
-    (1, 'シュフシン', 'M25W7195', 'st232527@kcg.edu', '123-4567-8901',
-     'Kyoto, Japan', 'Information Technology / Network Management Student',
-     'I am studying information technology and network management. Campus Flow is my integrated web project for profile management, weather and country information, JWT authorization, OAuth API verification, Docker, and cloud deployment.',
+    (1, 'シュフシン', 'M25W7195', 'st232527@kcg.edu', '',
+     'Kyoto, Japan', 'Visual diary / web design student',
+     'Photography, sketches, and small web experiments collected between classes and walks through Kyoto.',
      'Japan', 'Kyoto')
 ON DUPLICATE KEY UPDATE id = id;
 
@@ -39,7 +39,7 @@ INSERT INTO education (id, school, degree, major, period, description)
 VALUES
     (1, 'The Kyoto College of Graduate Studies for Informatics',
      'Master Program', 'Network Management', '2025 - Present',
-     'Main study areas include network management, cloud systems, database basics, web APIs, and software development.')
+     'Web services, database systems, cloud deployment, and visual interface design.')
 ON DUPLICATE KEY UPDATE id = id;
 
 CREATE TABLE IF NOT EXISTS skills (
@@ -47,15 +47,13 @@ CREATE TABLE IF NOT EXISTS skills (
     skill_name VARCHAR(160) NOT NULL
 );
 
-INSERT INTO skills (id, skill_name)
-VALUES
-    (1, 'Java and Spring Boot API development'),
-    (2, 'HTML, CSS and JavaScript frontend development'),
-    (3, 'MySQL database design and SQL operations'),
-    (4, 'JWT authentication and role-based authorization'),
-    (5, 'OAuth 2.0 integration with Google and GitHub'),
-    (6, 'Docker, Docker Compose and Azure container deployment')
-ON DUPLICATE KEY UPDATE id = id;
+INSERT INTO skills (id, skill_name) VALUES
+    (1, 'Java and Spring Boot web services'),
+    (2, 'HTML, CSS, and JavaScript interface design'),
+    (3, 'MySQL data persistence'),
+    (4, 'OAuth 2.0 and secure account sessions'),
+    (5, 'Docker and Azure container deployment')
+ON DUPLICATE KEY UPDATE skill_name = VALUES(skill_name);
 
 CREATE TABLE IF NOT EXISTS projects (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,9 +63,11 @@ CREATE TABLE IF NOT EXISTS projects (
 
 INSERT INTO projects (id, project_name, project_description)
 VALUES
-    (1, 'Campus Flow',
-     'A Spring Boot web application that combines a student profile, weather and country APIs, JWT login, OAuth verification, MySQL persistence, Docker sidecar deployment, and Azure App Service deployment.')
-ON DUPLICATE KEY UPDATE id = id;
+    (1, 'CampusFlow',
+     'A three-page web service client combining live daily information, a personal portfolio, secure accounts, and cloud deployment.')
+ON DUPLICATE KEY UPDATE
+    project_name = VALUES(project_name),
+    project_description = VALUES(project_description);
 
 CREATE TABLE IF NOT EXISTS languages (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -75,25 +75,52 @@ CREATE TABLE IF NOT EXISTS languages (
     language_level VARCHAR(120) NOT NULL
 );
 
-INSERT INTO languages (id, language_name, language_level)
-VALUES
+INSERT INTO languages (id, language_name, language_level) VALUES
     (1, 'Chinese', 'Native'),
-    (2, 'Japanese', 'Daily communication / learning toward JLPT N2'),
-    (3, 'English', 'Basic reading and presentation')
-ON DUPLICATE KEY UPDATE id = id;
+    (2, 'Japanese', 'Daily communication'),
+    (3, 'English', 'Reading and presentation')
+ON DUPLICATE KEY UPDATE language_level = VALUES(language_level);
 
 CREATE TABLE IF NOT EXISTS auth_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(50) NOT NULL,
-    user_type VARCHAR(20) NOT NULL
+    password VARCHAR(100) NOT NULL,
+    user_type VARCHAR(20) NOT NULL,
+    display_name VARCHAR(120),
+    avatar_url VARCHAR(600),
+    provider VARCHAR(30),
+    provider_subject VARCHAR(190),
+    enabled BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_auth_provider_subject (provider, provider_subject)
 );
 
-INSERT INTO auth_users (username, password, user_type)
-VALUES
-    ('student', 'pass', 'STUDENT'),
-    ('teacher', 'pass', 'TEACHER'),
-    ('admin', 'pass', 'ADMIN')
-ON DUPLICATE KEY UPDATE
-    password = VALUES(password),
-    user_type = VALUES(user_type);
+CREATE TABLE IF NOT EXISTS user_profiles (
+    user_id INT PRIMARY KEY,
+    email VARCHAR(160),
+    phone VARCHAR(60),
+    title VARCHAR(180),
+    summary TEXT,
+    country VARCHAR(100) DEFAULT 'Japan',
+    city VARCHAR(100) DEFAULT 'Kyoto',
+    visibility VARCHAR(20) DEFAULT 'PUBLIC',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS portfolio_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    item_type VARCHAR(30) NOT NULL,
+    title VARCHAR(160) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(600),
+    external_url VARCHAR(600),
+    display_order INT DEFAULT 0,
+    is_public BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_portfolio_owner_order (user_id, display_order)
+);
+
+-- No default account or plaintext password is created. Public users register
+-- through the application; the administrator is provisioned from environment
+-- variables.

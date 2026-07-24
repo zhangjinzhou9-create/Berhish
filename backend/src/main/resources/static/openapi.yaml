@@ -7,7 +7,7 @@ info:
     featured profile and public work. Registered users manage only their own
     profile and portfolio. Administrators use a separately configured account.
 servers:
-  - url: http://localhost:8081
+  - url: http://localhost:8080
 components:
   securitySchemes:
     sessionCookie:

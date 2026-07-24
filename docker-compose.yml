@@ -1,3 +1,5 @@
+name: campusflow_deployment
+
 services:
   mysql:
     image: mysql:8.0

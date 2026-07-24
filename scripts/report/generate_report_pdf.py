@@ -22,9 +22,9 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 
-ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "report.md"
-OUTPUT = ROOT / "CampusFlow_Report.pdf"
+ROOT = Path(__file__).resolve().parents[2]
+REPORT = ROOT / "docs" / "course" / "report.md"
+OUTPUT = ROOT / "output" / "pdf" / "CampusFlow_Report.pdf"
 
 
 def register_fonts():
@@ -192,7 +192,7 @@ def build_story():
             flush_table(table_rows, story, style_map)
             table_rows = []
             flush_bullets()
-            image_path = ROOT / image_match.group(2)
+            image_path = (REPORT.parent / image_match.group(2)).resolve()
             if image_path.exists():
                 story.append(KeepTogether([scale_image(image_path), Paragraph(image_match.group(1), style_map["caption"])]))
             continue
@@ -241,6 +241,7 @@ def add_footer(canvas, doc):
 
 def main():
     register_fonts()
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(
         str(OUTPUT),
         pagesize=A4,

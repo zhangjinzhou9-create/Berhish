@@ -1,139 +1,119 @@
 # CampusFlow
 
-CampusFlow is a desktop-first Spring Boot portfolio site prepared for a course
-presentation. Its three pages keep the same editorial visual language while the
-content is backed by real accounts, profiles, saved locations, portfolio items,
-OAuth identities, and MySQL data.
+CampusFlow is a desktop-first personal portfolio web service built for the Web
+Service course project. One Spring Boot application serves the designed
+frontend and REST API, manages accounts and authorization, stores profile and
+portfolio data, and integrates weather, country, Google, and GitHub services.
 
-## Presentation flow
+## What the application demonstrates
 
-1. **Today** is the default guest page and shows the current date plus the
-   featured user's saved country and city.
-2. **Portfolio** presents photography, drawing, design, project, and note items.
-3. **Account** supports guest browsing, local registration/sign-in, Google or
-   GitHub sign-in, and a separate administrator account.
+- **Today** is the default guest page. It shows the current Japan date, a
+  selected location, country information, live weather, and weather-based advice.
+- **Portfolio** shows a featured public profile and four distinct works. Signed-in
+  users can turn their page into a resume, photography set, illustration
+  collection, design archive, or mixed portfolio.
+- **Account** supports guest browsing, local registration and sign-in, and
+  optional Google or GitHub authorization. Signed-in users can edit their own
+  profile, save a usual place, and manage their own works.
+- The interface can be switched between English, Japanese, and Chinese.
 
-Registered users can edit only their own profile, save a daily location, and
-manage their own portfolio. Public registration always creates a `USER`;
-`ADMIN` is supplied only through server environment variables.
+## Technology
 
-## Security model
+| Layer | Implementation |
+|---|---|
+| Frontend | HTML, CSS, JavaScript, GSAP |
+| Backend | Java 17, Spring Boot, Spring Security |
+| Local database | MySQL 8 in Docker Compose |
+| Cloud database | Persistent H2 file under Azure App Service `/home` |
+| API description | OpenAPI 3.0 |
+| Delivery | Docker, Docker Hub, Azure App Service |
 
-- Password inputs use `type="password"` and never contain preset values.
-- Local passwords are stored as BCrypt hashes.
-- The browser receives an HttpOnly `campusflow_session` cookie.
+## Security
+
+- Local passwords are never returned to the browser and are stored as BCrypt
+  hashes.
+- Authentication uses an HttpOnly `campusflow_session` cookie.
 - State-changing browser requests require an `X-XSRF-TOKEN` CSRF header.
-- OAuth accounts save the provider identity, authorized display name, and
-  avatar URL.
-- Guests have read-only access to the featured public profile and portfolio.
-- Administrators can list and enable or disable accounts; ordinary users
-  receive `403` for administrator routes.
+- Public registration always creates a normal `USER`.
+- Profile and portfolio writes are restricted to the signed-in owner.
+- Administrator routes require a separately configured server-side account.
+- OAuth client secrets, the JWT secret, and administrator credentials are
+  supplied through environment variables and are not committed.
 
-## Local structure
+## Run locally
 
-```text
-backend/                                  Spring Boot application
-backend/src/main/java/com/example/resumeapp/
-  config/SecurityConfig.java              Browser security and OAuth flow
-  controller/AuthController.java          Registration, sign-in, session, admin
-  controller/ProfileController.java       Profile and Today APIs
-  controller/PortfolioController.java     Portfolio CRUD API
-  service/AccountService.java             Users, roles, OAuth linking, BCrypt
-  service/ProfileService.java             Per-user profile persistence
-  service/PortfolioService.java           Per-user portfolio persistence
-backend/src/main/resources/static/        HTML, CSS, motion, images, OpenAPI
-database/init/                            Existing MySQL initialization files
-opendesign/                               Design-system and mockup source
-backups/                                  Local database migration backups
+1. Copy `.env.example` to `.env` and add OAuth credentials only if those two
+   providers will be demonstrated.
+2. Start the application and MySQL:
+
+```powershell
+cd C:\ProgramData\campusflow
+docker compose up --build -d
 ```
 
-## Current local presentation service
-
-The verified presentation instance runs at:
+3. Open:
 
 ```text
-http://localhost:8081/index.html
+http://localhost:8080/index.html
 ```
-
-MySQL is exposed only to the local machine on port `3308`. The active app
-container is `campus-flow-local-link`, and the pre-migration app container is
-kept stopped as `campus-flow-local-link-legacy-20260723`.
 
 Useful checks:
 
 ```powershell
-docker ps --filter name=campus-flow
-docker logs --tail 100 campus-flow-local-link
-curl.exe http://localhost:8081/api/profile
-curl.exe http://localhost:8081/api/portfolio
-curl.exe http://localhost:8081/openapi.yaml
+docker compose ps
+docker logs --tail 100 campus-flow-app
+curl.exe http://localhost:8080/api/auth/me
+curl.exe http://localhost:8080/api/profile
+curl.exe http://localhost:8080/api/portfolio
 ```
 
-## Build and test
+Stop the local service with:
 
-The Docker build uses Java 17 and runs the regression suite:
+```powershell
+docker compose down
+```
+
+The MySQL data volume is preserved unless it is explicitly removed.
+
+## Build and tests
 
 ```powershell
 cd C:\ProgramData\campusflow\backend
-docker build --tag campus-flow:formal-local .
+docker build --tag campus-flow:release .
 ```
 
-The regression suite covers public registration restrictions, BCrypt login,
-cookie authentication, CSRF-protected profile writes, forged-token rejection,
-and Japan time/date behavior.
+The Docker build runs the regression suite. It covers registration restrictions,
+BCrypt login, cookies, CSRF, ownership, administrator authorization, guest
+content, multilingual production UI invariants, Japan date/time behavior, and
+OAuth redirect generation.
 
-## OAuth callback URLs
+## Main API routes
 
-For the current local service, the provider consoles must contain these exact
-authorized redirect URIs:
+| Method | Route | Purpose |
+|---|---|---|
+| GET | `/api/home` | Country, city, weather, and daily advice |
+| GET/POST | `/api/profile` | Read public/owner profile; save owner profile |
+| GET/POST | `/api/portfolio` | Read works; create an owned work |
+| PUT/DELETE | `/api/portfolio/{id}` | Update or remove an owned work |
+| POST | `/api/register` | Create a normal local account |
+| POST | `/api/authenticate` | Sign in with username and password |
+| GET | `/api/auth/me` | Restore the current account or guest state |
+| POST | `/api/auth/logout` | End the current session |
+| GET/PATCH | `/api/admin/users...` | Administrator account management |
 
-```text
-http://localhost:8081/login/oauth2/code/google
-http://localhost:8081/login/oauth2/code/github
-```
+The complete OpenAPI document is available at
+`http://localhost:8080/openapi.yaml`.
 
-OAuth client IDs and secrets belong in the local `.env` file and must not be
-committed. The application constructs provider callbacks from `APP_BASE_URL`.
+## Submission documents
 
-## API documentation
+- [Project structure](docs/architecture/PROJECT_STRUCTURE.md)
+- [Course report](output/pdf/CampusFlow_Report.pdf)
+- [Assignment requirements](docs/course/REQUIREMENTS.md)
+- [Azure configuration](docs/deployment/AZURE_PORTAL_DEPLOYMENT.md)
+- [OAuth configuration](docs/deployment/OAUTH_SETUP.md)
 
-The complete OpenAPI file is served at:
+## Published service
 
-```text
-http://localhost:8081/openapi.yaml
-```
-
-Primary endpoints:
-
-```text
-GET    /api/csrf
-POST   /api/register
-POST   /api/authenticate
-GET    /api/auth/me
-POST   /api/auth/logout
-GET    /api/home
-GET    /api/profile
-POST   /api/profile
-GET    /api/portfolio
-POST   /api/portfolio
-PUT    /api/portfolio/{id}
-DELETE /api/portfolio/{id}
-GET    /api/admin/users
-PATCH  /api/admin/users/{id}
-```
-
-## Published container and Azure
-
-The verified presentation image is available from Docker Hub:
-
-```text
-berhish/campus-flow:formal-20260724
-sha256:4ec8359bb8d1026401b8601e950c155a5e1d21d884242267bd38f4c39525e511
-```
-
-The fixed tag and `latest` currently point to the same build. Azure App Service
-portal values, environment variables, OAuth callbacks, and verification URLs
-are documented in
-[`docs/AZURE_PORTAL_DEPLOYMENT.md`](docs/AZURE_PORTAL_DEPLOYMENT.md).
-
-Release details are recorded in [`CHANGELOG.md`](CHANGELOG.md).
+- Docker Hub: `berhish/campus-flow`
+- Azure:
+  `https://campusflow-final-0724-grbzdrczdqdyhyea.japanwest-01.azurewebsites.net`

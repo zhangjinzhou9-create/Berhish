@@ -16,13 +16,13 @@ const languageStorageKey = 'campusFlowLanguage';
 let currentProfile = null;
 let currentHomeData = null;
 let currentOAuthUser = null;
-let currentJwtUser = null;
+let currentAccount = null;
 let currentPortfolio = [];
 let currentPortfolioOwnerName = '';
 let csrfToken = '';
 let profileBeforeEdit = null;
 const storedLanguage = localStorage.getItem(languageStorageKey);
-let currentLanguage = ['en', 'zh'].includes(storedLanguage) ? storedLanguage : 'en';
+let currentLanguage = ['en', 'ja', 'zh'].includes(storedLanguage) ? storedLanguage : 'en';
 
 const effects = window.CampusFlowEffects || {
     runEntrance() {},
@@ -54,8 +54,15 @@ const translations = {
         roleLabel: 'Role', accountSummary: 'Account summary', visibilityLabel: 'Visibility',
         localAccountTitle: 'Username and password', localAccountCopy: 'Create an account or sign in to edit your own page.',
         authReady: 'Use at least 12 characters for a new password.', continueGuest: 'Continue as guest',
+        thirdPartyOption: 'Or use a third-party account',
+        guestProfileTitle: 'Visual diary / web design student',
+        guestProfileSummary: 'A small collection of photographs, sketches, and web experiments made between classes and walks through Kyoto.',
+        guestWork01Title: 'Blue hour platform', guestWork01Description: 'A quiet station study just before the evening light disappears.',
+        guestWork02Title: 'Garden observer', guestWork02Description: 'A black cat framed by summer grass and fallen leaves.',
+        guestWork03Title: 'Window notes', guestWork03Description: 'Reflections, signs, and passing light collected during an ordinary afternoon.',
+        guestWork04Title: 'Pond after rain', guestWork04Description: 'Soft ripples and muted greens after a short shower.',
         adminTitle: 'User management', adminCopy: 'Administrator accounts can review and disable accounts.',
-        homeEyebrow: 'International Student Dashboard', homeIntro: 'A personal campus dashboard for international students: check local conditions, keep your profile current, and export your resume.', loadingLocation: 'Loading profile location...',
+        loadingLocation: 'Loading profile location...',
         countryLabel: 'Country', cityLabel: 'City', searchBtn: 'Search', saveToProfile: 'Save to Profile',
         locationHelp: 'Search is temporary. Save to Profile updates your default campus location.', signInToSaveLocation: 'Sign in to save location',
         homeInitialStatus: "Choose a location to see today's conditions.",
@@ -71,12 +78,8 @@ const translations = {
         oauthChoose: 'Choose an account to continue. You can still browse as a guest.', notLoggedIn: 'Guest',
         noOAuthUser: 'Guest mode', oauthUserMeta: 'Sign in to edit your profile and save your usual place.',
         loginGithub: 'Login with GitHub', loginGoogle: 'Login with Google', logout: 'Logout',
-        refreshStatus: 'Refresh Status', oauthResultInitial: 'OAuth API result will be shown here.',
-        jwtEyebrow: 'JWT Role Test', jwtDefault: 'Default: student / pass', usernameLabel: 'Username',
+        refreshStatus: 'Refresh Status', usernameLabel: 'Username',
         passwordLabel: 'Password', userTypeLabel: 'User Type', login: 'Login', register: 'Register',
-        clearToken: 'Clear Token', verifyToken: 'Verify Token', studentArea: 'Student Area',
-        teacherArea: 'Teacher Area', adminArea: 'Admin Area', noJwtToken: 'No JWT token loaded.',
-        jwtResultInitial: 'JWT result will be shown here.',
         profileEyebrow: 'Personal Workspace', profileTitle: 'My Profile', profileSubtitle: 'Keep your student profile current and export a clean resume when you need it.', nameLabel: 'Name',
         studentIdLabel: 'Student ID', emailLabel: 'Email', phoneLabel: 'Phone', titleLabel: 'Title',
         summaryLabel: 'Summary', edit: 'Edit', save: 'Save', cancel: 'Cancel', exportPrint: 'Export PDF / Print Resume',
@@ -100,8 +103,7 @@ const translations = {
         oauthStatusFailed: 'Could not check sign-in', oauthApiLoading: 'Loading',
         oauthApiSucceeded: 'OAuth API verification succeeded', oauthApiReturned: 'returned a valid response.',
         oauthApiFailed: 'OAuth API verification failed', oauthProviderRequired: 'Please login with the correct provider first.',
-        registered: 'Registered', tokenCleared: 'JWT token cleared.', authSucceeded: 'succeeded.',
-        storedTokenVerified: 'Stored token verified', storedTokenInvalid: 'Stored token invalid',
+        registered: 'Registered',
         oauthLoginFailed: 'Sign-in failed', oauthProviderIncomplete: 'The sign-in provider did not complete authorization.',
         oauthLoggedOut: 'Signed out', oauthLoggedOutDetail: 'You can continue browsing as a guest.',
         shortcutLocalHomeTitle: 'Local Home API', shortcutLocalHomeDesc: 'Live country, city, weather and life-tip response used by the first screen.',
@@ -138,8 +140,15 @@ const translations = {
         roleLabel: '\u89d2\u8272', accountSummary: '\u8d26\u6237\u6982\u89c8', visibilityLabel: '\u53ef\u89c1\u8303\u56f4',
         localAccountTitle: '\u7528\u6237\u540d\u548c\u5bc6\u7801', localAccountCopy: '\u6ce8\u518c\u6216\u767b\u5f55\u540e\u5373\u53ef\u7f16\u8f91\u81ea\u5df1\u7684\u9875\u9762\u3002',
         authReady: '\u65b0\u5bc6\u7801\u81f3\u5c11\u4f7f\u7528 12 \u4e2a\u5b57\u7b26\u3002', continueGuest: '\u4ee5\u8bbf\u5ba2\u8eab\u4efd\u7ee7\u7eed',
+        thirdPartyOption: '\u6216\u4f7f\u7528\u7b2c\u4e09\u65b9\u8d26\u53f7',
+        guestProfileTitle: '\u89c6\u89c9\u65e5\u8bb0 / \u7f51\u9875\u8bbe\u8ba1\u5b66\u751f',
+        guestProfileSummary: '\u6536\u96c6\u8bfe\u95f4\u4e0e\u4eac\u90fd\u6563\u6b65\u9014\u4e2d\u5b8c\u6210\u7684\u6444\u5f71\u3001\u901f\u5199\u548c\u7f51\u9875\u5b9e\u9a8c\u3002',
+        guestWork01Title: '\u84dd\u8c03\u65f6\u523b\u7684\u7ad9\u53f0', guestWork01Description: '\u591c\u8272\u843d\u4e0b\u524d\uff0c\u8f66\u7ad9\u7247\u523b\u7684\u5b89\u9759\u8bb0\u5f55\u3002',
+        guestWork02Title: '\u5ead\u9662\u89c2\u5bdf\u8005', guestWork02Description: '\u590f\u8349\u4e0e\u843d\u53f6\u4e4b\u95f4\u7684\u9ed1\u732b\u3002',
+        guestWork03Title: '\u7a97\u8fb9\u624b\u8bb0', guestWork03Description: '\u666e\u901a\u5348\u540e\u6536\u96c6\u7684\u53cd\u5149\u3001\u6807\u8bb0\u4e0e\u6d41\u52a8\u5149\u5f71\u3002',
+        guestWork04Title: '\u96e8\u540e\u6c60\u5858', guestWork04Description: '\u77ed\u6682\u9635\u96e8\u540e\u7684\u5fae\u6ce2\u548c\u4f4e\u9971\u548c\u7eff\u8272\u3002',
         adminTitle: '\u7528\u6237\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u5458\u53ef\u4ee5\u67e5\u770b\u548c\u505c\u7528\u8d26\u6237\u3002',
-        homeEyebrow: '\u7559\u5b66\u751f\u4e2a\u4eba\u6821\u56ed\u4eea\u8868\u677f', homeIntro: '\u9762\u5411\u7559\u5b66\u751f\u7684\u4e2a\u4eba\u6821\u56ed\u4eea\u8868\u677f\uff1a\u67e5\u770b\u6240\u5728\u5730\u4eca\u65e5\u60c5\u51b5\uff0c\u7ef4\u62a4\u4e2a\u4eba\u8d44\u6599\uff0c\u5e76\u5bfc\u51fa\u7b80\u5386\u3002', loadingLocation: '\u6b63\u5728\u8bfb\u53d6\u4e2a\u4eba\u4f4d\u7f6e...',
+        loadingLocation: '\u6b63\u5728\u8bfb\u53d6\u4e2a\u4eba\u4f4d\u7f6e...',
         countryLabel: '\u56fd\u5bb6', cityLabel: '\u57ce\u5e02', searchBtn: '\u67e5\u8be2', saveToProfile: '\u4fdd\u5b58\u5230\u8d44\u6599',
         locationHelp: '\u67e5\u8be2\u4ec5\u7528\u4e8e\u4e34\u65f6\u67e5\u770b\uff1b\u201c\u4fdd\u5b58\u5230\u8d44\u6599\u201d\u4f1a\u66f4\u65b0\u4f60\u7684\u9ed8\u8ba4\u6821\u56ed\u5730\u70b9\u3002', signInToSaveLocation: '\u767b\u5f55\u540e\u4fdd\u5b58\u5730\u70b9',
         homeInitialStatus: '\u9009\u62e9\u5730\u70b9\u540e\u67e5\u770b\u4eca\u65e5\u4fe1\u606f\u3002',
@@ -155,10 +164,7 @@ const translations = {
         oauthChoose: '\u9009\u62e9\u4e00\u4e2a\u8d26\u6237\u7ee7\u7eed\uff1b\u672a\u767b\u5f55\u4e5f\u53ef\u4ee5\u6d4f\u89c8\u3002', notLoggedIn: '\u8bbf\u5ba2',
         noOAuthUser: '\u8bbf\u5ba2\u6a21\u5f0f', oauthUserMeta: '\u767b\u5f55\u540e\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\u5e76\u4fdd\u5b58\u5e38\u7528\u5730\u70b9\u3002',
         loginGithub: '\u4f7f\u7528 GitHub \u767b\u5f55', loginGoogle: '\u4f7f\u7528 Google \u767b\u5f55', logout: '\u9000\u51fa', refreshStatus: '\u5237\u65b0\u72b6\u6001',
-        oauthResultInitial: 'OAuth API \u7ed3\u679c\u4f1a\u663e\u793a\u5728\u8fd9\u91cc\u3002', jwtEyebrow: 'JWT \u89d2\u8272\u6d4b\u8bd5', jwtDefault: '\u9ed8\u8ba4\u8d26\u53f7\uff1astudent / pass',
-        usernameLabel: '\u7528\u6237\u540d', passwordLabel: '\u5bc6\u7801', userTypeLabel: '\u7528\u6237\u7c7b\u578b', login: '\u767b\u5f55', register: '\u6ce8\u518c', clearToken: '\u6e05\u9664 Token',
-        verifyToken: '\u9a8c\u8bc1 Token', studentArea: '\u5b66\u751f\u533a\u57df', teacherArea: '\u6559\u5e08\u533a\u57df', adminArea: '\u7ba1\u7406\u5458\u533a\u57df',
-        noJwtToken: '\u5f53\u524d\u6ca1\u6709 JWT Token\u3002', jwtResultInitial: 'JWT \u7ed3\u679c\u4f1a\u663e\u793a\u5728\u8fd9\u91cc\u3002',
+        usernameLabel: '\u7528\u6237\u540d', passwordLabel: '\u5bc6\u7801', userTypeLabel: '\u7528\u6237\u7c7b\u578b', login: '\u767b\u5f55', register: '\u6ce8\u518c',
         profileEyebrow: '\u4e2a\u4eba\u5de5\u4f5c\u533a', profileTitle: '\u6211\u7684\u8d44\u6599', profileSubtitle: '\u7ef4\u62a4\u5b66\u751f\u8d44\u6599\uff0c\u5e76\u5728\u9700\u8981\u65f6\u5bfc\u51fa\u6574\u6d01\u7684\u7b80\u5386\u3002', nameLabel: '\u59d3\u540d', studentIdLabel: '\u5b66\u53f7', emailLabel: '\u90ae\u7bb1', phoneLabel: '\u7535\u8bdd', titleLabel: '\u6807\u9898', summaryLabel: '\u7b80\u4ecb',
         edit: '\u7f16\u8f91', save: '\u4fdd\u5b58', cancel: '\u53d6\u6d88', exportPrint: '\u5bfc\u51fa PDF / \u6253\u5370\u7b80\u5386', ownerModeLabel: '\u6240\u6709\u8005\u7f16\u8f91\u6a21\u5f0f', publicResumeLabel: '\u516c\u5f00\u7b80\u5386\u9884\u89c8', profileInitialStatus: '\u516c\u5f00\u9884\u89c8\u4e0d\u663e\u793a\u79c1\u5bc6\u5b57\u6bb5\u3002', profileVisitorNote: '\u6240\u6709\u8005\u7f16\u8f91\u5f53\u524d\u5df2\u9501\u5b9a\u3002\u767b\u5f55\u540e\u53ef\u4ee5\u4fee\u6539\u79c1\u5bc6\u8d44\u6599\u3002', profileOwnerNote: '\u6240\u6709\u8005\u7f16\u8f91\u6a21\u5f0f\u5df2\u542f\u7528\uff0c\u79c1\u5bc6\u8d44\u6599\u4ec5\u5bf9\u4f60\u53ef\u89c1\u3002', signInToEdit: '\u767b\u5f55\u540e\u624d\u80fd\u7f16\u8f91\u8d44\u6599\u3002',
         education: '\u6559\u80b2\u7ecf\u5386', skills: '\u6280\u80fd', projects: '\u9879\u76ee', languages: '\u8bed\u8a00', aboutMe: '\u5173\u4e8e\u6211',
@@ -171,7 +177,7 @@ const translations = {
         databaseStatus: '\u6570\u636e\u5e93\u72b6\u6001', databaseFallback: '\u5907\u7528\u8d44\u6599\u6570\u636e', databaseAvailable: '\u53ef\u7528',
         oauthRedirecting: '\u6b63\u5728\u8df3\u8f6c\u5230', oauthWaiting: '\u7b49\u5f85\u767b\u5f55', oauthLoggedIn: '\u5df2\u901a\u8fc7', oauthAuthorizedAs: '\u5f53\u524d\u8d26\u6237', oauthStatusFailed: '\u65e0\u6cd5\u68c0\u67e5\u767b\u5f55\u72b6\u6001',
         oauthApiLoading: '\u6b63\u5728\u8bfb\u53d6', oauthApiSucceeded: 'OAuth API \u9a8c\u8bc1\u6210\u529f', oauthApiReturned: '\u8fd4\u56de\u4e86\u6709\u6548\u7ed3\u679c\u3002', oauthApiFailed: 'OAuth API \u9a8c\u8bc1\u5931\u8d25', oauthProviderRequired: '\u8bf7\u5148\u4f7f\u7528\u6b63\u786e\u7684 provider \u767b\u5f55\u3002',
-        registered: '\u5df2\u6ce8\u518c', tokenCleared: 'JWT Token \u5df2\u6e05\u9664\u3002', authSucceeded: '\u8c03\u7528\u6210\u529f\u3002', storedTokenVerified: '\u5df2\u9a8c\u8bc1\u672c\u5730 Token', storedTokenInvalid: '\u672c\u5730 Token \u65e0\u6548',
+        registered: '\u5df2\u6ce8\u518c',
         oauthLoginFailed: '\u767b\u5f55\u5931\u8d25', oauthProviderIncomplete: '\u7b2c\u4e09\u65b9\u767b\u5f55\u672a\u5b8c\u6210\u3002', oauthLoggedOut: '\u5df2\u9000\u51fa\u767b\u5f55', oauthLoggedOutDetail: '\u73b0\u5728\u53ef\u4ee5\u4ee5\u8bbf\u5ba2\u8eab\u4efd\u7ee7\u7eed\u6d4f\u89c8\u3002',
         shortcutLocalHomeTitle: '\u672c\u5730 Home API', shortcutLocalHomeDesc: '\u9996\u5c4f\u4f7f\u7528\u7684\u56fd\u5bb6\u3001\u57ce\u5e02\u3001\u5929\u6c14\u548c\u751f\u6d3b\u5efa\u8bae\u63a5\u53e3\u3002', shortcutLocalProfileTitle: '\u672c\u5730 Profile API', shortcutLocalProfileDesc: 'Me \u9875\u9762\u3001\u7b80\u5386\u9884\u89c8\u548c\u4f4d\u7f6e\u4fdd\u5b58\u7684\u6570\u636e\u6765\u6e90\u3002',
         shortcutApiDocsTitle: 'API \u6587\u6863', shortcutApiDocsDesc: '\u9002\u5408\u8bfe\u5802\u9a8c\u6536\u65f6\u5feb\u901f\u68c0\u67e5\u63a5\u53e3\u3002', shortcutOpenApiTitle: 'OpenAPI', shortcutOpenApiDesc: '\u7528\u4e8e\u786e\u8ba4\u8bf7\u6c42\u548c\u54cd\u5e94\u7ed3\u6784\u7684 YAML \u6587\u4ef6\u3002',
@@ -199,7 +205,7 @@ const translations = {
         localAccountTitle: '\u30e6\u30fc\u30b6\u30fc\u540d\u3068\u30d1\u30b9\u30ef\u30fc\u30c9', localAccountCopy: '\u767b\u9332\u307e\u305f\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u81ea\u5206\u306e\u30da\u30fc\u30b8\u3092\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002',
         authReady: '\u65b0\u3057\u3044\u30d1\u30b9\u30ef\u30fc\u30c9\u306f 12 \u6587\u5b57\u4ee5\u4e0a\u3067\u3059\u3002', continueGuest: '\u30b2\u30b9\u30c8\u3068\u3057\u3066\u7d9a\u884c',
         adminTitle: '\u30e6\u30fc\u30b6\u30fc\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u8005\u306f\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u78ba\u8a8d\u30fb\u505c\u6b62\u3067\u304d\u307e\u3059\u3002',
-        homeEyebrow: '\u7559\u5b66\u751f\u5411\u3051\u500b\u4eba\u30ad\u30e3\u30f3\u30d1\u30b9\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9', homeIntro: '\u7559\u5b66\u751f\u5411\u3051\u306e\u500b\u4eba\u30ad\u30e3\u30f3\u30d1\u30b9\u30c0\u30c3\u30b7\u30e5\u30dc\u30fc\u30c9\u3067\u3059\u3002\u73fe\u5730\u306e\u4eca\u65e5\u306e\u60c5\u5831\u3092\u78ba\u8a8d\u3057\u3001\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u66f4\u65b0\u3057\u3066\u3001\u5c65\u6b74\u66f8\u3092\u51fa\u529b\u3067\u304d\u307e\u3059\u3002', countryLabel: '\u56fd', cityLabel: '\u90fd\u5e02', searchBtn: '\u691c\u7d22', saveToProfile: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58', locationHelp: '\u691c\u7d22\u306f\u4e00\u6642\u7684\u306a\u8868\u793a\u3067\u3059\u3002\u300c\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58\u300d\u3067\u65e2\u5b9a\u306e\u30ad\u30e3\u30f3\u30d1\u30b9\u6240\u5728\u5730\u3092\u66f4\u65b0\u3057\u307e\u3059\u3002', signInToSaveLocation: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u6240\u5728\u5730\u3092\u4fdd\u5b58',
+        countryLabel: '\u56fd', cityLabel: '\u90fd\u5e02', searchBtn: '\u691c\u7d22', saveToProfile: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58', locationHelp: '\u691c\u7d22\u306f\u4e00\u6642\u7684\u306a\u8868\u793a\u3067\u3059\u3002\u300c\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58\u300d\u3067\u65e2\u5b9a\u306e\u30ad\u30e3\u30f3\u30d1\u30b9\u6240\u5728\u5730\u3092\u66f4\u65b0\u3057\u307e\u3059\u3002', signInToSaveLocation: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u6240\u5728\u5730\u3092\u4fdd\u5b58',
         quickEyebrow: '\u30af\u30a4\u30c3\u30af\u30a2\u30af\u30bb\u30b9', quickTitle: '\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u5165\u53e3', projectApiLabel: '\u30d7\u30ed\u30b8\u30a7\u30af\u30c8 API', studyLinksEyebrow: '\u5b66\u7fd2\u30ea\u30f3\u30af', studyLinksCopy: '\u6388\u696d\u3001\u8abf\u67fb\u3001\u7ffb\u8a33\u3001\u30ce\u30fc\u30c8\u306e\u30ea\u30f3\u30af\u3067\u3059\u3002', oauthTitle: '\u8a8d\u8a3c\u30c6\u30b9\u30c8', profileTitle: '\u5c65\u6b74\u66f8\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb',
         oauthNotConnected: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u3044\u307e\u305b\u3093', oauthChoose: '\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u9078\u3093\u3067\u7d9a\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u30b2\u30b9\u30c8\u306e\u307e\u307e\u3067\u3082\u95b2\u89a7\u3067\u304d\u307e\u3059\u3002', notLoggedIn: '\u30b2\u30b9\u30c8',
         noOAuthUser: '\u30b2\u30b9\u30c8\u30e2\u30fc\u30c9', oauthUserMeta: '\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3068\u3088\u304f\u4f7f\u3046\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002',
@@ -208,6 +214,149 @@ const translations = {
         currentWeather: '\u73fe\u5728\u306e\u5929\u6c17', countryInfo: '\u56fd\u60c5\u5831', dailyTip: '\u4eca\u65e5\u306e\u30d2\u30f3\u30c8', profileEyebrow: '\u500b\u4eba\u30ef\u30fc\u30af\u30b9\u30da\u30fc\u30b9', profileTitle: '\u30de\u30a4\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb', profileSubtitle: '\u5b66\u751f\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u6700\u65b0\u306b\u4fdd\u3061\u3001\u5fc5\u8981\u306a\u3068\u304d\u306b\u5c65\u6b74\u66f8\u3092\u51fa\u529b\u3067\u304d\u307e\u3059\u3002', ownerModeLabel: '\u6240\u6709\u8005\u7de8\u96c6\u30e2\u30fc\u30c9', publicResumeLabel: '\u516c\u958b\u5c65\u6b74\u66f8\u30d7\u30ec\u30d3\u30e5\u30fc', profileVisitorNote: '\u6240\u6709\u8005\u7de8\u96c6\u306f\u30ed\u30c3\u30af\u3055\u308c\u3066\u3044\u307e\u3059\u3002\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u975e\u516c\u958b\u60c5\u5831\u3092\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002', profileOwnerNote: '\u6240\u6709\u8005\u7de8\u96c6\u30e2\u30fc\u30c9\u304c\u6709\u52b9\u3067\u3059\u3002\u975e\u516c\u958b\u60c5\u5831\u306f\u3042\u306a\u305f\u3060\u3051\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002', profileInitialStatus: '\u516c\u958b\u30d7\u30ec\u30d3\u30e5\u30fc\u3067\u306f\u975e\u516c\u9805\u76ee\u3092\u8868\u793a\u3057\u307e\u305b\u3093\u3002', edit: '\u7de8\u96c6', save: '\u4fdd\u5b58', cancel: '\u30ad\u30e3\u30f3\u30bb\u30eb', exportPrint: 'PDF \u51fa\u529b / \u5c65\u6b74\u66f8\u3092\u5370\u5237', thirdPartyLogin: '\u30a2\u30ab\u30a6\u30f3\u30c8\u3068\u9023\u643a\u30b5\u30fc\u30d3\u30b9', modalTitle: '\u30de\u30a4\u30a2\u30ab\u30a6\u30f3\u30c8', modalCopy: '\u30ed\u30b0\u30a4\u30f3\u3059\u308b\u3068\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u7de8\u96c6\u3057\u3001\u5f79\u7acb\u3064\u30ad\u30e3\u30f3\u30d1\u30b9\u30b5\u30fc\u30d3\u30b9\u3092\u4e00\u3064\u9023\u643a\u3067\u304d\u307e\u3059\u3002', signGoogle: 'Google \u3067\u7d9a\u884c', signGithub: 'GitHub \u3067\u7d9a\u884c', googlePurpose: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u7de8\u96c6\u3057\u3001Calendar \u306e\u4eca\u5f8c\u306e\u4e88\u5b9a\u3092\u78ba\u8a8d\u3057\u307e\u3059\u3002', githubPurpose: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u7de8\u96c6\u3057\u3001\u516c\u958b\u30ea\u30dd\u30b8\u30c8\u30ea\u3092\u78ba\u8a8d\u3057\u307e\u3059\u3002', calendarAction: 'Calendar \u306e\u4eca\u5f8c\u306e\u4e88\u5b9a\u3092\u8868\u793a', githubAction: 'GitHub \u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3068\u30ea\u30dd\u30b8\u30c8\u30ea\u3092\u8868\u793a', connectedWith: '\u9023\u643a\u4e2d', logout: '\u30ed\u30b0\u30a2\u30a6\u30c8', login: '\u30ed\u30b0\u30a4\u30f3', register: '\u767b\u9332', open: 'Open'
     }
 };
+
+Object.assign(translations.ja, {
+    navHome: '今日',
+    navMe: '作品',
+    languageLabel: '言語',
+    localDate: '現地の日付',
+    account: 'アカウント',
+    folioHome: '京都 · 現在の天気',
+    folioPortfolio: 'セレクト作品 · 公開ページ',
+    folioAccount: 'ゲスト · 自由に閲覧',
+    accountEyebrow: 'アカウント / ログイン',
+    accountTitle: 'おかえりなさい。',
+    accountIntro: 'ログインするとプロフィールといつもの場所を保存できます。ゲストのままでも閲覧できます。',
+    todayChapter: '今日 / 京都',
+    todayHeadline: '静かな一日、',
+    headlineSpacer: '',
+    headlinePunctuation: '。',
+    todayLead: 'まず天気。そのほかは、あとで。',
+    peopleLabel: '人',
+    todayPhotoMain: '赤い線 / 京都、2026',
+    todayPhotoSecond: '雨上がり',
+    todayPhotoThird: '水辺からの風',
+    portfolioPublicView: '作品集 / 公開ページ',
+    portfolioIndex: '紹介 / 作品',
+    portraitMainCaption: '水辺の春',
+    portraitSmallCaption: '季節の終わりの一枚',
+    portfolioChapter: '作品集 / セレクト',
+    selectedWork: 'セレクト作品',
+    openSignIn: 'ログイン / 登録',
+    manageAccount: 'アカウント管理',
+    close: '閉じる',
+    ownerEditMode: 'ページ編集',
+    editSheetTitle: 'ページを編集する。',
+    addWork: '作品を追加',
+    addWorkHelp: '写真、絵、デザイン、プロジェクト',
+    workTypeLabel: '種類',
+    descriptionLabel: '説明',
+    imageUrlLabel: '画像URL',
+    addToPortfolio: '+ 作品集に追加',
+    showPassword: '表示',
+    hidePassword: '非表示',
+    statusLabel: '状態',
+    accountImageCaption: '京都 / 夕暮れ',
+    finding: '検索中…',
+    updatedNow: 'たった今更新',
+    limitedUpdate: '限定更新',
+    checkingSignIn: 'ログイン状態を確認中…',
+    checkingSignInDetail: 'しばらくお待ちください。',
+    checking: '確認中',
+    githubSigninNote: 'GitHub のアカウントと公開プロフィールを使用します。',
+    googleSigninNote: 'Google アカウントと任意のカレンダーを使用します。',
+    browseMode: '閲覧モード',
+    signedInStatus: 'ログイン済み',
+    localAccount: 'ローカルアカウント',
+    roleLabel: '役割',
+    accountSummary: 'アカウント概要',
+    visibilityLabel: '公開範囲',
+    localAccountTitle: 'ユーザー名とパスワード',
+    localAccountCopy: '登録またはログインすると、自分のページを編集できます。',
+    authReady: '新しいパスワードは12文字以上にしてください。',
+    continueGuest: 'ゲストとして続ける',
+    thirdPartyOption: 'または外部アカウントを使用',
+    guestProfileTitle: 'ビジュアルダイアリー / ウェブデザイン学生',
+    guestProfileSummary: '授業の合間や京都を歩くなかで制作した写真、スケッチ、ウェブ実験を集めた小さな作品集です。',
+    guestWork01Title: '青の時間のホーム',
+    guestWork01Description: '夕方の光が消える直前、静かな駅の一場面。',
+    guestWork02Title: '庭の観察者',
+    guestWork02Description: '夏草と落ち葉のあいだからこちらを見る黒猫。',
+    guestWork03Title: '窓辺のノート',
+    guestWork03Description: '何気ない午後に集めた反射、標識、通り過ぎる光。',
+    guestWork04Title: '雨上がりの池',
+    guestWork04Description: '短い雨のあとに残るやわらかな波紋と淡い緑。',
+    adminTitle: 'ユーザー管理',
+    adminCopy: '管理者はアカウントを確認・停止できます。',
+    countryLabel: '国',
+    cityLabel: '都市',
+    searchBtn: '検索',
+    saveToProfile: 'プロフィールに保存',
+    signInToSaveLocation: 'ログインして場所を保存',
+    homeInitialStatus: '場所を選ぶと今日の情報を表示します。',
+    currentWeather: '現在の天気',
+    cityMetric: '都市',
+    windMetric: '風速',
+    trendMetric: '傾向',
+    capitalMetric: '首都',
+    languagesMetric: '言語',
+    currenciesMetric: '通貨',
+    oauthNotConnected: 'ログインしていません',
+    oauthChoose: 'ログインする方法を選んでください。ゲストのままでも閲覧できます。',
+    notLoggedIn: 'ゲスト',
+    noOAuthUser: 'ゲストモード',
+    oauthUserMeta: 'ログインするとプロフィールとよく使う場所を保存できます。',
+    oauthRedirecting: '移動中：',
+    oauthWaiting: '認証を待っています',
+    oauthLoggedIn: 'ログイン中：',
+    oauthAuthorizedAs: 'アカウント',
+    oauthStatusFailed: 'ログイン状態を確認できません',
+    oauthLoginFailed: 'ログインに失敗しました',
+    oauthProviderIncomplete: '外部サービスの認証が完了しませんでした。',
+    oauthLoggedOut: 'ログアウトしました',
+    oauthLoggedOutDetail: 'ゲストとして閲覧を続けられます。',
+    usernameLabel: 'ユーザー名',
+    passwordLabel: 'パスワード',
+    login: 'ログイン',
+    register: '新規登録',
+    nameLabel: '名前',
+    emailLabel: 'メール',
+    phoneLabel: '電話',
+    titleLabel: 'タイトル',
+    summaryLabel: '紹介文',
+    edit: '編集',
+    save: '保存',
+    cancel: 'キャンセル',
+    exportPrint: 'PDF出力 / 印刷',
+    profileInitialStatus: '公開ページでは非公開項目を表示しません。',
+    profileVisitorNote: '編集はロックされています。ログインすると自分の情報を編集できます。',
+    profileOwnerNote: '編集モードです。非公開情報は自分だけに表示されます。',
+    signInToEdit: 'ログインしてプロフィールを編集',
+    modalTitle: 'アカウント',
+    signGoogle: 'Google で続ける',
+    signGithub: 'GitHub で続ける',
+    calendarAction: '今後の予定を表示',
+    githubAction: 'GitHub のプロフィールとリポジトリを表示',
+    noUpcomingEvents: '今後の予定はありません。',
+    noRepositories: '公開リポジトリはありません。',
+    serviceLoadFailed: '連携サービスを読み込めませんでした。',
+    loadingHome: '国と天気の情報を読み込み中…',
+    updated: '更新済み',
+    fallbackHome: '予備データを表示しています。都市名またはネットワークを確認してください。',
+    homeApiFailed: '今日の情報を読み込めません。バックエンドの状態を確認してください。',
+    savingLocation: '場所をプロフィールに保存中…',
+    locationSaved: '場所を保存し、今日ページを更新しました。',
+    editingProfile: 'プロフィールを編集できます。',
+    saving: '保存中…',
+    profileSaved: '保存しました。今日ページの場所も更新されています。',
+    oauthApiLoading: '読み込み中',
+    oauthApiSucceeded: '連携サービスを確認しました',
+    oauthApiReturned: '有効な応答が返りました。',
+    oauthApiFailed: '連携サービスを確認できません',
+    oauthProviderRequired: '対応する外部アカウントで先にログインしてください。',
+    registered: '登録しました',
+    authSucceeded: '成功しました。'
+});
 
 function t(key) {
     return translations[currentLanguage]?.[key] || translations.en[key] || key;
@@ -231,6 +380,10 @@ function applyLanguage() {
 
     updateFolio();
     updateOwnerUi();
+    if (currentHomeData) renderHome(currentHomeData);
+    if (currentProfile) renderProfile(currentProfile);
+    if (currentPortfolio.length) renderPortfolio();
+    updatePortfolioOwnerLabel();
 }
 
 function updateFolio(name = document.body.dataset.page || 'home') {
@@ -241,12 +394,12 @@ function updateFolio(name = document.body.dataset.page || 'home') {
 }
 
 function isOwnerAuthenticated() {
-    return Boolean(currentJwtUser);
+    return Boolean(currentAccount);
 }
 
 function updateOwnerUi() {
     const owner = isOwnerAuthenticated();
-    const account = currentJwtUser;
+    const account = currentAccount;
     const provider = account?.provider || currentOAuthUser?.currentProvider || '';
     const displayName = account?.displayName || currentProfile?.name || t('notLoggedIn');
     const role = account?.role || 'GUEST';
@@ -802,6 +955,9 @@ async function loadProfile() {
 
 function renderProfile(profile) {
     if (!profile) return;
+    const guestPreset = profile.guestView === true && !isOwnerAuthenticated();
+    const displayTitle = guestPreset ? t('guestProfileTitle') : (profile.title || '');
+    const displaySummary = guestPreset ? t('guestProfileSummary') : (profile.summary || '');
     const form = $('profileForm');
     form.name.value = profile.name || '';
     form.email.value = profile.email || '';
@@ -813,17 +969,17 @@ function renderProfile(profile) {
     form.visibility.value = profile.visibility || 'PUBLIC';
 
     $('previewName').textContent = profile.name || 'Student';
-    $('previewTitle').textContent = profile.title || '';
+    $('previewTitle').textContent = displayTitle;
     $('previewContact').textContent = [profile.email, [profile.city, profile.country].filter(Boolean).join(', ')].filter(Boolean).join(' | ');
-    $('previewSummary').textContent = profile.summary || '';
+    $('previewSummary').textContent = displaySummary;
     if ($('accountHolderName')) $('accountHolderName').textContent = (profile.name || 'Student').toUpperCase();
     if ($('previewAvatar')) {
         $('previewAvatar').textContent = (profile.name || 'S').charAt(0).toUpperCase();
         $('previewAvatar').style.backgroundImage = profile.avatarUrl ? `url("${profile.avatarUrl}")` : '';
     }
     setIdentity(
-        currentJwtUser?.displayName || profile.name || 'Student',
-        currentJwtUser?.avatarUrl || profile.avatarUrl || ''
+        currentAccount?.displayName || profile.name || 'Student',
+        currentAccount?.avatarUrl || profile.avatarUrl || ''
     );
     if ($('folioContext') && document.body.dataset.page === 'me') {
         $('folioContext').textContent = `${profile.name || t('navMe')} · ${t('selectedWork')}`;
@@ -835,6 +991,10 @@ async function loadPortfolio() {
         const data = await safeFetch('/api/portfolio');
         currentPortfolio = Array.isArray(data.items) ? data.items : [];
         currentPortfolioOwnerName = data.ownerName || '';
+        if (!currentPortfolio.length && currentProfile?.guestView === true && !isOwnerAuthenticated()) {
+            currentPortfolio = guestPortfolioDefaults();
+            currentPortfolioOwnerName = currentProfile.name || '';
+        }
         renderPortfolio();
         updatePortfolioOwnerLabel();
         return data;
@@ -843,6 +1003,15 @@ async function loadPortfolio() {
         if ($('portfolioGrid')) $('portfolioGrid').innerHTML = `<p class="muted">${safeText(error.message)}</p>`;
         return null;
     }
+}
+
+function guestPortfolioDefaults() {
+    return [
+        { id: -1, type: 'PHOTOGRAPHY', imageUrl: 'assets/campus-photo-01.jpg', presetKey: 'guestWork01' },
+        { id: -2, type: 'PHOTOGRAPHY', imageUrl: 'assets/campus-photo-05.jpg', presetKey: 'guestWork02' },
+        { id: -3, type: 'PHOTOGRAPHY', imageUrl: 'assets/campus-photo-08.jpg', presetKey: 'guestWork03' },
+        { id: -4, type: 'PHOTOGRAPHY', imageUrl: 'assets/campus-extra-pond.jpg', presetKey: 'guestWork04' }
+    ];
 }
 
 function updatePortfolioOwnerLabel() {
@@ -866,7 +1035,11 @@ function renderPortfolio() {
     if (!currentPortfolio.length) {
         const empty = document.createElement('p');
         empty.className = 'muted';
-        empty.textContent = currentLanguage === 'zh' ? '\u6682\u65e0\u516c\u5f00\u4f5c\u54c1\u3002' : 'No public work has been added yet.';
+        empty.textContent = currentLanguage === 'zh'
+            ? '\u6682\u65e0\u516c\u5f00\u4f5c\u54c1\u3002'
+            : currentLanguage === 'ja'
+                ? '\u516c\u958b\u4f5c\u54c1\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002'
+                : 'No public work has been added yet.';
         grid.appendChild(empty);
         return;
     }
@@ -875,13 +1048,15 @@ function renderPortfolio() {
         card.className = 'portfolio-card';
         const image = document.createElement('img');
         image.src = item.imageUrl || 'assets/campus-photo-01.jpg';
-        image.alt = item.title || '';
+        const itemTitle = item.presetKey ? t(`${item.presetKey}Title`) : (item.title || 'Untitled');
+        const itemDescription = item.presetKey ? t(`${item.presetKey}Description`) : (item.description || '');
+        image.alt = itemTitle;
         const type = document.createElement('span');
         type.textContent = item.type || 'WORK';
         const title = document.createElement('strong');
-        title.textContent = item.title || 'Untitled';
+        title.textContent = itemTitle;
         const description = document.createElement('p');
-        description.textContent = item.description || '';
+        description.textContent = itemDescription;
         card.append(image, type, title, description);
         if (item.externalUrl) {
             card.tabIndex = 0;
@@ -1112,11 +1287,13 @@ async function loadOAuthStatus() {
 function updateConnectedAccount() {
     const panel = $('connectedAccount');
     if (!panel) return;
-    const user = currentJwtUser;
+    const user = currentAccount;
     const connected = Boolean(user);
     panel.classList.toggle('is-hidden', !connected);
     document.querySelector('.provider-options')?.classList.toggle('is-hidden', connected);
     $('authForm')?.closest('.local-account')?.classList.toggle('is-hidden', connected);
+    document.querySelector('.auth-divider')?.classList.toggle('is-hidden', connected);
+    document.querySelector('.guest-action')?.classList.toggle('is-hidden', connected);
     if (!connected) return;
 
     const name = user.displayName || user.username || 'Student';
@@ -1152,7 +1329,7 @@ function appendServiceItem(container, title, meta = '', url = '') {
 
 async function loadConnectedService() {
     const result = $('connectedServiceResult');
-    const provider = currentJwtUser?.provider;
+    const provider = currentAccount?.provider;
     if (!provider) return;
     result.replaceChildren();
     result.textContent = t('oauthApiLoading');
@@ -1217,7 +1394,7 @@ $('authForm').addEventListener('submit', async event => {
                 password: $('authPassword').value
             })
         });
-        currentJwtUser = data.user || null;
+        currentAccount = data.user || null;
         $('authPassword').value = '';
         updateAuthStatus(`${t('signedInStatus')}: ${data.user?.displayName || data.user?.username || ''}`);
         updateOwnerUi();
@@ -1239,7 +1416,7 @@ $('registerBtn').addEventListener('click', async () => {
                 password: $('authPassword').value
             })
         });
-        currentJwtUser = data.user || null;
+        currentAccount = data.user || null;
         $('authPassword').value = '';
         updateAuthStatus(`${t('registered')}: ${data.user?.displayName || data.user?.username || ''}`);
         updateOwnerUi();
@@ -1264,11 +1441,11 @@ $('logoutBtn')?.addEventListener('click', async () => {
     } catch (error) {
         // Clear the browser view even if the local session has already expired.
     }
-    if (currentJwtUser?.provider && currentJwtUser.provider !== 'local') {
+    if (currentAccount?.provider && currentAccount.provider !== 'local') {
         window.location.href = '/logout';
         return;
     }
-    currentJwtUser = null;
+    currentAccount = null;
     currentOAuthUser = null;
     updateAuthStatus(t('authReady'));
     updateOwnerUi();
@@ -1279,16 +1456,16 @@ $('logoutBtn')?.addEventListener('click', async () => {
 async function loadCurrentAccount() {
     try {
         const data = await safeFetch('/api/auth/me');
-        currentJwtUser = data.authenticated ? data.user : null;
-        if (currentJwtUser) {
-            updateAuthStatus(`${t('signedInStatus')}: ${currentJwtUser.displayName || currentJwtUser.username}`);
+        currentAccount = data.authenticated ? data.user : null;
+        if (currentAccount) {
+            updateAuthStatus(`${t('signedInStatus')}: ${currentAccount.displayName || currentAccount.username}`);
         } else {
             updateAuthStatus(t('authReady'));
         }
         updateOwnerUi();
-        return currentJwtUser;
+        return currentAccount;
     } catch (error) {
-        currentJwtUser = null;
+        currentAccount = null;
         updateAuthStatus(error.message, true);
         updateOwnerUi();
         return null;
@@ -1296,7 +1473,7 @@ async function loadCurrentAccount() {
 }
 
 async function loadAdminUsers() {
-    if (currentJwtUser?.role !== 'ADMIN' || !$('adminUserList')) return;
+    if (currentAccount?.role !== 'ADMIN' || !$('adminUserList')) return;
     try {
         const data = await safeFetch('/api/admin/users');
         $('adminUserList').replaceChildren();
@@ -1312,7 +1489,7 @@ async function loadAdminUsers() {
             const toggle = document.createElement('button');
             toggle.type = 'button';
             toggle.textContent = user.enabled ? 'DISABLE' : 'ENABLE';
-            toggle.disabled = user.id === currentJwtUser.id;
+            toggle.disabled = user.id === currentAccount.id;
             toggle.addEventListener('click', async () => {
                 await safeFetch(`/api/admin/users/${user.id}`, {
                     method: 'PATCH',
