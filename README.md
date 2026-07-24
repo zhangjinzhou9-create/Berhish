@@ -106,6 +106,9 @@ The complete OpenAPI document is available at
 
 ## Submission documents
 
+- [Final presentation](output/presentation/CampusFlow_Final_Presentation.pptx)
+- [Live demonstration script](output/presentation/CampusFlow_Live_Demo_Script.docx)
+- [Runnable JAR](output/submission/CampusFlow.jar)
 - [Project structure](docs/architecture/PROJECT_STRUCTURE.md)
 - [Course report](output/pdf/CampusFlow_Report.pdf)
 - [Assignment requirements](docs/course/REQUIREMENTS.md)
