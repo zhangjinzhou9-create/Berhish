@@ -29,7 +29,7 @@ Open **Deployment Center > Containers > main**.
 | Image source | `Other container registry` |
 | Registry server URL | `https://index.docker.io` |
 | Image | `berhish/campus-flow` |
-| Tag | `release-20260724` |
+| Tag | `release-20260727-oauth` |
 | Port | `8080` |
 | Startup command | leave empty |
 
@@ -56,7 +56,8 @@ Open **Settings > Environment variables > App settings**.
 
 The production profile stores its H2 file under `/home/campusflow`.
 `WEBSITES_ENABLE_APP_SERVICE_STORAGE=true` preserves it across normal container
-restarts. Secret values must not appear in GitHub, screenshots, or presentation
+restarts. Uploaded media is stored under `/home/campusflow/uploads`. Secret
+values must not appear in GitHub, screenshots, reports, or other submitted
 materials.
 
 ## OAuth callbacks
@@ -89,5 +90,6 @@ After the immutable release image is deployed, make one public acceptance pass:
 4. Confirm `/api/portfolio` returns four public works.
 5. Confirm Google and GitHub authorization requests contain the exact callback
    URLs above.
+6. Complete one sign-in and confirm the provider returns to the Account page.
 
 Do not use repeated restart or polling loops on the Free F1 plan.

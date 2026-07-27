@@ -29,9 +29,12 @@ campusflow/
 |   +-- course/                        Requirements and report source
 |   `-- deployment/                    Azure and OAuth settings
 +-- output/pdf/                         Generated course report
++-- output/submission/                  Compiled runnable JAR
 +-- scripts/report/                    Report generation utility
 +-- docker-compose.yml                 Spring Boot and MySQL local runtime
 +-- .env.example                       Non-secret configuration template
++-- OPEN_CAMPUSFLOW.url                Published service shortcut
++-- START_LOCAL.cmd                    One-click classroom launcher
 `-- README.md                          Project entry point
 ```
 
@@ -48,3 +51,14 @@ runtime, Docker build, or submitted project directory.
 
 Passwords are BCrypt hashes, cookies are HttpOnly, writes require CSRF, and
 every editable record is scoped to its owner.
+
+## Persistence by environment
+
+| Environment | Database | Uploaded media |
+|---|---|---|
+| One-click local launcher | H2 file under `data/` | `data/uploads/` |
+| Docker Compose | MySQL named volume | `campus_flow_uploads` volume |
+| Azure App Service | H2 file under `/home/campusflow` | `/home/campusflow/uploads` |
+
+The actual `.env`, local `data/`, build output, and presentation materials are
+not part of the public source release.

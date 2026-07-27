@@ -44,12 +44,19 @@ const translations = {
         portfolioChapter: 'PORTFOLIO / SELECTED WORK', selectedWork: 'SELECTED WORK',
         openSignIn: 'Sign in / Create account', manageAccount: 'Manage account', close: 'Close',
         ownerEditMode: 'OWNER EDIT MODE', editSheetTitle: 'Edit your page.', addWork: 'ADD A WORK',
-        addWorkHelp: 'Photography, drawing, design, or project', workTypeLabel: 'Type', descriptionLabel: 'Description',
-        imageUrlLabel: 'Image URL', addToPortfolio: '+ Add to portfolio', showPassword: 'SHOW', hidePassword: 'HIDE',
+        addWorkHelp: 'Upload an image, audio file, or text file', workTypeLabel: 'Category', descriptionLabel: 'Description',
+        mediaTypeLabel: 'Media type', chooseFileLabel: 'Choose file', mediaImage: 'Image', mediaAudio: 'Audio', mediaText: 'Text',
+        layoutSizeLabel: 'Display size', layoutStandard: 'Standard', layoutWide: 'Wide', layoutTall: 'Tall',
+        mediaFitLabel: 'Image display', fitContain: 'Show complete image', fitCover: 'Fill the frame',
+        imageUploadHint: 'JPG, PNG, GIF, or WebP · up to 15 MB', audioUploadHint: 'MP3, WAV, OGG, or M4A · up to 25 MB',
+        textUploadHint: 'TXT, Markdown, CSV, or JSON · up to 5 MB', addToPortfolio: '+ Upload to portfolio',
+        chooseUploadFile: 'Choose a local file before uploading.', uploadingWork: 'Uploading your work…',
+        saveDisplay: 'Save display', removeWork: 'Remove', displaySaved: 'Work display updated.',
+        showPassword: 'SHOW', hidePassword: 'HIDE',
         statusLabel: 'Status', accountImageCaption: 'KYOTO / EVENING',
         finding: 'Finding\u2026', updatedNow: 'updated just now', limitedUpdate: 'limited update',
         checkingSignIn: 'Checking sign-in…', checkingSignInDetail: 'This only takes a moment.', checking: 'Checking',
-        githubSigninNote: 'Use your GitHub identity and public profile.', googleSigninNote: 'Use your Google account and optional calendar.',
+        githubSigninNote: 'Use your GitHub identity and public profile.', googleSigninNote: 'Use your Google name, email, and profile image.',
         browseMode: 'Browse mode', signedInStatus: 'Signed in', localAccount: 'Local account',
         roleLabel: 'Role', accountSummary: 'Account summary', visibilityLabel: 'Visibility',
         localAccountTitle: 'Username and password', localAccountCopy: 'Create an account or sign in to edit your own page.',
@@ -61,7 +68,8 @@ const translations = {
         guestWork02Title: 'Garden observer', guestWork02Description: 'A black cat framed by summer grass and fallen leaves.',
         guestWork03Title: 'Window notes', guestWork03Description: 'Reflections, signs, and passing light collected during an ordinary afternoon.',
         guestWork04Title: 'Pond after rain', guestWork04Description: 'Soft ripples and muted greens after a short shower.',
-        adminTitle: 'User management', adminCopy: 'Administrator accounts can review and disable accounts.',
+        adminTitle: 'User management', adminCopy: 'Administrator accounts can review, disable, or remove test accounts.',
+        deleteAccount: 'DELETE', deleteAccountConfirm: 'Delete this account and all of its saved work?',
         loadingLocation: 'Loading profile location...',
         countryLabel: 'Country', cityLabel: 'City', searchBtn: 'Search', saveToProfile: 'Save to Profile',
         locationHelp: 'Search is temporary. Save to Profile updates your default campus location.', signInToSaveLocation: 'Sign in to save location',
@@ -81,13 +89,15 @@ const translations = {
         refreshStatus: 'Refresh Status', usernameLabel: 'Username',
         passwordLabel: 'Password', userTypeLabel: 'User Type', login: 'Login', register: 'Register',
         profileEyebrow: 'Personal Workspace', profileTitle: 'My Profile', profileSubtitle: 'Keep your student profile current and export a clean resume when you need it.', nameLabel: 'Name',
-        studentIdLabel: 'Student ID', emailLabel: 'Email', phoneLabel: 'Phone', titleLabel: 'Title',
+        studentIdLabel: 'Student ID', emailLabel: 'Email', phoneLabel: 'Phone', titleLabel: 'Title', identityTitleLabel: 'Identity',
+        roleStudentCreator: 'Student creator', rolePhotographer: 'Photographer', roleArtist: 'Artist',
+        roleNovelist: 'Novelist', roleDesigner: 'Designer', roleFilmmaker: 'Filmmaker', roleMusician: 'Musician',
         summaryLabel: 'Summary', edit: 'Edit', save: 'Save', cancel: 'Cancel', exportPrint: 'Export PDF / Print Resume',
         ownerModeLabel: 'Owner Editing Mode', publicResumeLabel: 'Public Resume Preview', profileInitialStatus: 'Public preview hides private fields.', profileVisitorNote: 'Owner editing is locked. Sign in to edit private details.', profileOwnerNote: 'Owner editing mode is active. Private details are visible only to you.', signInToEdit: 'Sign in to edit your profile.', education: 'Education', skills: 'Skills',
         projects: 'Projects', languages: 'Languages', aboutMe: 'About Me',
         thirdPartyLogin: 'Account & Connected Service', modalTitle: 'Your Account',
         modalCopy: 'Sign in to edit your profile and connect one useful campus service.',
-        signGoogle: 'Continue with Google', signGithub: 'Continue with GitHub', googlePurpose: 'Edit your profile and view upcoming Calendar events.', githubPurpose: 'Edit your profile and view your public repositories.',
+        signGoogle: 'Continue with Google', signGithub: 'Continue with GitHub', googlePurpose: 'Use your Google identity, name, email, and profile image.', githubPurpose: 'Use your GitHub identity and public profile.',
         calendarAction: 'View upcoming Calendar events', githubAction: 'View GitHub profile and repositories', connectedWith: 'Connected with', noUpcomingEvents: 'No upcoming events were returned.', noRepositories: 'No public repositories were returned.', serviceLoadFailed: 'Connected service could not be loaded.',
         loadingHome: 'Loading country information and weather...', updated: 'Updated',
         fallbackHome: 'Using fallback data, please check city name or network.',
@@ -130,12 +140,19 @@ const translations = {
         portfolioChapter: '\u4f5c\u54c1\u96c6 / \u7cbe\u9009', selectedWork: '\u7cbe\u9009\u4f5c\u54c1',
         openSignIn: '\u767b\u5f55 / \u6ce8\u518c', manageAccount: '\u7ba1\u7406\u8d26\u6237', close: '\u5173\u95ed',
         ownerEditMode: '\u9875\u9762\u7f16\u8f91', editSheetTitle: '\u7f16\u8f91\u4f60\u7684\u9875\u9762\u3002', addWork: '\u6dfb\u52a0\u4f5c\u54c1',
-        addWorkHelp: '\u6444\u5f71\u3001\u7ed8\u753b\u3001\u8bbe\u8ba1\u6216\u9879\u76ee', workTypeLabel: '\u7c7b\u578b', descriptionLabel: '\u63cf\u8ff0',
-        imageUrlLabel: '\u56fe\u7247\u5730\u5740', addToPortfolio: '+ \u52a0\u5165\u4f5c\u54c1\u96c6', showPassword: '\u663e\u793a', hidePassword: '\u9690\u85cf',
+        addWorkHelp: '\u4ece\u672c\u5730\u4e0a\u4f20\u56fe\u50cf\u3001\u97f3\u9891\u6216\u6587\u672c\u6587\u4ef6', workTypeLabel: '\u4f5c\u54c1\u5206\u7c7b', descriptionLabel: '\u63cf\u8ff0',
+        mediaTypeLabel: '\u6587\u4ef6\u7c7b\u578b', chooseFileLabel: '\u9009\u62e9\u6587\u4ef6', mediaImage: '\u56fe\u50cf', mediaAudio: '\u97f3\u9891', mediaText: '\u6587\u672c',
+        layoutSizeLabel: '\u5c55\u793a\u5c3a\u5bf8', layoutStandard: '\u6807\u51c6', layoutWide: '\u5bbd\u5e45', layoutTall: '\u7ad6\u5e45',
+        mediaFitLabel: '\u56fe\u50cf\u663e\u793a', fitContain: '\u5b8c\u6574\u663e\u793a', fitCover: '\u586b\u6ee1\u753b\u6846',
+        imageUploadHint: 'JPG\u3001PNG\u3001GIF \u6216 WebP \u00b7 \u6700\u5927 15 MB', audioUploadHint: 'MP3\u3001WAV\u3001OGG \u6216 M4A \u00b7 \u6700\u5927 25 MB',
+        textUploadHint: 'TXT\u3001Markdown\u3001CSV \u6216 JSON \u00b7 \u6700\u5927 5 MB', addToPortfolio: '+ \u4e0a\u4f20\u5230\u4f5c\u54c1\u96c6',
+        chooseUploadFile: '\u8bf7\u5148\u9009\u62e9\u4e00\u4e2a\u672c\u5730\u6587\u4ef6\u3002', uploadingWork: '\u6b63\u5728\u4e0a\u4f20\u4f5c\u54c1\u2026',
+        saveDisplay: '\u4fdd\u5b58\u5c55\u793a', removeWork: '\u5220\u9664', displaySaved: '\u4f5c\u54c1\u5c55\u793a\u5df2\u66f4\u65b0\u3002',
+        showPassword: '\u663e\u793a', hidePassword: '\u9690\u85cf',
         statusLabel: '\u72b6\u6001', accountImageCaption: '\u4eac\u90fd / \u508d\u665a',
         finding: '\u67e5\u8be2\u4e2d\u2026', updatedNow: '\u521a\u521a\u66f4\u65b0', limitedUpdate: '\u6709\u9650\u66f4\u65b0',
         checkingSignIn: '\u6b63\u5728\u68c0\u67e5\u767b\u5f55\u72b6\u6001\u2026', checkingSignInDetail: '\u901a\u5e38\u53ea\u9700\u7247\u523b\u3002', checking: '\u68c0\u67e5\u4e2d',
-        githubSigninNote: '\u4f7f\u7528 GitHub \u8eab\u4efd\u548c\u516c\u5f00\u8d44\u6599\u3002', googleSigninNote: '\u4f7f\u7528 Google \u8d26\u6237\uff0c\u53ef\u9009\u8fde\u63a5\u65e5\u5386\u3002',
+        githubSigninNote: '\u4f7f\u7528 GitHub \u8eab\u4efd\u548c\u516c\u5f00\u8d44\u6599\u3002', googleSigninNote: '\u4f7f\u7528 Google \u59d3\u540d\u3001\u90ae\u7bb1\u548c\u5934\u50cf\u3002',
         browseMode: '\u6d4f\u89c8\u6a21\u5f0f', signedInStatus: '\u5df2\u767b\u5f55', localAccount: '\u672c\u5730\u8d26\u53f7',
         roleLabel: '\u89d2\u8272', accountSummary: '\u8d26\u6237\u6982\u89c8', visibilityLabel: '\u53ef\u89c1\u8303\u56f4',
         localAccountTitle: '\u7528\u6237\u540d\u548c\u5bc6\u7801', localAccountCopy: '\u6ce8\u518c\u6216\u767b\u5f55\u540e\u5373\u53ef\u7f16\u8f91\u81ea\u5df1\u7684\u9875\u9762\u3002',
@@ -147,7 +164,8 @@ const translations = {
         guestWork02Title: '\u5ead\u9662\u89c2\u5bdf\u8005', guestWork02Description: '\u590f\u8349\u4e0e\u843d\u53f6\u4e4b\u95f4\u7684\u9ed1\u732b\u3002',
         guestWork03Title: '\u7a97\u8fb9\u624b\u8bb0', guestWork03Description: '\u666e\u901a\u5348\u540e\u6536\u96c6\u7684\u53cd\u5149\u3001\u6807\u8bb0\u4e0e\u6d41\u52a8\u5149\u5f71\u3002',
         guestWork04Title: '\u96e8\u540e\u6c60\u5858', guestWork04Description: '\u77ed\u6682\u9635\u96e8\u540e\u7684\u5fae\u6ce2\u548c\u4f4e\u9971\u548c\u7eff\u8272\u3002',
-        adminTitle: '\u7528\u6237\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u5458\u53ef\u4ee5\u67e5\u770b\u548c\u505c\u7528\u8d26\u6237\u3002',
+        adminTitle: '\u7528\u6237\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u5458\u53ef\u4ee5\u67e5\u770b\u3001\u505c\u7528\u6216\u5220\u9664\u6d4b\u8bd5\u8d26\u6237\u3002',
+        deleteAccount: '\u5220\u9664', deleteAccountConfirm: '\u5220\u9664\u8be5\u8d26\u6237\u53ca\u5176\u6240\u6709\u5df2\u4fdd\u5b58\u4f5c\u54c1\uff1f',
         loadingLocation: '\u6b63\u5728\u8bfb\u53d6\u4e2a\u4eba\u4f4d\u7f6e...',
         countryLabel: '\u56fd\u5bb6', cityLabel: '\u57ce\u5e02', searchBtn: '\u67e5\u8be2', saveToProfile: '\u4fdd\u5b58\u5230\u8d44\u6599',
         locationHelp: '\u67e5\u8be2\u4ec5\u7528\u4e8e\u4e34\u65f6\u67e5\u770b\uff1b\u201c\u4fdd\u5b58\u5230\u8d44\u6599\u201d\u4f1a\u66f4\u65b0\u4f60\u7684\u9ed8\u8ba4\u6821\u56ed\u5730\u70b9\u3002', signInToSaveLocation: '\u767b\u5f55\u540e\u4fdd\u5b58\u5730\u70b9',
@@ -165,11 +183,13 @@ const translations = {
         noOAuthUser: '\u8bbf\u5ba2\u6a21\u5f0f', oauthUserMeta: '\u767b\u5f55\u540e\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\u5e76\u4fdd\u5b58\u5e38\u7528\u5730\u70b9\u3002',
         loginGithub: '\u4f7f\u7528 GitHub \u767b\u5f55', loginGoogle: '\u4f7f\u7528 Google \u767b\u5f55', logout: '\u9000\u51fa', refreshStatus: '\u5237\u65b0\u72b6\u6001',
         usernameLabel: '\u7528\u6237\u540d', passwordLabel: '\u5bc6\u7801', userTypeLabel: '\u7528\u6237\u7c7b\u578b', login: '\u767b\u5f55', register: '\u6ce8\u518c',
-        profileEyebrow: '\u4e2a\u4eba\u5de5\u4f5c\u533a', profileTitle: '\u6211\u7684\u8d44\u6599', profileSubtitle: '\u7ef4\u62a4\u5b66\u751f\u8d44\u6599\uff0c\u5e76\u5728\u9700\u8981\u65f6\u5bfc\u51fa\u6574\u6d01\u7684\u7b80\u5386\u3002', nameLabel: '\u59d3\u540d', studentIdLabel: '\u5b66\u53f7', emailLabel: '\u90ae\u7bb1', phoneLabel: '\u7535\u8bdd', titleLabel: '\u6807\u9898', summaryLabel: '\u7b80\u4ecb',
+        profileEyebrow: '\u4e2a\u4eba\u5de5\u4f5c\u533a', profileTitle: '\u6211\u7684\u8d44\u6599', profileSubtitle: '\u7ef4\u62a4\u5b66\u751f\u8d44\u6599\uff0c\u5e76\u5728\u9700\u8981\u65f6\u5bfc\u51fa\u6574\u6d01\u7684\u7b80\u5386\u3002', nameLabel: '\u59d3\u540d', studentIdLabel: '\u5b66\u53f7', emailLabel: '\u90ae\u7bb1', phoneLabel: '\u7535\u8bdd', titleLabel: '\u6807\u9898', identityTitleLabel: '\u8eab\u4efd\u6807\u9898', summaryLabel: '\u7b80\u4ecb',
+        roleStudentCreator: '\u5b66\u751f\u521b\u4f5c\u8005', rolePhotographer: '\u6444\u5f71\u5bb6', roleArtist: '\u753b\u5e08',
+        roleNovelist: '\u5c0f\u8bf4\u5bb6', roleDesigner: '\u8bbe\u8ba1\u5e08', roleFilmmaker: '\u5f71\u50cf\u521b\u4f5c\u8005', roleMusician: '\u97f3\u4e50\u521b\u4f5c\u8005',
         edit: '\u7f16\u8f91', save: '\u4fdd\u5b58', cancel: '\u53d6\u6d88', exportPrint: '\u5bfc\u51fa PDF / \u6253\u5370\u7b80\u5386', ownerModeLabel: '\u6240\u6709\u8005\u7f16\u8f91\u6a21\u5f0f', publicResumeLabel: '\u516c\u5f00\u7b80\u5386\u9884\u89c8', profileInitialStatus: '\u516c\u5f00\u9884\u89c8\u4e0d\u663e\u793a\u79c1\u5bc6\u5b57\u6bb5\u3002', profileVisitorNote: '\u6240\u6709\u8005\u7f16\u8f91\u5f53\u524d\u5df2\u9501\u5b9a\u3002\u767b\u5f55\u540e\u53ef\u4ee5\u4fee\u6539\u79c1\u5bc6\u8d44\u6599\u3002', profileOwnerNote: '\u6240\u6709\u8005\u7f16\u8f91\u6a21\u5f0f\u5df2\u542f\u7528\uff0c\u79c1\u5bc6\u8d44\u6599\u4ec5\u5bf9\u4f60\u53ef\u89c1\u3002', signInToEdit: '\u767b\u5f55\u540e\u624d\u80fd\u7f16\u8f91\u8d44\u6599\u3002',
         education: '\u6559\u80b2\u7ecf\u5386', skills: '\u6280\u80fd', projects: '\u9879\u76ee', languages: '\u8bed\u8a00', aboutMe: '\u5173\u4e8e\u6211',
         thirdPartyLogin: '\u8d26\u6237\u4e0e\u8fde\u63a5\u670d\u52a1', modalTitle: '\u6211\u7684\u8d26\u6237', modalCopy: '\u767b\u5f55\u540e\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\uff0c\u5e76\u8fde\u63a5\u4e00\u9879\u6709\u7528\u7684\u6821\u56ed\u670d\u52a1\u3002',
-        signGoogle: '\u4f7f\u7528 Google \u7ee7\u7eed', signGithub: '\u4f7f\u7528 GitHub \u7ee7\u7eed', googlePurpose: '\u7f16\u8f91\u8d44\u6599\u5e76\u67e5\u770b\u8fd1\u671f Calendar \u65e5\u7a0b\u3002', githubPurpose: '\u7f16\u8f91\u8d44\u6599\u5e76\u67e5\u770b\u516c\u5f00\u4ed3\u5e93\u3002', calendarAction: '\u67e5\u770b\u8fd1\u671f Calendar \u65e5\u7a0b', githubAction: '\u67e5\u770b GitHub \u8d44\u6599\u548c\u4ed3\u5e93', connectedWith: '\u5df2\u8fde\u63a5', noUpcomingEvents: '\u6ca1\u6709\u8fd4\u56de\u8fd1\u671f\u65e5\u7a0b\u3002', noRepositories: '\u6ca1\u6709\u8fd4\u56de\u516c\u5f00\u4ed3\u5e93\u3002', serviceLoadFailed: '\u65e0\u6cd5\u8bfb\u53d6\u5df2\u8fde\u63a5\u7684\u670d\u52a1\u3002', loadingHome: '\u6b63\u5728\u8bfb\u53d6\u56fd\u5bb6\u4fe1\u606f\u548c\u5929\u6c14...', updated: '\u5df2\u66f4\u65b0',
+        signGoogle: '\u4f7f\u7528 Google \u7ee7\u7eed', signGithub: '\u4f7f\u7528 GitHub \u7ee7\u7eed', googlePurpose: '\u4f7f\u7528 Google \u8eab\u4efd\u3001\u59d3\u540d\u3001\u90ae\u7bb1\u548c\u5934\u50cf\u767b\u5f55\u3002', githubPurpose: '\u4f7f\u7528 GitHub \u8eab\u4efd\u548c\u516c\u5f00\u8d44\u6599\u767b\u5f55\u3002', calendarAction: '\u67e5\u770b\u8fd1\u671f Calendar \u65e5\u7a0b', githubAction: '\u67e5\u770b GitHub \u8d44\u6599\u548c\u4ed3\u5e93', connectedWith: '\u5df2\u8fde\u63a5', noUpcomingEvents: '\u6ca1\u6709\u8fd4\u56de\u8fd1\u671f\u65e5\u7a0b\u3002', noRepositories: '\u6ca1\u6709\u8fd4\u56de\u516c\u5f00\u4ed3\u5e93\u3002', serviceLoadFailed: '\u65e0\u6cd5\u8bfb\u53d6\u5df2\u8fde\u63a5\u7684\u670d\u52a1\u3002', loadingHome: '\u6b63\u5728\u8bfb\u53d6\u56fd\u5bb6\u4fe1\u606f\u548c\u5929\u6c14...', updated: '\u5df2\u66f4\u65b0',
         fallbackHome: '\u6b63\u5728\u4f7f\u7528\u5907\u7528\u6570\u636e\uff0c\u8bf7\u68c0\u67e5\u57ce\u5e02\u540d\u6216\u7f51\u7edc\u3002', homeApiFailed: 'Home API \u8bfb\u53d6\u5931\u8d25\uff0c\u8bf7\u786e\u8ba4\u540e\u7aef\u6b63\u5728\u8fd0\u884c\u3002',
         savingLocation: '\u6b63\u5728\u4fdd\u5b58\u4f4d\u7f6e\u5230\u4e2a\u4eba\u8d44\u6599...', locationSaved: '\u4f4d\u7f6e\u5df2\u4fdd\u5b58\u5230\u8d44\u6599\uff0c\u9996\u9875\u5df2\u5237\u65b0\u3002',
         editingProfile: '\u73b0\u5728\u53ef\u4ee5\u7f16\u8f91\u8d44\u6599\u3002', saving: '\u6b63\u5728\u4fdd\u5b58...', profileSaved: '\u4fdd\u5b58\u6210\u529f\uff0c\u9996\u9875\u4f4d\u7f6e\u5df2\u540c\u6b65\u3002',
@@ -204,7 +224,8 @@ const translations = {
         roleLabel: '\u5f79\u5272', accountSummary: '\u30a2\u30ab\u30a6\u30f3\u30c8\u6982\u8981', visibilityLabel: '\u516c\u958b\u7bc4\u56f2',
         localAccountTitle: '\u30e6\u30fc\u30b6\u30fc\u540d\u3068\u30d1\u30b9\u30ef\u30fc\u30c9', localAccountCopy: '\u767b\u9332\u307e\u305f\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u81ea\u5206\u306e\u30da\u30fc\u30b8\u3092\u7de8\u96c6\u3067\u304d\u307e\u3059\u3002',
         authReady: '\u65b0\u3057\u3044\u30d1\u30b9\u30ef\u30fc\u30c9\u306f 12 \u6587\u5b57\u4ee5\u4e0a\u3067\u3059\u3002', continueGuest: '\u30b2\u30b9\u30c8\u3068\u3057\u3066\u7d9a\u884c',
-        adminTitle: '\u30e6\u30fc\u30b6\u30fc\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u8005\u306f\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u78ba\u8a8d\u30fb\u505c\u6b62\u3067\u304d\u307e\u3059\u3002',
+        adminTitle: '\u30e6\u30fc\u30b6\u30fc\u7ba1\u7406', adminCopy: '\u7ba1\u7406\u8005\u306f\u30a2\u30ab\u30a6\u30f3\u30c8\u306e\u78ba\u8a8d\u3001\u505c\u6b62\u3001\u524a\u9664\u304c\u3067\u304d\u307e\u3059\u3002',
+        deleteAccount: '\u524a\u9664', deleteAccountConfirm: '\u3053\u306e\u30a2\u30ab\u30a6\u30f3\u30c8\u3068\u4fdd\u5b58\u4f5c\u54c1\u3092\u3059\u3079\u3066\u524a\u9664\u3057\u307e\u3059\u304b\uff1f',
         countryLabel: '\u56fd', cityLabel: '\u90fd\u5e02', searchBtn: '\u691c\u7d22', saveToProfile: '\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58', locationHelp: '\u691c\u7d22\u306f\u4e00\u6642\u7684\u306a\u8868\u793a\u3067\u3059\u3002\u300c\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u306b\u4fdd\u5b58\u300d\u3067\u65e2\u5b9a\u306e\u30ad\u30e3\u30f3\u30d1\u30b9\u6240\u5728\u5730\u3092\u66f4\u65b0\u3057\u307e\u3059\u3002', signInToSaveLocation: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u6240\u5728\u5730\u3092\u4fdd\u5b58',
         quickEyebrow: '\u30af\u30a4\u30c3\u30af\u30a2\u30af\u30bb\u30b9', quickTitle: '\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u5165\u53e3', projectApiLabel: '\u30d7\u30ed\u30b8\u30a7\u30af\u30c8 API', studyLinksEyebrow: '\u5b66\u7fd2\u30ea\u30f3\u30af', studyLinksCopy: '\u6388\u696d\u3001\u8abf\u67fb\u3001\u7ffb\u8a33\u3001\u30ce\u30fc\u30c8\u306e\u30ea\u30f3\u30af\u3067\u3059\u3002', oauthTitle: '\u8a8d\u8a3c\u30c6\u30b9\u30c8', profileTitle: '\u5c65\u6b74\u66f8\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb',
         oauthNotConnected: '\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u3044\u307e\u305b\u3093', oauthChoose: '\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u9078\u3093\u3067\u7d9a\u884c\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u30b2\u30b9\u30c8\u306e\u307e\u307e\u3067\u3082\u95b2\u89a7\u3067\u304d\u307e\u3059\u3002', notLoggedIn: '\u30b2\u30b9\u30c8',
@@ -248,11 +269,30 @@ Object.assign(translations.ja, {
     ownerEditMode: 'ページ編集',
     editSheetTitle: 'ページを編集する。',
     addWork: '作品を追加',
-    addWorkHelp: '写真、絵、デザイン、プロジェクト',
-    workTypeLabel: '種類',
+    addWorkHelp: '画像・音声・テキストをローカルからアップロード',
+    workTypeLabel: '作品カテゴリー',
     descriptionLabel: '説明',
-    imageUrlLabel: '画像URL',
-    addToPortfolio: '+ 作品集に追加',
+    mediaTypeLabel: 'ファイル種類',
+    chooseFileLabel: 'ファイルを選択',
+    mediaImage: '画像',
+    mediaAudio: '音声',
+    mediaText: 'テキスト',
+    layoutSizeLabel: '表示サイズ',
+    layoutStandard: '標準',
+    layoutWide: '横長',
+    layoutTall: '縦長',
+    mediaFitLabel: '画像表示',
+    fitContain: '画像全体を表示',
+    fitCover: '枠いっぱいに表示',
+    imageUploadHint: 'JPG・PNG・GIF・WebP · 最大15 MB',
+    audioUploadHint: 'MP3・WAV・OGG・M4A · 最大25 MB',
+    textUploadHint: 'TXT・Markdown・CSV・JSON · 最大5 MB',
+    addToPortfolio: '+ 作品集へアップロード',
+    chooseUploadFile: '先にローカルファイルを選んでください。',
+    uploadingWork: '作品をアップロードしています…',
+    saveDisplay: '表示を保存',
+    removeWork: '削除',
+    displaySaved: '作品の表示を更新しました。',
     showPassword: '表示',
     hidePassword: '非表示',
     statusLabel: '状態',
@@ -264,7 +304,7 @@ Object.assign(translations.ja, {
     checkingSignInDetail: 'しばらくお待ちください。',
     checking: '確認中',
     githubSigninNote: 'GitHub のアカウントと公開プロフィールを使用します。',
-    googleSigninNote: 'Google アカウントと任意のカレンダーを使用します。',
+    googleSigninNote: 'Google の名前、メール、プロフィール画像を使用します。',
     browseMode: '閲覧モード',
     signedInStatus: 'ログイン済み',
     localAccount: 'ローカルアカウント',
@@ -287,7 +327,9 @@ Object.assign(translations.ja, {
     guestWork04Title: '雨上がりの池',
     guestWork04Description: '短い雨のあとに残るやわらかな波紋と淡い緑。',
     adminTitle: 'ユーザー管理',
-    adminCopy: '管理者はアカウントを確認・停止できます。',
+    adminCopy: '管理者はアカウントの確認、停止、削除ができます。',
+    deleteAccount: '削除',
+    deleteAccountConfirm: 'このアカウントと保存作品をすべて削除しますか？',
     countryLabel: '国',
     cityLabel: '都市',
     searchBtn: '検索',
@@ -323,6 +365,14 @@ Object.assign(translations.ja, {
     emailLabel: 'メール',
     phoneLabel: '電話',
     titleLabel: 'タイトル',
+    identityTitleLabel: '肩書き',
+    roleStudentCreator: '学生クリエイター',
+    rolePhotographer: '写真家',
+    roleArtist: '画家',
+    roleNovelist: '小説家',
+    roleDesigner: 'デザイナー',
+    roleFilmmaker: '映像作家',
+    roleMusician: '音楽クリエイター',
     summaryLabel: '紹介文',
     edit: '編集',
     save: '保存',
@@ -335,6 +385,8 @@ Object.assign(translations.ja, {
     modalTitle: 'アカウント',
     signGoogle: 'Google で続ける',
     signGithub: 'GitHub で続ける',
+    googlePurpose: 'Google の名前、メール、プロフィール画像でログインします。',
+    githubPurpose: 'GitHub のアカウントと公開プロフィールでログインします。',
     calendarAction: '今後の予定を表示',
     githubAction: 'GitHub のプロフィールとリポジトリを表示',
     noUpcomingEvents: '今後の予定はありません。',
@@ -649,17 +701,18 @@ async function readResponseBody(response) {
 
 async function safeFetch(url, options = {}) {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 12000);
-    const method = String(options.method || 'GET').toUpperCase();
+    const { timeoutMs = 12000, ...fetchOptions } = options;
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    const method = String(fetchOptions.method || 'GET').toUpperCase();
     const csrfHeaders = csrfToken && !['GET', 'HEAD', 'OPTIONS'].includes(method)
         ? { 'X-XSRF-TOKEN': csrfToken }
         : {};
     try {
         const response = await fetch(url, {
-            ...options,
+            ...fetchOptions,
             credentials: 'same-origin',
-            signal: options.signal || controller.signal,
-            headers: { Accept: 'application/json', ...csrfHeaders, ...(options.headers || {}) }
+            signal: fetchOptions.signal || controller.signal,
+            headers: { Accept: 'application/json', ...csrfHeaders, ...(fetchOptions.headers || {}) }
         });
         const data = await readResponseBody(response);
         if (!response.ok) {
@@ -730,6 +783,7 @@ $('languageSelect')?.addEventListener('change', event => {
     currentLanguage = event.target.value;
     localStorage.setItem(languageStorageKey, currentLanguage);
     applyLanguage();
+    updateUploadPicker();
     if (currentProfile) renderProfile(currentProfile);
     if (currentHomeData) renderHome(currentHomeData);
     updatePortfolioOwnerLabel();
@@ -956,7 +1010,7 @@ async function loadProfile() {
 function renderProfile(profile) {
     if (!profile) return;
     const guestPreset = profile.guestView === true && !isOwnerAuthenticated();
-    const displayTitle = guestPreset ? t('guestProfileTitle') : (profile.title || '');
+    const displayTitle = guestPreset ? t('guestProfileTitle') : localizedProfileTitle(profile.title);
     const displaySummary = guestPreset ? t('guestProfileSummary') : (profile.summary || '');
     const form = $('profileForm');
     form.name.value = profile.name || '';
@@ -964,7 +1018,7 @@ function renderProfile(profile) {
     form.phone.value = profile.phone || '';
     form.country.value = profile.country || defaultLocation.country;
     form.city.value = profile.city || defaultLocation.city;
-    form.title.value = profile.title || '';
+    form.title.value = profileTitleKeys[profile.title] ? profile.title : 'STUDENT_CREATOR';
     form.summary.value = profile.summary || '';
     form.visibility.value = profile.visibility || 'PUBLIC';
 
@@ -1014,6 +1068,20 @@ function guestPortfolioDefaults() {
     ];
 }
 
+const profileTitleKeys = {
+    STUDENT_CREATOR: 'roleStudentCreator',
+    PHOTOGRAPHER: 'rolePhotographer',
+    ARTIST: 'roleArtist',
+    NOVELIST: 'roleNovelist',
+    DESIGNER: 'roleDesigner',
+    FILMMAKER: 'roleFilmmaker',
+    MUSICIAN: 'roleMusician'
+};
+
+function localizedProfileTitle(value) {
+    return t(profileTitleKeys[value] || 'roleStudentCreator');
+}
+
 function updatePortfolioOwnerLabel() {
     const label = $('portfolioOwnerLabel');
     if (!label) return;
@@ -1043,24 +1111,59 @@ function renderPortfolio() {
         grid.appendChild(empty);
         return;
     }
-    currentPortfolio.slice(0, 6).forEach(item => {
+    currentPortfolio.forEach(item => {
         const card = document.createElement('article');
-        card.className = 'portfolio-card';
-        const image = document.createElement('img');
-        image.src = item.imageUrl || 'assets/campus-photo-01.jpg';
+        const layoutSize = ['STANDARD', 'WIDE', 'TALL'].includes(item.layoutSize) ? item.layoutSize : 'STANDARD';
+        const mediaFit = item.mediaFit === 'CONTAIN' ? 'CONTAIN' : 'COVER';
+        card.className = `portfolio-card layout-${layoutSize.toLowerCase()}`;
         const itemTitle = item.presetKey ? t(`${item.presetKey}Title`) : (item.title || 'Untitled');
         const itemDescription = item.presetKey ? t(`${item.presetKey}Description`) : (item.description || '');
-        image.alt = itemTitle;
+        const mediaKind = item.mediaKind || 'IMAGE';
+        let media;
+        if (mediaKind === 'AUDIO') {
+            media = document.createElement('div');
+            media.className = 'portfolio-media portfolio-audio';
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            audio.preload = 'metadata';
+            audio.src = item.imageUrl;
+            audio.setAttribute('aria-label', itemTitle);
+            media.appendChild(audio);
+        } else if (mediaKind === 'TEXT') {
+            media = document.createElement('a');
+            media.className = 'portfolio-media portfolio-text';
+            media.href = item.imageUrl;
+            media.target = '_blank';
+            media.rel = 'noopener';
+            const mark = document.createElement('b');
+            mark.textContent = 'TXT';
+            const filename = document.createElement('small');
+            filename.textContent = item.originalName || itemTitle;
+            media.append(mark, filename);
+        } else if (item.imageUrl) {
+            media = document.createElement('img');
+            media.className = `fit-${mediaFit.toLowerCase()}`;
+            media.src = item.imageUrl;
+            media.alt = itemTitle;
+        } else {
+            media = document.createElement('div');
+            media.className = 'portfolio-media portfolio-missing';
+            media.textContent = item.originalName || 'Media unavailable';
+        }
         const type = document.createElement('span');
         type.textContent = item.type || 'WORK';
         const title = document.createElement('strong');
         title.textContent = itemTitle;
         const description = document.createElement('p');
         description.textContent = itemDescription;
-        card.append(image, type, title, description);
+        card.append(media, type, title, description);
         if (item.externalUrl) {
             card.tabIndex = 0;
-            card.addEventListener('click', () => window.open(item.externalUrl, '_blank', 'noopener'));
+            card.addEventListener('click', event => {
+                if (!event.target.closest('a, audio, button')) {
+                    window.open(item.externalUrl, '_blank', 'noopener');
+                }
+            });
         }
         grid.appendChild(card);
     });
@@ -1079,13 +1182,67 @@ function renderPortfolioManager() {
         const meta = document.createElement('small');
         meta.textContent = item.type || 'WORK';
         copy.append(title, meta);
+        const controls = document.createElement('div');
+        controls.className = 'portfolio-manage-controls';
+        const layout = document.createElement('select');
+        [
+            ['STANDARD', t('layoutStandard')],
+            ['WIDE', t('layoutWide')],
+            ['TALL', t('layoutTall')]
+        ].forEach(([value, label]) => layout.add(new Option(label, value)));
+        layout.value = ['STANDARD', 'WIDE', 'TALL'].includes(item.layoutSize) ? item.layoutSize : 'STANDARD';
+        const fit = document.createElement('select');
+        [
+            ['CONTAIN', t('fitContain')],
+            ['COVER', t('fitCover')]
+        ].forEach(([value, label]) => fit.add(new Option(label, value)));
+        fit.value = item.mediaFit === 'CONTAIN' ? 'CONTAIN' : 'COVER';
+        fit.disabled = (item.mediaKind || 'IMAGE') !== 'IMAGE';
+        const saveDisplay = document.createElement('button');
+        saveDisplay.type = 'button';
+        saveDisplay.textContent = t('saveDisplay');
+        saveDisplay.addEventListener('click', () => updatePortfolioPresentation(
+            item,
+            layout.value,
+            fit.value,
+            saveDisplay
+        ));
         const remove = document.createElement('button');
         remove.type = 'button';
-        remove.textContent = 'REMOVE';
+        remove.textContent = t('removeWork');
         remove.addEventListener('click', () => deletePortfolioItem(item.id));
-        row.append(copy, remove);
+        controls.append(layout, fit, saveDisplay, remove);
+        row.append(copy, controls);
         list.appendChild(row);
     });
+}
+
+async function updatePortfolioPresentation(item, layoutSize, mediaFit, button) {
+    try {
+        button.disabled = true;
+        await safeFetch(`/api/portfolio/${item.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+                type: item.type || 'OTHER',
+                title: item.title || 'Untitled',
+                description: item.description || '',
+                imageUrl: item.imageUrl || '',
+                externalUrl: item.externalUrl || '',
+                layoutSize,
+                mediaFit,
+                displayOrder: item.displayOrder ?? 100,
+                public: item.public !== false
+            })
+        });
+        await loadPortfolio();
+        renderPortfolioManager();
+        setStatus($('saveStatus'), t('displaySaved'));
+    } catch (error) {
+        setStatus($('saveStatus'), error.message, true);
+    } finally {
+        button.disabled = false;
+    }
 }
 
 async function deletePortfolioItem(itemId) {
@@ -1098,32 +1255,73 @@ async function deletePortfolioItem(itemId) {
     }
 }
 
+const uploadAccept = {
+    IMAGE: '.jpg,.jpeg,.png,.gif,.webp,image/*',
+    AUDIO: '.mp3,.wav,.ogg,.m4a,audio/*',
+    TEXT: '.txt,.md,.csv,.json,text/plain,text/markdown,text/csv,application/json'
+};
+
+const uploadHintKey = {
+    IMAGE: 'imageUploadHint',
+    AUDIO: 'audioUploadHint',
+    TEXT: 'textUploadHint'
+};
+
+function updateUploadPicker() {
+    const kind = $('workMediaKind')?.value || 'IMAGE';
+    const input = $('workFile');
+    if (input) {
+        input.accept = uploadAccept[kind];
+        input.value = '';
+    }
+    if ($('workMediaFit')) {
+        $('workMediaFit').disabled = kind !== 'IMAGE';
+    }
+    if ($('workFileHint')) $('workFileHint').textContent = t(uploadHintKey[kind]);
+}
+
+$('workMediaKind')?.addEventListener('change', updateUploadPicker);
+
 $('addWorkBtn')?.addEventListener('click', async () => {
     const title = $('workTitle').value.trim();
+    const file = $('workFile')?.files?.[0];
     if (!title) {
         setStatus($('saveStatus'), 'Add a title before saving the work.', true);
         return;
     }
+    if (!file) {
+        setStatus($('saveStatus'), t('chooseUploadFile'), true);
+        return;
+    }
+    const formData = new FormData();
+    formData.set('file', file);
+    formData.set('mediaKind', $('workMediaKind').value);
+    formData.set('type', $('workType').value);
+    formData.set('title', title);
+    formData.set('description', $('workDescription').value.trim());
+    formData.set('layoutSize', $('workLayoutSize').value);
+    formData.set('mediaFit', $('workMediaFit').value);
+    formData.set('public', 'true');
+    formData.set('displayOrder', String(currentPortfolio.length + 1));
+    const button = $('addWorkBtn');
     try {
-        await safeFetch('/api/portfolio', {
+        button.disabled = true;
+        setStatus($('saveStatus'), t('uploadingWork'));
+        await safeFetch('/api/portfolio/upload', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json; charset=utf-8' },
-            body: JSON.stringify({
-                type: $('workType').value,
-                title,
-                description: $('workDescription').value.trim(),
-                imageUrl: $('workImageUrl').value.trim(),
-                public: true,
-                displayOrder: currentPortfolio.length + 1
-            })
+            body: formData,
+            timeoutMs: 60000
         });
         $('workTitle').value = '';
         $('workDescription').value = '';
+        $('workFile').value = '';
         await loadPortfolio();
         renderPortfolioManager();
         setStatus($('saveStatus'), 'Work added to your portfolio.');
     } catch (error) {
         setStatus($('saveStatus'), error.message, true);
+    } finally {
+        button.disabled = false;
     }
 });
 
@@ -1301,9 +1499,9 @@ function updateConnectedAccount() {
     const providerLabel = provider === 'local' ? t('localAccount') : provider;
     $('connectedName').textContent = name;
     $('connectedMeta').textContent = `${user.role} · ${providerLabel}`;
-    const hasConnectedService = provider === 'google' || provider === 'github';
+    const hasConnectedService = provider === 'github';
     $('connectedServiceBtn').classList.toggle('is-hidden', !hasConnectedService);
-    $('connectedServiceBtn').textContent = provider === 'google' ? t('calendarAction') : t('githubAction');
+    $('connectedServiceBtn').textContent = t('githubAction');
     $('connectedAvatar').textContent = (name.charAt(0) || 'S').toUpperCase();
     $('connectedAvatar').style.backgroundImage = user.avatarUrl ? `url("${user.avatarUrl}")` : '';
 }
@@ -1330,29 +1528,19 @@ function appendServiceItem(container, title, meta = '', url = '') {
 async function loadConnectedService() {
     const result = $('connectedServiceResult');
     const provider = currentAccount?.provider;
-    if (!provider) return;
+    if (provider !== 'github') return;
     result.replaceChildren();
     result.textContent = t('oauthApiLoading');
     try {
         result.replaceChildren();
-        if (provider === 'google') {
-            const data = await safeFetch('/api/oauth/google/calendar');
-            const events = data.events?.items || [];
-            if (!events.length) result.textContent = t('noUpcomingEvents');
-            events.slice(0, 5).forEach(event => {
-                const start = event.start?.dateTime || event.start?.date || '';
-                appendServiceItem(result, event.summary || 'Untitled event', start ? new Date(start).toLocaleString() : '');
-            });
-        } else {
-            const [profile, reposData] = await Promise.all([
-                safeFetch('/api/oauth/github/profile'),
-                safeFetch('/api/oauth/github/repos')
-            ]);
-            appendServiceItem(result, profile.name || profile.login || 'GitHub profile', `${profile.publicRepos ?? 0} public repositories`, profile.profileUrl || '');
-            const repos = Array.isArray(reposData.repos) ? reposData.repos : [];
-            if (!repos.length) appendServiceItem(result, t('noRepositories'));
-            repos.slice(0, 5).forEach(repo => appendServiceItem(result, repo.name || 'Repository', repo.description || '', repo.html_url || ''));
-        }
+        const [profile, reposData] = await Promise.all([
+            safeFetch('/api/oauth/github/profile'),
+            safeFetch('/api/oauth/github/repos')
+        ]);
+        appendServiceItem(result, profile.name || profile.login || 'GitHub profile', `${profile.publicRepos ?? 0} public repositories`, profile.profileUrl || '');
+        const repos = Array.isArray(reposData.repos) ? reposData.repos : [];
+        if (!repos.length) appendServiceItem(result, t('noRepositories'));
+        repos.slice(0, 5).forEach(repo => appendServiceItem(result, repo.name || 'Repository', repo.description || '', repo.html_url || ''));
     } catch (error) {
         result.textContent = `${t('serviceLoadFailed')} ${error.message}`;
     }
@@ -1436,14 +1624,18 @@ $('togglePasswordBtn')?.addEventListener('click', () => {
 });
 
 $('logoutBtn')?.addEventListener('click', async () => {
+    const oauthSession = Boolean(currentAccount?.provider && currentAccount.provider !== 'local');
     try {
         await safeFetch('/api/auth/logout', { method: 'POST' });
     } catch (error) {
         // Clear the browser view even if the local session has already expired.
     }
-    if (currentAccount?.provider && currentAccount.provider !== 'local') {
-        window.location.href = '/logout';
-        return;
+    if (oauthSession) {
+        try {
+            await safeFetch('/logout', { method: 'POST' });
+        } catch (error) {
+            // The OAuth session may already have expired; local state is still cleared below.
+        }
     }
     currentAccount = null;
     currentOAuthUser = null;
@@ -1486,6 +1678,8 @@ async function loadAdminUsers() {
             const meta = document.createElement('small');
             meta.textContent = `${user.username} · ${user.role} · ${user.provider}`;
             copy.append(name, meta);
+            const actions = document.createElement('div');
+            actions.className = 'admin-user-actions';
             const toggle = document.createElement('button');
             toggle.type = 'button';
             toggle.textContent = user.enabled ? 'DISABLE' : 'ENABLE';
@@ -1498,7 +1692,17 @@ async function loadAdminUsers() {
                 });
                 await loadAdminUsers();
             });
-            row.append(copy, toggle);
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.textContent = t('deleteAccount');
+            remove.disabled = user.id === currentAccount.id;
+            remove.addEventListener('click', async () => {
+                if (!window.confirm(t('deleteAccountConfirm'))) return;
+                await safeFetch(`/api/admin/users/${user.id}`, { method: 'DELETE' });
+                await loadAdminUsers();
+            });
+            actions.append(toggle, remove);
+            row.append(copy, actions);
             $('adminUserList').appendChild(row);
         });
     } catch (error) {
@@ -1510,6 +1714,7 @@ async function handleUrlParams() {
     const params = new URLSearchParams(window.location.search);
     const page = params.get('page');
     const authError = params.get('authError');
+    const authSuccess = params.get('authSuccess');
 
     if (page === 'oauth' || page === 'account') {
         switchPage('account');
@@ -1520,8 +1725,11 @@ async function handleUrlParams() {
         switchPage('account');
         setOAuthState('error', t('oauthLoginFailed'), t('oauthProviderIncomplete'), 'Failed');
     }
+    if (authSuccess) {
+        openOAuthModal();
+    }
 
-    ['page', 'authError'].forEach(key => params.delete(key));
+    ['page', 'authError', 'authSuccess'].forEach(key => params.delete(key));
     const query = params.toString();
     history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}${window.location.hash || '#home'}`);
 }

@@ -17,7 +17,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -104,41 +103,6 @@ public class OAuthApiController {
             return ResponseEntity.status(502).body(Map.of(
                     "source", "github",
                     "error", "GitHub API request failed"
-            ));
-        }
-    }
-
-    @GetMapping("/google/calendar")
-    public ResponseEntity<?> googleCalendar(OAuth2AuthenticationToken authentication) {
-        OAuth2AuthorizedClient client = clientFor("google", authentication);
-        if (client == null) {
-            return providerLoginRequired("google");
-        }
-
-        String url = UriComponentsBuilder
-                .fromUriString("https://www.googleapis.com/calendar/v3/calendars/primary/events")
-                .queryParam("maxResults", "10")
-                .queryParam("singleEvents", "true")
-                .queryParam("orderBy", "startTime")
-                .queryParam("timeMin", Instant.now().toString())
-                .build()
-                .toUriString();
-
-        try {
-            ResponseEntity<Object> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    bearerRequest(client),
-                    Object.class
-            );
-            Map<String, Object> result = new LinkedHashMap<>();
-            result.put("source", "google-calendar");
-            result.put("events", response.getBody());
-            return ResponseEntity.ok(result);
-        } catch (RestClientException e) {
-            return ResponseEntity.status(502).body(Map.of(
-                    "source", "google-calendar",
-                    "error", "Google Calendar API request failed"
             ));
         }
     }

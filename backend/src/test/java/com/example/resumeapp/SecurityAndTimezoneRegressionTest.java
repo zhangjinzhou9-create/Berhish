@@ -11,8 +11,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
@@ -21,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -28,7 +31,10 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -61,6 +67,9 @@ class SecurityAndTimezoneRegressionTest {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private AccountService accountService;
 
     @BeforeEach
     void cleanUsers() {
@@ -109,6 +118,63 @@ class SecurityAndTimezoneRegressionTest {
     }
 
     @Test
+    void configuredAdministratorPasswordFollowsTheCurrentEnvironmentValue() {
+        ReflectionTestUtils.setField(accountService, "adminUsername", "configured_admin");
+        ReflectionTestUtils.setField(accountService, "adminPassword", "FirstAdminPassword!");
+        accountService.initializeSchema();
+
+        org.assertj.core.api.Assertions.assertThat(
+                accountService.authenticate("configured_admin", "FirstAdminPassword!").role()
+        ).isEqualTo("ADMIN");
+
+        ReflectionTestUtils.setField(accountService, "adminPassword", "SecondAdminPassword!");
+        accountService.initializeSchema();
+
+        org.assertj.core.api.Assertions.assertThatThrownBy(
+                () -> accountService.authenticate("configured_admin", "FirstAdminPassword!")
+        ).isInstanceOf(AccountService.AccountAuthenticationException.class);
+        org.assertj.core.api.Assertions.assertThat(
+                accountService.authenticate("configured_admin", "SecondAdminPassword!").role()
+        ).isEqualTo("ADMIN");
+    }
+
+    @Test
+    void newAccountsStartWithAnEmptyPortfolio() throws Exception {
+        Cookie session = registerUser("empty_portfolio", "StrongPassword123!");
+
+        mockMvc.perform(get("/api/portfolio").cookie(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.editable").value(true))
+                .andExpect(jsonPath("$.items.length()").value(0));
+    }
+
+    @Test
+    void portfolioCreationWithoutAFileDoesNotInsertAPresetImage() throws Exception {
+        Cookie session = registerUser("no_placeholder", "StrongPassword123!");
+
+        mockMvc.perform(post("/api/portfolio")
+                        .with(csrf())
+                        .cookie(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "type":"PHOTOGRAPHY",
+                                  "title":"No file",
+                                  "description":"Should be rejected",
+                                  "imageUrl":""
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", containsString("upload")));
+
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM portfolio_items",
+                Integer.class
+        );
+        org.assertj.core.api.Assertions.assertThat(count).isZero();
+    }
+
+    @Test
     void oldSourceCodeSecretCannotForgeAdminSession() throws Exception {
         String forged = tokenSignedWith(
                 "campus_flow_super_secret_key_for_jwt_2026",
@@ -142,6 +208,154 @@ class SecurityAndTimezoneRegressionTest {
     }
 
     @Test
+    void oversizedProfileInputReturnsBadRequestInsteadOfDatabaseFailure() throws Exception {
+        Cookie session = registerUser("bounded_profile", "StrongPassword123!");
+        String body = objectMapper.writeValueAsString(Map.of(
+                "name", "x".repeat(121),
+                "country", "Japan",
+                "city", "Kyoto"
+        ));
+
+        mockMvc.perform(post("/api/profile")
+                        .with(csrf())
+                        .cookie(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", containsString("120")));
+    }
+
+    @Test
+    void profileTitleMustUseAPreset() throws Exception {
+        Cookie session = registerUser("preset_title", "StrongPassword123!");
+
+        mockMvc.perform(post("/api/profile")
+                        .with(csrf())
+                        .cookie(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name":"Preset User",
+                                  "country":"Japan",
+                                  "city":"Kyoto",
+                                  "title":"Anything I want"
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", containsString("preset")));
+
+        mockMvc.perform(post("/api/profile")
+                        .with(csrf())
+                        .cookie(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "name":"Preset User",
+                                  "country":"Japan",
+                                  "city":"Kyoto",
+                                  "title":"PHOTOGRAPHER"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.profile.title").value("PHOTOGRAPHER"));
+    }
+
+    @Test
+    void administratorCanRemoveATestAccountButNotTheActiveAccount() throws Exception {
+        Cookie adminSession = registerUser("cleanup_admin", "StrongPassword123!");
+        jdbcTemplate.update(
+                "UPDATE auth_users SET user_type = 'ADMIN' WHERE username = 'cleanup_admin'"
+        );
+        registerUser("temporary_test_user", "StrongPassword123!");
+        Long testUserId = jdbcTemplate.queryForObject(
+                "SELECT id FROM auth_users WHERE username = 'temporary_test_user'",
+                Long.class
+        );
+        Long adminId = jdbcTemplate.queryForObject(
+                "SELECT id FROM auth_users WHERE username = 'cleanup_admin'",
+                Long.class
+        );
+
+        mockMvc.perform(delete("/api/admin/users/" + testUserId)
+                        .with(csrf())
+                        .cookie(adminSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.deleted").value(true));
+
+        mockMvc.perform(delete("/api/admin/users/" + adminId)
+                        .with(csrf())
+                        .cookie(adminSession))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void uploadedMediaRemainsAvailableAfterMetadataUpdate() throws Exception {
+        Cookie session = registerUser("media_owner", "StrongPassword123!");
+        MockMultipartFile image = new MockMultipartFile(
+                "file",
+                "sample.png",
+                "image/png",
+                new byte[]{(byte) 0x89, 'P', 'N', 'G', 13, 10, 26, 10, 1}
+        );
+
+        String uploadResponse = mockMvc.perform(multipart("/api/portfolio/upload")
+                        .file(image)
+                        .param("mediaKind", "IMAGE")
+                        .param("type", "PHOTOGRAPHY")
+                        .param("title", "Uploaded image")
+                        .param("description", "Original description")
+                        .param("layoutSize", "WIDE")
+                        .param("mediaFit", "CONTAIN")
+                        .param("public", "true")
+                        .with(csrf())
+                        .cookie(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.created").value(true))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long itemId = objectMapper.readTree(uploadResponse).path("id").asLong();
+        mockMvc.perform(put("/api/portfolio/" + itemId)
+                        .with(csrf())
+                        .cookie(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "type":"PHOTOGRAPHY",
+                                  "title":"Edited title",
+                                  "description":"Edited description",
+                                  "imageUrl":"",
+                                  "externalUrl":"",
+                                  "layoutSize":"TALL",
+                                  "mediaFit":"CONTAIN",
+                                  "public":true
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.updated").value(true));
+
+        String mediaUrl = jdbcTemplate.queryForObject(
+                "SELECT image_url FROM portfolio_items WHERE id = ?",
+                String.class,
+                itemId
+        );
+        org.assertj.core.api.Assertions.assertThat(mediaUrl)
+                .isEqualTo("/api/portfolio/" + itemId + "/media");
+        Map<String, Object> presentation = jdbcTemplate.queryForMap(
+                "SELECT layout_size, media_fit FROM portfolio_items WHERE id = ?",
+                itemId
+        );
+        org.assertj.core.api.Assertions.assertThat(presentation.get("layout_size")).isEqualTo("TALL");
+        org.assertj.core.api.Assertions.assertThat(presentation.get("media_fit")).isEqualTo("CONTAIN");
+
+        mockMvc.perform(get(mediaUrl).cookie(session))
+                .andExpect(status().isOk())
+                .andExpect(header().string("X-Content-Type-Options", "nosniff"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.IMAGE_PNG));
+    }
+
+    @Test
     void guestPortfolioAlwaysIncludesPresetWork() throws Exception {
         String response = mockMvc.perform(get("/api/portfolio"))
                 .andExpect(status().isOk())
@@ -167,10 +381,20 @@ class SecurityAndTimezoneRegressionTest {
                 .andExpect(content().string(containsString("<option value=\"ja\">日本語</option>")))
                 .andExpect(content().string(containsString("<option value=\"zh\">中文</option>")))
                 .andExpect(content().string(containsString("id=\"authPassword\" type=\"password\"")))
+                .andExpect(content().string(containsString("id=\"workFile\" type=\"file\"")))
+                .andExpect(content().string(containsString("id=\"workLayoutSize\"")))
+                .andExpect(content().string(containsString("value=\"PHOTOGRAPHER\"")))
+                .andExpect(content().string(not(containsString("id=\"workImageUrl\""))))
                 .andExpect(content().string(not(containsString("CLASSROOM EDITION"))))
                 .andExpect(content().string(not(containsString("CLASS07"))))
                 .andExpect(content().string(not(containsString("OAUTH API EVIDENCE"))))
                 .andExpect(content().string(not(containsString("LOCAL JWT TEST"))));
+
+        mockMvc.perform(get("/script.js"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(
+                        "safeFetch('/logout', { method: 'POST' })"
+                )));
     }
 
     @Test
@@ -180,14 +404,16 @@ class SecurityAndTimezoneRegressionTest {
                 .andExpect(header().string(
                         "Location",
                         containsString("redirect_uri=https://campusflow.example/login/oauth2/code/google")
-                ));
+                ))
+                .andExpect(header().string("Location", containsString("prompt=select_account")));
 
         mockMvc.perform(get("/oauth2/authorization/github"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string(
                         "Location",
                         containsString("redirect_uri=https://campusflow.example/login/oauth2/code/github")
-                ));
+                ))
+                .andExpect(header().string("Location", containsString("prompt=select_account")));
     }
 
     @Test

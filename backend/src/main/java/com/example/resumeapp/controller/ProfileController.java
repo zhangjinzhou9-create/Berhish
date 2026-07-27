@@ -54,7 +54,11 @@ public class ProfileController {
         if (account.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("error", "Sign in before changing profile data."));
         }
-        return ResponseEntity.ok(profileService.updateProfile(account.get().id(), body));
+        try {
+            return ResponseEntity.ok(profileService.updateProfile(account.get().id(), body));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/home")

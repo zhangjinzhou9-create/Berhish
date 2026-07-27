@@ -1,21 +1,45 @@
 # CampusFlow
 
-CampusFlow is a desktop-first personal portfolio web service built for the Web
-Service course project. One Spring Boot application serves the designed
-frontend and REST API, manages accounts and authorization, stores profile and
-portfolio data, and integrates weather, country, Google, and GitHub services.
+CampusFlow is a desktop-first portfolio web service developed for the Web
+Service course project. One Spring Boot application serves the browser client
+and REST API, manages accounts and authorization, stores user profiles and
+portfolio media, and combines external weather and country data.
 
-## What the application demonstrates
+## Start here
 
-- **Today** is the default guest page. It shows the current Japan date, a
-  selected location, country information, live weather, and weather-based advice.
-- **Portfolio** shows a featured public profile and four distinct works. Signed-in
-  users can turn their page into a resume, photography set, illustration
-  collection, design archive, or mixed portfolio.
+The final Azure service is available at:
+
+https://campusflow-final-0724-grbzdrczdqdyhyea.japanwest-01.azurewebsites.net
+
+On Windows, double-click `OPEN_CAMPUSFLOW.url` to open the published service.
+
+To run the compiled submission locally, install Java 17 or newer and
+double-click `START_LOCAL.cmd`. This starts the supplied JAR with a local H2
+database and opens:
+
+```text
+http://localhost:8080/index.html
+```
+
+Close the window titled `CampusFlow Server` to stop the local service.
+Third-party sign-in is configured on the published Azure version; the local
+launcher is intended for guest browsing, registration, profile editing, and
+portfolio testing.
+
+## Main functions
+
+- **Today** is the default guest page. It combines a selected location,
+  REST Countries information, Open-Meteo weather, and weather-based advice.
+- **Portfolio** provides preset guest content. Signed-in users receive their
+  own persistent page and can upload image, audio, or text works.
+- Portfolio presentation controls support standard, wide, and tall cards plus
+  complete-image or frame-filling image display.
 - **Account** supports guest browsing, local registration and sign-in, and
-  optional Google or GitHub authorization. Signed-in users can edit their own
-  profile, save a usual place, and manage their own works.
-- The interface can be switched between English, Japanese, and Chinese.
+  Google or GitHub sign-in.
+- Signed-in users can edit their profile, choose a preset identity title, save
+  a usual place, and manage only their own work.
+- The complete interface is available in English, Japanese, and Simplified
+  Chinese.
 
 ## Technology
 
@@ -23,38 +47,20 @@ portfolio data, and integrates weather, country, Google, and GitHub services.
 |---|---|
 | Frontend | HTML, CSS, JavaScript, GSAP |
 | Backend | Java 17, Spring Boot, Spring Security |
-| Local database | MySQL 8 in Docker Compose |
-| Cloud database | Persistent H2 file under Azure App Service `/home` |
-| API description | OpenAPI 3.0 |
+| Local database | MySQL 8 with Docker Compose or H2 with the classroom launcher |
+| Cloud database | Persistent H2 file in Azure App Service storage |
+| Media storage | Local volume or Azure `/home/campusflow/uploads` |
+| External services | Open-Meteo, REST Countries, Google OAuth, GitHub OAuth |
 | Delivery | Docker, Docker Hub, Azure App Service |
 
-## Security
+## Docker development
 
-- Local passwords are never returned to the browser and are stored as BCrypt
-  hashes.
-- Authentication uses an HttpOnly `campusflow_session` cookie.
-- State-changing browser requests require an `X-XSRF-TOKEN` CSRF header.
-- Public registration always creates a normal `USER`.
-- Profile and portfolio writes are restricted to the signed-in owner.
-- Administrator routes require a separately configured server-side account.
-- OAuth client secrets, the JWT secret, and administrator credentials are
-  supplied through environment variables and are not committed.
-
-## Run locally
-
-1. Copy `.env.example` to `.env` and add OAuth credentials only if those two
-   providers will be demonstrated.
-2. Start the application and MySQL:
+1. Copy `.env.example` to `.env`.
+2. Add OAuth credentials only when local third-party sign-in is required.
+3. Start the application and MySQL:
 
 ```powershell
-cd C:\ProgramData\campusflow
 docker compose up --build -d
-```
-
-3. Open:
-
-```text
-http://localhost:8080/index.html
 ```
 
 Useful checks:
@@ -67,56 +73,33 @@ curl.exe http://localhost:8080/api/profile
 curl.exe http://localhost:8080/api/portfolio
 ```
 
-Stop the local service with:
+Stop the service with `docker compose down`. Database and upload volumes remain
+available until they are explicitly removed.
 
-```powershell
-docker compose down
-```
+## Security
 
-The MySQL data volume is preserved unless it is explicitly removed.
+- Local passwords are stored as BCrypt hashes and never returned to the client.
+- Authentication uses an HttpOnly `campusflow_session` cookie.
+- State-changing requests require an `X-XSRF-TOKEN` CSRF header.
+- Public registration can create only a normal `USER`.
+- Profile, media, and portfolio writes are restricted to the signed-in owner.
+- Administrator access is provisioned only through server environment variables.
+- OAuth secrets, signing secrets, and administrator credentials are excluded
+  from source control and the submission archive.
 
-## Build and tests
+## Documentation
 
-```powershell
-cd C:\ProgramData\campusflow\backend
-docker build --tag campus-flow:release .
-```
-
-The Docker build runs the regression suite. It covers registration restrictions,
-BCrypt login, cookies, CSRF, ownership, administrator authorization, guest
-content, multilingual production UI invariants, Japan date/time behavior, and
-OAuth redirect generation.
-
-## Main API routes
-
-| Method | Route | Purpose |
-|---|---|---|
-| GET | `/api/home` | Country, city, weather, and daily advice |
-| GET/POST | `/api/profile` | Read public/owner profile; save owner profile |
-| GET/POST | `/api/portfolio` | Read works; create an owned work |
-| PUT/DELETE | `/api/portfolio/{id}` | Update or remove an owned work |
-| POST | `/api/register` | Create a normal local account |
-| POST | `/api/authenticate` | Sign in with username and password |
-| GET | `/api/auth/me` | Restore the current account or guest state |
-| POST | `/api/auth/logout` | End the current session |
-| GET/PATCH | `/api/admin/users...` | Administrator account management |
-
-The complete OpenAPI document is available at
-`http://localhost:8080/openapi.yaml`.
-
-## Submission documents
-
-- [Final presentation](output/presentation/CampusFlow_Final_Presentation.pptx)
-- [Live demonstration script](output/presentation/CampusFlow_Live_Demo_Script.docx)
-- [Runnable JAR](output/submission/CampusFlow.jar)
+- [Personal project report](output/pdf/CampusFlow_Report.pdf)
 - [Project structure](docs/architecture/PROJECT_STRUCTURE.md)
-- [Course report](output/pdf/CampusFlow_Report.pdf)
-- [Assignment requirements](docs/course/REQUIREMENTS.md)
-- [Azure configuration](docs/deployment/AZURE_PORTAL_DEPLOYMENT.md)
+- [Course requirement checklist](docs/course/REQUIREMENTS.md)
+- [Environment variables](docs/deployment/ENVIRONMENT_VARIABLES.md)
+- [Azure deployment](docs/deployment/AZURE_PORTAL_DEPLOYMENT.md)
 - [OAuth configuration](docs/deployment/OAUTH_SETUP.md)
+- [OpenAPI document](backend/src/main/resources/static/openapi.yaml)
+- [Release history](CHANGELOG.md)
 
-## Published service
+## Release
 
-- Docker Hub: `berhish/campus-flow`
-- Azure:
-  `https://campusflow-final-0724-grbzdrczdqdyhyea.japanwest-01.azurewebsites.net`
+- Runnable JAR: `output/submission/CampusFlow.jar`
+- Docker image: `berhish/campus-flow:release-20260727-oauth`
+- Azure Web App: `campusflow-final-0724`

@@ -234,7 +234,7 @@ def add_footer(canvas, doc):
     canvas.saveState()
     canvas.setFont("CampusSans", 8)
     canvas.setFillColor(colors.HexColor("#6b7280"))
-    canvas.drawString(1.6 * cm, 1.1 * cm, "Campus Flow - ZHU FUXIN / M25W7195")
+    canvas.drawString(1.6 * cm, 1.1 * cm, "CampusFlow - ZHU FUXIN / M25W7195")
     canvas.drawRightString(A4[0] - 1.6 * cm, 1.1 * cm, f"Page {doc.page}")
     canvas.restoreState()
 

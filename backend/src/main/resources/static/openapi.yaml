@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
   title: CampusFlow API
-  version: 2.0.0
+  version: 3.0.0
   description: >
-    Local API for the CampusFlow presentation site. Guests can browse the
+    API for the CampusFlow portfolio service. Guests can browse the
     featured profile and public work. Registered users manage only their own
     profile and portfolio. Administrators use a separately configured account.
 servers:
@@ -54,6 +54,13 @@ components:
         description: { type: string }
         imageUrl: { type: string }
         externalUrl: { type: string }
+        mediaKind: { type: string, enum: [IMAGE, AUDIO, TEXT] }
+        mediaUrl: { type: string }
+        contentType: { type: string }
+        originalName: { type: string }
+        mediaSize: { type: integer, format: int64 }
+        layoutSize: { type: string, enum: [STANDARD, WIDE, TALL] }
+        mediaFit: { type: string, enum: [COVER, CONTAIN] }
         displayOrder: { type: integer }
         public: { type: boolean }
 paths:
@@ -170,6 +177,50 @@ paths:
       responses:
         '200': { description: Item created }
         '401': { description: Sign-in required }
+  /api/portfolio/upload:
+    post:
+      summary: Upload a file-backed portfolio item
+      description: >
+        Accepts an image, audio, or text file. The server verifies category,
+        extension, size, content type, and file signature before storage.
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, mediaKind, title]
+              properties:
+                file: { type: string, format: binary }
+                mediaKind: { type: string, enum: [IMAGE, AUDIO, TEXT] }
+                type: { type: string, enum: [PHOTO, DRAWING, DESIGN, PROJECT, NOTE] }
+                title: { type: string }
+                description: { type: string }
+                externalUrl: { type: string }
+                layoutSize: { type: string, enum: [STANDARD, WIDE, TALL] }
+                mediaFit: { type: string, enum: [COVER, CONTAIN] }
+                displayOrder: { type: integer }
+                public: { type: boolean }
+      responses:
+        '200': { description: File and portfolio item stored }
+        '400': { description: Invalid or unsupported file }
+        '401': { description: Sign-in required }
+  /api/portfolio/{id}/media:
+    get:
+      summary: Read stored portfolio media
+      description: Public media is readable by visitors; private media is owner-only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200': { description: Stored file returned }
+        '403': { description: Private file owned by another user }
+        '404': { description: File or portfolio item not found }
   /api/portfolio/{id}:
     put:
       summary: Update an owned portfolio item
@@ -232,4 +283,18 @@ paths:
                 enabled: { type: boolean }
       responses:
         '200': { description: Account state updated }
+        '403': { description: Administrator account required }
+    delete:
+      summary: Remove an ordinary account and its owned data
+      security:
+        - sessionCookie: []
+          csrfHeader: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200': { description: Account, profile, works, and stored media removed }
+        '400': { description: Active administrator account cannot be removed }
         '403': { description: Administrator account required }

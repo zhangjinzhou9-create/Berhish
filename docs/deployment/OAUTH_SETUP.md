@@ -48,8 +48,12 @@ Authorized JavaScript origin: https://campusflow-final-0724-grbzdrczdqdyhyea.jap
 Authorized redirect URI: https://campusflow-final-0724-grbzdrczdqdyhyea.japanwest-01.azurewebsites.net/login/oauth2/code/google
 ```
 
-Google Calendar API must be enabled for the Google project. If the consent
-screen is in testing mode, add the demonstration Google account as a test user.
+Google Cloud **Audience** must be `External`. For classmates to sign in with
+their own Google accounts, set **Publishing status** to `In production`.
+`Testing` mode only accepts accounts explicitly listed as test users.
+
+CampusFlow requests only `openid`, `profile`, and `email`. Google Calendar is
+not required for sign-in and is intentionally not requested.
 
 ## Environment variables
 
@@ -75,5 +79,17 @@ The authorization entry points are:
 ```
 
 After sign-in, the application stores the provider identity, authorized display
-name, and avatar URL. GitHub profile/repository and Google Calendar calls are
-available only to a session authorized by the corresponding provider.
+name, and avatar URL. Each provider identity receives its own CampusFlow user
+record so its profile and uploaded works remain separate and persistent. The
+provider authorization request forces the account picker instead of silently
+reusing the project owner's account.
+
+The final Google web client contains both redirect URIs:
+
+```text
+http://localhost:8080/login/oauth2/code/google
+https://campusflow-final-0724-grbzdrczdqdyhyea.japanwest-01.azurewebsites.net/login/oauth2/code/google
+```
+
+The client ID identifies the application, but its client secret is private and
+must be stored only in `.env` or Azure App Settings.

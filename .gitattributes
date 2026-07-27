@@ -1,0 +1,24 @@
+* text=auto
+
+*.cmd text eol=crlf
+*.url text eol=crlf
+*.md text eol=lf
+*.java text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sql text eol=lf
+*.py text eol=lf
+
+*.jar binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pptx binary
+*.docx binary
+*.p12 binary

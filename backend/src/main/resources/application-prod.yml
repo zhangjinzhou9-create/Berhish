@@ -4,6 +4,7 @@ server:
 
 app:
   base-url: ${APP_BASE_URL:https://your-production-domain.example}
+  upload-dir: ${UPLOAD_DIR:/home/campusflow/uploads}
 
 spring:
   datasource:

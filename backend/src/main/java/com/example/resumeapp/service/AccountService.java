@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -33,6 +34,7 @@ public class AccountService {
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final PortfolioMediaStorage mediaStorage;
 
     @Value("${app.admin-username:}")
     private String adminUsername;
@@ -40,10 +42,16 @@ public class AccountService {
     @Value("${app.admin-password:}")
     private String adminPassword;
 
-    public AccountService(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AccountService(
+            JdbcTemplate jdbcTemplate,
+            PasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil,
+            PortfolioMediaStorage mediaStorage
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.mediaStorage = mediaStorage;
     }
 
     @PostConstruct
@@ -105,6 +113,40 @@ public class AccountService {
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
                 """);
+        addColumnIfMissing("portfolio_items", "media_kind", "VARCHAR(20)");
+        addColumnIfMissing("portfolio_items", "media_content_type", "VARCHAR(120)");
+        addColumnIfMissing("portfolio_items", "media_original_name", "VARCHAR(255)");
+        addColumnIfMissing("portfolio_items", "media_stored_name", "VARCHAR(300)");
+        addColumnIfMissing("portfolio_items", "media_size", "BIGINT");
+        addColumnIfMissing("portfolio_items", "layout_size", "VARCHAR(20) DEFAULT 'STANDARD'");
+        addColumnIfMissing("portfolio_items", "media_fit", "VARCHAR(20) DEFAULT 'COVER'");
+        jdbcTemplate.update(
+                """
+                UPDATE portfolio_items
+                SET layout_size = COALESCE(layout_size, 'STANDARD'),
+                    media_fit = COALESCE(media_fit, 'COVER')
+                """
+        );
+        jdbcTemplate.update(
+                """
+                DELETE FROM portfolio_items
+                WHERE media_stored_name IS NULL
+                  AND (
+                    (title = 'Temple through maple' AND image_url = 'assets/campus-extra-red-temple.jpg')
+                    OR (title = 'Magnolia on white' AND image_url = 'assets/campus-photo-07.jpg')
+                    OR (title = 'Black cat in the grass' AND image_url = 'assets/campus-photo-05.jpg')
+                  )
+                """
+        );
+        jdbcTemplate.update(
+                """
+                UPDATE user_profiles
+                SET title = 'STUDENT_CREATOR'
+                WHERE title IS NULL
+                   OR TRIM(title) = ''
+                   OR title IN ('Student', 'Student / Creator', 'Visual diary / web design student')
+                """
+        );
 
         jdbcTemplate.update(
                 """
@@ -131,7 +173,6 @@ public class AccountService {
                     username
             );
             ensureProfile(userId, username, "");
-            seedPortfolio(userId);
             return requireById(userId);
         } catch (DuplicateKeyException e) {
             throw new AccountConflictException("username already exists");
@@ -280,6 +321,32 @@ public class AccountService {
         return Map.of("updated", true, "userId", userId, "enabled", enabled);
     }
 
+    @Transactional
+    public Map<String, Object> deleteUser(UserAccount requester, long userId) {
+        requireAdmin(requester);
+        if (requester.id() == userId) {
+            throw new IllegalArgumentException("administrator cannot delete the active account");
+        }
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM auth_users WHERE id = ?",
+                Integer.class,
+                userId
+        );
+        if (count == null || count == 0) {
+            throw new IllegalArgumentException("user not found");
+        }
+        List<String> storedNames = jdbcTemplate.query(
+                "SELECT media_stored_name FROM portfolio_items WHERE user_id = ? AND media_stored_name IS NOT NULL",
+                (rs, rowNum) -> rs.getString("media_stored_name"),
+                userId
+        );
+        jdbcTemplate.update("DELETE FROM portfolio_items WHERE user_id = ?", userId);
+        jdbcTemplate.update("DELETE FROM user_profiles WHERE user_id = ?", userId);
+        jdbcTemplate.update("DELETE FROM auth_users WHERE id = ?", userId);
+        storedNames.forEach(mediaStorage::deleteQuietly);
+        return Map.of("deleted", true, "userId", userId);
+    }
+
     public void ensureProfile(long userId, String displayName, String email) {
         Integer count = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM user_profiles WHERE user_id = ?",
@@ -291,7 +358,7 @@ public class AccountService {
                     """
                     INSERT INTO user_profiles
                         (user_id, email, phone, title, summary, country, city, visibility)
-                    VALUES (?, ?, '', 'Student / Creator',
+                    VALUES (?, ?, '', 'STUDENT_CREATOR',
                             'A personal space for daily notes, selected work, and ongoing study.',
                             'Japan', 'Kyoto', 'PUBLIC')
                     """,
@@ -351,7 +418,6 @@ public class AccountService {
                     subject
             );
             ensureProfile(userId, displayName, email);
-            seedPortfolio(userId);
         } else {
             userId = ids.get(0);
             jdbcTemplate.update(
@@ -410,7 +476,8 @@ public class AccountService {
         }
         validateUsername(adminUsername);
         validatePassword(adminPassword);
-        if (findByUsername(adminUsername).isEmpty()) {
+        Optional<UserAccount> configured = findByUsername(adminUsername);
+        if (configured.isEmpty()) {
             long userId = insertUser(
                     adminUsername,
                     passwordEncoder.encode(adminPassword),
@@ -421,43 +488,22 @@ public class AccountService {
                     adminUsername
             );
             ensureProfile(userId, "Administrator", "");
-        }
-    }
-
-    private void seedPortfolio(long userId) {
-        Integer count = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM portfolio_items WHERE user_id = ?",
-                Integer.class,
-                userId
-        );
-        if (count != null && count > 0) {
             return;
         }
-        insertPortfolioSeed(userId, "PHOTOGRAPHY", "Temple through maple",
-                "A temple framed by red maple leaves.",
-                "assets/campus-extra-red-temple.jpg", 1);
-        insertPortfolioSeed(userId, "PHOTOGRAPHY", "Magnolia on white",
-                "Magnolia branches crossing a white facade.",
-                "assets/campus-photo-07.jpg", 2);
-        insertPortfolioSeed(userId, "PHOTOGRAPHY", "Black cat in the grass",
-                "A black cat watching from between green leaves.",
-                "assets/campus-photo-05.jpg", 3);
-    }
 
-    private void insertPortfolioSeed(long userId, String type, String title, String description, String imageUrl, int order) {
+        long userId = configured.get().id();
         jdbcTemplate.update(
                 """
-                INSERT INTO portfolio_items
-                    (user_id, item_type, title, description, image_url, external_url, display_order, is_public)
-                VALUES (?, ?, ?, ?, ?, '', ?, TRUE)
+                UPDATE auth_users
+                SET password = ?, user_type = 'ADMIN', display_name = 'Administrator',
+                    provider = 'local', provider_subject = ?, enabled = TRUE
+                WHERE id = ?
                 """,
-                userId,
-                type,
-                title,
-                description,
-                imageUrl,
-                order
+                passwordEncoder.encode(adminPassword),
+                adminUsername,
+                userId
         );
+        ensureProfile(userId, "Administrator", "");
     }
 
     private String readToken(HttpServletRequest request) {

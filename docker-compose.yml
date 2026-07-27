@@ -6,7 +6,7 @@ services:
     container_name: campus-flow-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-campusflow-local}
       MYSQL_DATABASE: user_db2
     ports:
       - "127.0.0.1:3308:3306"
@@ -14,7 +14,7 @@ services:
       - campus_flow_mysql_data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ppass"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -p$${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -33,20 +33,24 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/user_db2?useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: pass
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-campusflow-local}
       APP_BASE_URL: ${APP_BASE_URL:-http://localhost:8080}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-Ov23lijramFcogVguZyA}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-local-github-client-id}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-github-client-secret}
-      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-975602303747-e2h4hnifubtk0avss9cnmm0irpc67qt7.apps.googleusercontent.com}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-local-google-client-id}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-google-client-secret}
       REST_COUNTRIES_API_KEY: ${REST_COUNTRIES_API_KEY:-}
       JWT_SECRET: ${JWT_SECRET:-}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       SECURE_COOKIE: ${SECURE_COOKIE:-false}
+      UPLOAD_DIR: /data/uploads
+    volumes:
+      - campus_flow_uploads:/data/uploads
     ports:
       - "8080:8080"
 
 volumes:
   campus_flow_mysql_data:
+  campus_flow_uploads:

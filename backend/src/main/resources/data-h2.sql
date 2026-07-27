@@ -45,5 +45,3 @@ WHERE NOT EXISTS (SELECT 1 FROM languages WHERE id = 2);
 INSERT INTO languages (id, language_name, language_level)
 SELECT 3, 'English', 'Reading and presentation'
 WHERE NOT EXISTS (SELECT 1 FROM languages WHERE id = 3);
-
-DELETE FROM auth_users WHERE username = 'cloud-admin-probe';

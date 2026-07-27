@@ -11,9 +11,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProfileService {
+
+    private static final Set<String> PRESET_TITLES = Set.of(
+            "STUDENT_CREATOR",
+            "PHOTOGRAPHER",
+            "ARTIST",
+            "NOVELIST",
+            "DESIGNER",
+            "FILMMAKER",
+            "MUSICIAN"
+    );
 
     private final JdbcTemplate jdbcTemplate;
     private final AccountService accountService;
@@ -41,16 +52,16 @@ public class ProfileService {
 
     public Map<String, Object> updateProfile(long userId, Map<String, Object> body) {
         UserAccount account = accountService.requireById(userId);
-        accountService.ensureProfile(userId, value(body, "name", account.displayName()), value(body, "email", ""));
+        accountService.ensureProfile(userId, account.displayName(), "");
 
         Map<String, Object> current = readUserProfile(account, true);
-        String name = value(body, "name", current.get("name"));
-        String email = value(body, "email", current.get("email"));
-        String phone = value(body, "phone", current.get("phone"));
-        String title = value(body, "title", current.get("title"));
-        String summary = value(body, "summary", current.get("summary"));
-        String country = value(body, "country", current.get("country"));
-        String city = value(body, "city", current.get("city"));
+        String name = requiredBounded(body, "name", current.get("name"), 120);
+        String email = bounded(body, "email", current.get("email"), 160);
+        String phone = bounded(body, "phone", current.get("phone"), 60);
+        String title = requirePresetTitle(value(body, "title", current.get("title")));
+        String summary = bounded(body, "summary", current.get("summary"), 4000);
+        String country = requiredBounded(body, "country", current.get("country"), 100);
+        String city = requiredBounded(body, "city", current.get("city"), 100);
         String visibility = value(body, "visibility", current.get("visibility")).toUpperCase();
         if (!"PUBLIC".equals(visibility) && !"PRIVATE".equals(visibility)) {
             visibility = "PUBLIC";
@@ -108,7 +119,7 @@ public class ProfileService {
         if (owner) {
             result.put("phone", personal.get("phone"));
         }
-        result.put("title", personal.get("title"));
+        result.put("title", storedPresetTitle(personal.get("title")));
         result.put("summary", personal.get("summary"));
         result.put("country", personal.get("country"));
         result.put("city", personal.get("city"));
@@ -307,6 +318,52 @@ public class ProfileService {
         return raw.toString();
     }
 
+    private String bounded(
+            Map<String, Object> body,
+            String key,
+            Object fallback,
+            int maximum
+    ) {
+        String result = value(body, key, fallback).trim();
+        if (result.length() > maximum) {
+            throw new IllegalArgumentException(key + " must be at most " + maximum + " characters");
+        }
+        return result;
+    }
+
+    private String requiredBounded(
+            Map<String, Object> body,
+            String key,
+            Object fallback,
+            int maximum
+    ) {
+        String result = bounded(body, key, fallback, maximum);
+        if (result.isBlank()) {
+            throw new IllegalArgumentException(key + " is required");
+        }
+        return result;
+    }
+
+    private String requirePresetTitle(Object value) {
+        String title = value == null ? "" : value.toString().trim().toUpperCase();
+        if (title.equals("STUDENT") || title.equals("STUDENT / CREATOR")
+                || title.equals("VISUAL DIARY / WEB DESIGN STUDENT")) {
+            title = "STUDENT_CREATOR";
+        }
+        if (!PRESET_TITLES.contains(title)) {
+            throw new IllegalArgumentException("title must use one of the available presets");
+        }
+        return title;
+    }
+
+    private String storedPresetTitle(Object value) {
+        try {
+            return requirePresetTitle(value);
+        } catch (IllegalArgumentException ignored) {
+            return "STUDENT_CREATOR";
+        }
+    }
+
     private Map<String, Object> defaultProfile() {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("name", "シュフシン");
@@ -314,7 +371,7 @@ public class ProfileService {
         result.put("email", "st232527@kcg.edu");
         result.put("phone", "");
         result.put("location", "Kyoto, Japan");
-        result.put("title", "Visual diary / web design student");
+        result.put("title", "STUDENT_CREATOR");
         result.put("summary", "Photography, sketches, and small web experiments collected between classes and walks through Kyoto.");
         result.put("country", "Japan");
         result.put("city", "Kyoto");

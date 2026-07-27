@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="campusflow-build" content="2026-07-27-portfolio-v2">
     <title>CampusFlow — Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -165,13 +166,23 @@
                 </div>
                 <div id="profileAccessNote" class="profile-access-note">Sign in to edit private details.</div>
                 <div class="form-grid">
-                    <label data-i18n-label="nameLabel">Name<input name="name" disabled></label>
-                    <label data-i18n-label="emailLabel">Email<input name="email" type="email" disabled></label>
-                    <label class="private-field" data-i18n-label="phoneLabel">Phone<input name="phone" disabled></label>
-                    <label data-i18n-label="countryLabel">Country<input name="country" disabled></label>
-                    <label data-i18n-label="cityLabel">City<input name="city" disabled></label>
-                    <label class="wide" data-i18n-label="titleLabel">Title<input name="title" disabled></label>
-                    <label class="wide" data-i18n-label="summaryLabel">Summary<textarea name="summary" rows="4" disabled></textarea></label>
+                    <label data-i18n-label="nameLabel">Name<input name="name" maxlength="120" required disabled></label>
+                    <label data-i18n-label="emailLabel">Email<input name="email" type="email" maxlength="160" disabled></label>
+                    <label class="private-field" data-i18n-label="phoneLabel">Phone<input name="phone" maxlength="60" disabled></label>
+                    <label data-i18n-label="countryLabel">Country<input name="country" maxlength="100" required disabled></label>
+                    <label data-i18n-label="cityLabel">City<input name="city" maxlength="100" required disabled></label>
+                    <label class="wide" data-i18n-label="identityTitleLabel">Identity
+                        <select name="title" disabled>
+                            <option value="STUDENT_CREATOR" data-i18n="roleStudentCreator">Student creator</option>
+                            <option value="PHOTOGRAPHER" data-i18n="rolePhotographer">Photographer</option>
+                            <option value="ARTIST" data-i18n="roleArtist">Artist</option>
+                            <option value="NOVELIST" data-i18n="roleNovelist">Novelist</option>
+                            <option value="DESIGNER" data-i18n="roleDesigner">Designer</option>
+                            <option value="FILMMAKER" data-i18n="roleFilmmaker">Filmmaker</option>
+                            <option value="MUSICIAN" data-i18n="roleMusician">Musician</option>
+                        </select>
+                    </label>
+                    <label class="wide" data-i18n-label="summaryLabel">Summary<textarea name="summary" rows="4" maxlength="4000" disabled></textarea></label>
                     <label class="wide" data-i18n-label="visibilityLabel">Visibility
                         <select name="visibility" disabled>
                             <option value="PUBLIC">PUBLIC</option>
@@ -182,7 +193,7 @@
                 <section id="portfolioEditor" class="portfolio-editor is-hidden">
                     <div class="portfolio-editor-head">
                         <span data-i18n="addWork">ADD A WORK</span>
-                        <small data-i18n="addWorkHelp">Photography, drawing, design, or project</small>
+                        <small data-i18n="addWorkHelp">Upload an image, audio file, or text file</small>
                     </div>
                     <div class="portfolio-form-grid">
                         <label data-i18n-label="workTypeLabel">Type
@@ -195,10 +206,33 @@
                             </select>
                         </label>
                         <label data-i18n-label="titleLabel">Title<input id="workTitle" maxlength="160"></label>
-                        <label class="wide" data-i18n-label="descriptionLabel">Description<textarea id="workDescription" rows="2"></textarea></label>
-                        <label class="wide" data-i18n-label="imageUrlLabel">Image URL<input id="workImageUrl" value="assets/campus-photo-01.jpg"></label>
+                        <label class="wide" data-i18n-label="descriptionLabel">Description<textarea id="workDescription" rows="2" maxlength="4000"></textarea></label>
+                        <label data-i18n-label="mediaTypeLabel">Media type
+                            <select id="workMediaKind">
+                                <option value="IMAGE" data-i18n="mediaImage">Image</option>
+                                <option value="AUDIO" data-i18n="mediaAudio">Audio</option>
+                                <option value="TEXT" data-i18n="mediaText">Text</option>
+                            </select>
+                        </label>
+                        <label data-i18n-label="layoutSizeLabel">Display size
+                            <select id="workLayoutSize">
+                                <option value="STANDARD" data-i18n="layoutStandard">Standard</option>
+                                <option value="WIDE" data-i18n="layoutWide">Wide</option>
+                                <option value="TALL" data-i18n="layoutTall">Tall</option>
+                            </select>
+                        </label>
+                        <label data-i18n-label="mediaFitLabel">Image display
+                            <select id="workMediaFit">
+                                <option value="CONTAIN" data-i18n="fitContain">Show complete image</option>
+                                <option value="COVER" data-i18n="fitCover">Fill the frame</option>
+                            </select>
+                        </label>
+                        <label data-i18n-label="chooseFileLabel">Choose file
+                            <input id="workFile" type="file" accept=".jpg,.jpeg,.png,.gif,.webp,image/*">
+                        </label>
+                        <small id="workFileHint" class="upload-hint wide" data-i18n="imageUploadHint">JPG, PNG, GIF, or WebP · up to 15 MB</small>
                     </div>
-                    <button id="addWorkBtn" class="text-action" type="button" data-i18n="addToPortfolio">+ Add to portfolio</button>
+                    <button id="addWorkBtn" class="text-action" type="button" data-i18n="addToPortfolio">+ Upload to portfolio</button>
                     <div id="portfolioManageList" class="portfolio-manage-list"></div>
                 </section>
                 <div class="sheet-actions">
@@ -300,7 +334,7 @@
                     </button>
                     <button class="provider-button" type="button" data-oauth-provider="google">
                         <span>G</span>
-                        <span><strong data-i18n="signGoogle">Continue with Google</strong><small data-i18n="googleSigninNote">Use your Google account and optional calendar.</small></span>
+                        <span><strong data-i18n="signGoogle">Continue with Google</strong><small data-i18n="googleSigninNote">Use your Google name, email, and profile image.</small></span>
                         <i>↗</i>
                     </button>
                 </div>

@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -134,6 +135,23 @@ public class AuthController {
                     .orElseThrow(() -> new AccountAuthorizationException("administrator account required"));
             boolean enabled = Boolean.parseBoolean(String.valueOf(body.getOrDefault("enabled", true)));
             return ResponseEntity.ok(accountService.setUserEnabled(requester, userId, enabled));
+        } catch (AccountAuthorizationException e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/admin/users/{userId}")
+    public ResponseEntity<?> deleteUser(
+            @PathVariable long userId,
+            HttpServletRequest request,
+            Authentication authentication
+    ) {
+        try {
+            UserAccount requester = accountService.resolve(request, authentication)
+                    .orElseThrow(() -> new AccountAuthorizationException("administrator account required"));
+            return ResponseEntity.ok(accountService.deleteUser(requester, userId));
         } catch (AccountAuthorizationException e) {
             return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
         } catch (IllegalArgumentException e) {
